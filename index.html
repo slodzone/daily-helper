@@ -637,6 +637,10 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 
 <script>
 
+/* ─── LANGUAGE (must be first — used by render functions below) ── */
+const LS_LANG='dh_lang';
+let currentLang=localStorage.getItem(LS_LANG)||'pl';
+
 /* ─── API KEY MANAGEMENT ─────────────────────────────────────────── */
 const LS_KEY='tmdb_api_key';
 
@@ -1057,6 +1061,73 @@ Task: Translate and adapt this recipe. Respond ONLY in ${cookLang}.
 
 renderIngTags();
 
+/* ─── FILM DATA ──────────────────────────────────────────────────── */
+const ALL_YEARS=[2026,2025,2024,2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2010,2008,2005,2000,1995,1990];
+const RATINGS=[
+  {label:'Dowolna',min:0},{label:'6+',min:6},{label:'7+',min:7},
+  {label:'7.5+',min:7.5},{label:'8+',min:8},{label:'8.5+',min:8.5}
+];
+const PLATFORM_STYLE={
+  'Netflix':{bg:'#E50914',icon:'▶'},'HBO Max':{bg:'#002BE7',icon:'▶'},
+  'Disney+':{bg:'#113CCF',icon:'▶'},'Amazon Prime Video':{bg:'#00A8E0',icon:'▶'},
+  'Apple TV+':{bg:'#555',icon:'▶'},'Canal+':{bg:'#000',icon:'▶'},
+  'Player':{bg:'#E4001C',icon:'▶'},'Polsat Box Go':{bg:'#E4001C',icon:'▶'},
+};
+const ALL_FILMS=[
+  {title:'The Shawshank Redemption',tmdbId:278,imdb:'tt0111161',year:1994,type:'film',rating:'9.3',genres:['🎬 Dramat'],overview:'Dwóch więźniów zaprzyjaźnia się przez lata.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Godfather',tmdbId:238,imdb:'tt0068646',year:1972,type:'film',rating:'9.2',genres:['🎬 Dramat','⚔️ Akcja'],overview:'Historia rodziny mafijnej Corleone.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Dark Knight',tmdbId:155,imdb:'tt0468569',year:2008,type:'film',rating:'9.0',genres:['⚔️ Akcja','🕵️ Thriller'],overview:'Batman mierzy się z Jokerem.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Pulp Fiction',tmdbId:680,imdb:'tt0110912',year:1994,type:'film',rating:'8.9',genres:['🕵️ Thriller','⚔️ Akcja'],overview:'Przeplatające się opowieści ze świata przestępczego.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Schindler List',tmdbId:424,imdb:'tt0108052',year:1993,type:'film',rating:'9.0',genres:['🎬 Dramat'],overview:'Historia Oskara Schindlera ratującego Żydów.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Inception',tmdbId:27205,imdb:'tt1375666',year:2010,type:'film',rating:'8.8',genres:['🚀 Sci-Fi','⚔️ Akcja','🕵️ Thriller'],overview:'Złodziej kradnący sekrety ze snów.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Interstellar',tmdbId:157336,imdb:'tt0816692',year:2014,type:'film',rating:'8.7',genres:['🚀 Sci-Fi','🎬 Dramat'],overview:'Podróż przez czarną dziurę w celu ocalenia ludzkości.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Matrix',tmdbId:603,imdb:'tt0133093',year:1999,type:'film',rating:'8.7',genres:['🚀 Sci-Fi','⚔️ Akcja'],overview:'Haker odkrywa prawdę o symulowanej rzeczywistości.',streaming:['HBO Max'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Goodfellas',tmdbId:769,imdb:'tt0099685',year:1990,type:'film',rating:'8.7',genres:['🎬 Dramat','⚔️ Akcja'],overview:'Życie w rodzinie mafijnej od środka.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Fight Club',tmdbId:550,imdb:'tt0137523',year:1999,type:'film',rating:'8.8',genres:['🎬 Dramat','🕵️ Thriller'],overview:'Pracownik biurowy zakłada podziemny klub walki.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Forrest Gump',tmdbId:13,imdb:'tt0109830',year:1994,type:'film',rating:'8.8',genres:['🎬 Dramat','💘 Romans'],overview:'Życie prostodusznego człowieka przez dekady historii USA.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Silence of the Lambs',tmdbId:274,imdb:'tt0102926',year:1991,type:'film',rating:'8.6',genres:['🕵️ Thriller','😱 Horror'],overview:'Agentka FBI szuka seryjnego mordercy z pomocą Hannibala Lectera.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Parasite',tmdbId:496243,imdb:'tt6751668',year:2019,type:'film',rating:'8.5',genres:['🎬 Dramat','🕵️ Thriller','😂 Komedia'],overview:'Biedna rodzina infiltruje bogatych pracodawców.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Joker',tmdbId:475557,imdb:'tt7286456',year:2019,type:'film',rating:'8.4',genres:['🎬 Dramat','🕵️ Thriller'],overview:'Pochodzenie Jokera — upadek komika z Gotham.',streaming:['HBO Max'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Grand Budapest Hotel',tmdbId:120467,imdb:'tt2278388',year:2014,type:'film',rating:'8.1',genres:['😂 Komedia','🎬 Dramat'],overview:'Przygody ekscentrycznego hotelowego konkierge.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Whiplash',tmdbId:244786,imdb:'tt2582802',year:2014,type:'film',rating:'8.5',genres:['🎬 Dramat'],overview:'Młody perkusista i brutalny nauczyciel.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'La La Land',tmdbId:313369,imdb:'tt3783958',year:2016,type:'film',rating:'8.0',genres:['💘 Romans','😂 Komedia'],overview:'Miłość pianisty i aktorki w Los Angeles.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Get Out',tmdbId:419430,imdb:'tt5052448',year:2017,type:'film',rating:'7.7',genres:['😱 Horror','🕵️ Thriller'],overview:'Afroamerykanin odwiedza rodzinę białej dziewczyny.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Hereditary',tmdbId:493922,imdb:'tt7784604',year:2018,type:'film',rating:'7.3',genres:['😱 Horror'],overview:'Rodzina ujawnia mroczne tajemnice po śmierci babci.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Midsommar',tmdbId:530385,imdb:'tt8772262',year:2019,type:'film',rating:'7.1',genres:['😱 Horror'],overview:'Para jedzie na szwedzki festiwal, który okazuje się kultem.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Everything Everywhere All at Once',tmdbId:545611,imdb:'tt6710474',year:2022,type:'film',rating:'7.8',genres:['🚀 Sci-Fi','😂 Komedia','⚔️ Akcja'],overview:'Praczka odkrywa wieloświat i własne inne życia.',streaming:['Amazon Prime Video'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Top Gun: Maverick',tmdbId:361743,imdb:'tt1745960',year:2022,type:'film',rating:'8.3',genres:['⚔️ Akcja'],overview:'Maverick wraca szkolić nowych pilotów.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Avatar: The Way of Water',tmdbId:76600,imdb:'tt1630029',year:2022,type:'film',rating:'7.6',genres:['🚀 Sci-Fi','⚔️ Akcja','🧙 Fantasy'],overview:'Rodzina Sullyego chroni nowe plemię na Pandorze.',streaming:['Disney+'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Oppenheimer',tmdbId:872585,imdb:'tt15398776',year:2023,type:'film',rating:'8.4',genres:['🎬 Dramat','🕵️ Thriller'],overview:'Historia twórcy bomby atomowej.',streaming:['Amazon Prime Video'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Barbie',tmdbId:346698,imdb:'tt1517268',year:2023,type:'film',rating:'6.9',genres:['😂 Komedia','🧙 Fantasy'],overview:'Barbie odkrywa prawdziwy świat poza Barbieland.',streaming:['Max'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Poor Things',tmdbId:792307,imdb:'tt14230458',year:2023,type:'film',rating:'7.9',genres:['😂 Komedia','🎬 Dramat','🧙 Fantasy'],overview:'Ożywiona kobieta odkrywa świat na własnych zasadach.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Dune: Part Two',tmdbId:693134,imdb:'tt15239678',year:2024,type:'film',rating:'8.5',genres:['🚀 Sci-Fi','⚔️ Akcja'],overview:'Paul Atreides prowadzi Fremów do walki.',streaming:['Max'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Alien: Romulus',tmdbId:945961,imdb:'tt18412256',year:2024,type:'film',rating:'7.3',genres:['😱 Horror','🚀 Sci-Fi'],overview:'Młodzi eksploratorzy napotykają ksenomorfy.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Deadpool & Wolverine',tmdbId:533535,imdb:'tt6263850',year:2024,type:'film',rating:'7.8',genres:['⚔️ Akcja','😂 Komedia'],overview:'Deadpool i Wolverine ratują wieloświat Marvela.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  /* Animacje */
+  {title:'Spider-Man: Into the Spider-Verse',tmdbId:324857,imdb:'tt4633694',year:2018,type:'film',rating:'8.4',genres:['🧸 Animacja','⚔️ Akcja'],overview:'Miles Morales zostaje Spider-Manem.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Spirited Away',tmdbId:129,imdb:'tt0245429',year:2001,type:'film',rating:'8.6',genres:['🧸 Animacja','🧙 Fantasy'],overview:'Dziewczynka trafia do świata duchów.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Your Name',tmdbId:372058,imdb:'tt5311514',year:2016,type:'film',rating:'8.4',genres:['🧸 Animacja','💘 Romans','🧙 Fantasy'],overview:'Dwoje nastolatków zamienia się ciałami.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Coco',tmdbId:354912,imdb:'tt2380307',year:2017,type:'film',rating:'8.4',genres:['🧸 Animacja','🧙 Fantasy'],overview:'Chłopiec trafia do Krainy Umarłych.',streaming:['Disney+'],justwatch:'https://www.justwatch.com/pl'},
+  /* Dokumentalne */
+  {title:'Free Solo',tmdbId:549585,imdb:'tt7775622',year:2018,type:'film',rating:'8.2',genres:['📚 Dokumentalny'],overview:'Alex Honnold wspina się na El Capitan bez zabezpieczeń.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'13th',tmdbId:415649,imdb:'tt5895028',year:2016,type:'film',rating:'8.2',genres:['📚 Dokumentalny'],overview:'Historia rasizmu i systemu więziennictwa w USA.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  /* Seriale */
+  {title:'Breaking Bad',tmdbId:1396,imdb:'tt0903747',year:2008,type:'serial',rating:'9.5',genres:['🎬 Dramat','🕵️ Thriller'],overview:'Nauczyciel chemii zostaje producentem metamfetaminy.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Chernobyl',tmdbId:87108,imdb:'tt7366338',year:2019,type:'serial',rating:'9.4',genres:['🎬 Dramat'],overview:'Minisérial o katastrofie w Czarnobylu.',streaming:['HBO Max'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Band of Brothers',tmdbId:4613,imdb:'tt0185906',year:2001,type:'serial',rating:'9.4',genres:['🎬 Dramat','⚔️ Akcja'],overview:'Kompania E podczas II Wojny Światowej.',streaming:['HBO Max'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Wire',tmdbId:1438,imdb:'tt0306414',year:2002,type:'serial',rating:'9.3',genres:['🎬 Dramat','🕵️ Thriller'],overview:'Policja i przestępcy w Baltimore.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'True Detective S1',tmdbId:46648,imdb:'tt2356777',year:2014,type:'serial',rating:'9.0',genres:['🎬 Dramat','🕵️ Thriller'],overview:'Dwaj detektywi ścigają seryjnego mordercę w Luizjanie.',streaming:['HBO Max'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Last of Us',tmdbId:100088,imdb:'tt3581920',year:2023,type:'serial',rating:'8.8',genres:['🎬 Dramat','😱 Horror'],overview:'Mężczyzna przemierza postapokaliptyczną Amerykę z dziewczyną.',streaming:['HBO Max'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Stranger Things',tmdbId:66732,imdb:'tt4574334',year:2016,type:'serial',rating:'8.7',genres:['😱 Horror','🚀 Sci-Fi'],overview:'Dzieci odkrywają nadprzyrodzone tajemnice w Hawkins.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Haunting of Hill House',tmdbId:77672,imdb:'tt6763664',year:2018,type:'serial',rating:'8.6',genres:['😱 Horror','🎬 Dramat'],overview:'Rodzina wraca do nawiedzonego domu.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Midnight Mass',tmdbId:128081,imdb:'tt10574558',year:2021,type:'serial',rating:'7.7',genres:['😱 Horror','🎬 Dramat'],overview:'Tajemniczy ksiądz przybywa na odizolowaną wyspę.',streaming:['Netflix'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Severance',tmdbId:95396,imdb:'tt11280740',year:2022,type:'serial',rating:'8.7',genres:['🚀 Sci-Fi','🕵️ Thriller'],overview:'Pracownicy dzielą pamięć między pracą a życiem prywatnym.',streaming:['Apple TV+'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Bear',tmdbId:136315,imdb:'tt14452776',year:2022,type:'serial',rating:'8.6',genres:['🎬 Dramat','😂 Komedia'],overview:'Szef kuchni przejmuje rodzinną kanapkownię.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'Succession',tmdbId:76331,imdb:'tt7660850',year:2018,type:'serial',rating:'8.9',genres:['🎬 Dramat','😂 Komedia'],overview:'Walka o schedę w medialnym imperium.',streaming:['HBO Max'],justwatch:'https://www.justwatch.com/pl'},
+  {title:'The Terror',tmdbId:71568,imdb:'tt2708480',year:2018,type:'serial',rating:'8.0',genres:['😱 Horror','🎬 Dramat'],overview:'Wyprawa arktyczna walczy z nieznanym stworzeniem.',streaming:[],justwatch:'https://www.justwatch.com/pl'},
+  {title:'White Lotus',tmdbId:110316,imdb:'tt13406094',year:2021,type:'serial',rating:'7.9',genres:['😂 Komedia','🎬 Dramat','🕵️ Thriller'],overview:'Goście luksusowego hotelu kryją mroczne tajemnice.',streaming:['HBO Max'],justwatch:'https://www.justwatch.com/pl'},
+];
+
 /* ─── PAGE 5: FILM ───────────────────────────────────────────────── */
 const MOODS={
   pl:['😂 Komedia','😱 Horror','💘 Romans','🎬 Dramat','🚀 Sci-Fi','⚔️ Akcja','🕵️ Thriller','🧸 Animacja','📚 Dokumentalny','🧙 Fantasy'],
@@ -1076,6 +1147,11 @@ const MOODS_TO_TMDB={
   '📚 Dokumentalny':'📚 Dokumentalny','📚 Documentary':'📚 Dokumentalny','📚 Документальний':'📚 Dokumentalny',
   '🧙 Fantasy':'🧙 Fantasy','🧙 Фентезі':'🧙 Fantasy',
 };
+let selectedMoods=new Set();
+let selectedYear=null;
+let selectedMinRating=0;
+let lastShown=new Set();
+let movieType='all';
 function renderMoodTags(){
   const list=MOODS[currentLang]||MOODS.pl;
   document.getElementById('moodTags').innerHTML=list.map(m=>{
@@ -1084,10 +1160,6 @@ function renderMoodTags(){
     return `<span class="tag${on?' on':''}" onclick="toggleMood(this,'${m.replace(/'/g,"\'")}') ">${m}</span>`;
   }).join('');
 }
-let selectedMoods=new Set();
-let selectedYear=null;
-let selectedMinRating=0;
-let lastShown=new Set();
 
 /* Init tag rows */
 renderMoodTags();
@@ -1308,6 +1380,7 @@ const MOOD_CONTEXT={
       '👥 Хочу провести час з людьми','🧘 Потребую спокою','🎉 Шукаю пригод',
       '💪 Хочу бути активним/ою','🧠 Хочу чогось навчитися','🎨 Хочу творити'],
 };
+let selectedContexts=new Set();
 function renderMoodContext(){
   selectedContexts.clear();
   const list=MOOD_CONTEXT[currentLang]||MOOD_CONTEXT.pl;
@@ -1316,7 +1389,6 @@ function renderMoodContext(){
   ).join('');
 }
 renderMoodContext();
-let selectedContexts=new Set();
 function toggleContext(el,val){
   if(selectedContexts.has(val)){selectedContexts.delete(val);el.classList.remove('on');}
   else{selectedContexts.add(val);el.classList.add('on');}
@@ -1499,6 +1571,16 @@ function toggleDot(i){
   renderTracker();
 }
 
+const CHALLENGES=[
+  'Przez 1 dzień nie sięgaj po ten nawyk wcale',
+  'Zastąp jeden raz nawyk 10-minutowym spacerem',
+  'Powiedz komuś bliskiemu o swoim celu',
+  'Ustaw przypomnienie na jutro — i dotrzymaj go',
+  'Przez 2 godziny trzymaj telefon w innym pokoju',
+  'Zapisz dlaczego chcesz to zmienić — i przeczytaj to wieczorem',
+  'Znajdź jedną alternatywę na moment słabości',
+  'Zrób 5 głębokich oddechów zamiast sięgać po nawyk',
+];
 function newChallenge(){
   document.getElementById('challengeText').textContent=CHALLENGES[Math.floor(Math.random()*CHALLENGES.length)];
 }
@@ -1629,8 +1711,7 @@ const LANGS={
 };
 
 
-const LS_LANG='dh_lang';
-let currentLang=localStorage.getItem(LS_LANG)||'pl';
+
 
 function setLang(lang){
   currentLang=lang;
@@ -1678,7 +1759,7 @@ function setLang(lang){
   /* Placeholders */
   const phMap={
     moodInput:{pl:'np. Jestem zmęczona po pracy, mam ochotę na coś relaksującego ale nie chcę siedzieć bezczynnie. Lubię być na świeżym powietrzu…',
-               en:'e.g. I am tired after work, I want something relaxing but I don't want to sit idle. I like being outdoors…',
+               en:'e.g. I am tired after work, I want something relaxing but I do not want to sit idle. I like being outdoors…',
                uk:'напр. Я втомлена після роботи, хочу щось розслаблююче, але не хочу сидіти без діла. Люблю бути на свіжому повітрі…'},
     customIng:{pl:'np. marchewka, ser żółty, indyk…',en:'e.g. carrot, yellow cheese, turkey…',uk:'напр. морква, жовтий сир, індик…'},
   };
