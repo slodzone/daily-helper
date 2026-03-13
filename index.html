@@ -276,35 +276,50 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 
 <!-- API KEY MODAL -->
 <div id="apiOverlay">
-  <div class="api-box">
+  <div class="api-box" style="max-width:560px">
     <div class="api-logo">Daily Helper</div>
     <div class="api-tagline">Twój codzienny pomocnik</div>
 
-    <div class="api-title">🎬 Jeden krok do pełnej wersji</div>
-    <p style="font-size:.84rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
-      Moduł „Co obejrzeć" korzysta z bazy TMDB. Potrzebujesz darmowego klucza API — wpisujesz go raz, zapisuje się w Twojej przeglądarce.
-    </p>
+    <!-- STEP 1: Choose mode -->
+    <div id="apiStep1">
+      <div class="api-title" style="margin-top:20px">🎬 Jak chcesz korzystać z modułu Film?</div>
+      <p style="font-size:.83rem;color:var(--muted);margin:10px 0 20px;line-height:1.6">Wybierz tryb — możesz go zmienić w każdej chwili w ustawieniach.</p>
 
-    <ol class="api-steps">
-      <li>Wejdź na <a href="https://www.themoviedb.org/settings/api" target="_blank">themoviedb.org/settings/api</a></li>
-      <li>Kliknij <strong>Create</strong> → <strong>Developer</strong></li>
-      <li>Wypełnij formularz (dowolna nazwa, np. "Daily Helper")</li>
-      <li>Skopiuj <strong>API Key (v3 auth)</strong> i wklej poniżej</li>
-    </ol>
-
-    <label>Twój klucz API (v3)</label>
-    <div class="api-input-row">
-      <input type="password" id="apiKeyInput" placeholder="np. a1b2c3d4e5f6...">
-      <button class="btn primary" onclick="saveApiKey()">Zapisz i wejdź →</button>
-    </div>
-    <div class="api-err" id="apiErr"></div>
-
-    <div class="api-note">
-      🔒 Klucz zapisuje się wyłącznie w Twojej przeglądarce (localStorage). Nikt inny go nie widzi. Możesz go usunąć w każdej chwili klikając ⚙️ w nawigacji.
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px">
+        <div onclick="chooseMode('local')" style="cursor:pointer;background:var(--surf2);border:2px solid var(--border);border-radius:12px;padding:18px 16px;transition:all .15s" 
+             onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'" id="modeCardLocal">
+          <div style="font-size:1.6rem;margin-bottom:8px">📦</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;margin-bottom:6px">Darmowa kolekcja</div>
+          <div style="font-size:.76rem;color:var(--muted);line-height:1.5">Bez rejestracji. Starannie dobrana baza ~80 filmów i seriali z ocenami i platformami streamingowymi.</div>
+        </div>
+        <div onclick="chooseMode('api')" style="cursor:pointer;background:var(--surf2);border:2px solid var(--border);border-radius:12px;padding:18px 16px;transition:all .15s"
+             onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'" id="modeCardApi">
+          <div style="font-size:1.6rem;margin-bottom:8px">🌐</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;margin-bottom:6px">Baza TMDB</div>
+          <div style="font-size:.76rem;color:var(--muted);line-height:1.5">Wymaga darmowego klucza API. Dostęp do miliona tytułów, aktualnych plakatów i platform streamingowych.</div>
+        </div>
+      </div>
     </div>
 
-    <div style="margin-top:16px;text-align:center">
-      <button class="btn ghost" style="font-size:.78rem;padding:7px 14px" onclick="skipApiKey()">Pomiń — używaj bez modułu Film</button>
+    <!-- STEP 2: Enter API key (shown only if API mode chosen) -->
+    <div id="apiStep2" style="display:none">
+      <div class="api-title" style="margin-top:20px">🔑 Wpisz klucz API TMDB</div>
+      <ol class="api-steps" style="margin-top:12px">
+        <li>Wejdź na <a href="https://www.themoviedb.org/settings/api" target="_blank">themoviedb.org/settings/api</a></li>
+        <li>Kliknij <strong>Create</strong> → <strong>Developer</strong></li>
+        <li>Wypełnij formularz (dowolna nazwa, np. "Daily Helper")</li>
+        <li>Skopiuj <strong>API Key (v3 auth)</strong> i wklej poniżej</li>
+      </ol>
+      <label style="margin-top:4px">Twój klucz API (v3)</label>
+      <div class="api-input-row">
+        <input type="password" id="apiKeyInput" placeholder="np. a1b2c3d4e5f6...">
+        <button class="btn primary" onclick="saveApiKey()">Zapisz →</button>
+      </div>
+      <div class="api-err" id="apiErr"></div>
+      <div class="api-note" style="margin-top:12px">
+        🔒 Klucz zapisuje się wyłącznie w Twojej przeglądarce. Nikt inny go nie widzi.
+      </div>
+      <button class="btn ghost" style="margin-top:12px;font-size:.78rem;padding:7px 14px" onclick="document.getElementById('apiStep2').style.display='none';document.getElementById('apiStep1').style.display='block'">← Wróć</button>
     </div>
   </div>
 </div>
@@ -572,16 +587,21 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 <!-- SETTINGS MODAL -->
 <div id="settingsModal" style="display:none;position:fixed;inset:0;z-index:999;background:#2C1A0E;align-items:center;justify-content:center;padding:24px">
   <div class="api-box" style="max-width:440px">
-    <div class="api-title" style="margin-top:0">⚙️ Ustawienia klucza TMDB</div>
-    <p style="font-size:.83rem;color:var(--muted);margin-bottom:14px">Zmień lub usuń swój klucz API.</p>
-    <label>Aktualny klucz (v3)</label>
-    <div class="api-input-row">
-      <input type="password" id="settingsKeyInput" placeholder="wklej nowy klucz...">
-      <button class="btn primary" onclick="updateApiKey()">Zapisz</button>
+    <div class="api-title" style="margin-top:0">⚙️ Ustawienia modułu Film</div>
+    <p style="font-size:.83rem;color:var(--muted);margin-bottom:14px" id="settingsModeLine"></p>
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn ghost" style="font-size:.78rem" onclick="switchToLocal()">📦 Przełącz na darmową kolekcję</button>
+      <button class="btn ghost" style="font-size:.78rem" onclick="switchToApi()">🌐 Przełącz na TMDB API</button>
     </div>
-    <div class="api-err" id="settingsErr"></div>
+    <div id="settingsApiSection">
+      <label>Klucz API (v3)</label>
+      <div class="api-input-row">
+        <input type="password" id="settingsKeyInput" placeholder="wklej nowy klucz...">
+        <button class="btn primary" onclick="updateApiKey()">Zapisz</button>
+      </div>
+      <div class="api-err" id="settingsErr"></div>
+    </div>
     <div class="btn-row" style="margin-top:16px">
-      <button class="btn red" onclick="deleteApiKey()">🗑 Usuń klucz</button>
       <button class="btn ghost" onclick="closeSettings()">Zamknij</button>
     </div>
   </div>
@@ -596,6 +616,16 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 const LS_KEY='tmdb_api_key';
 
 function getApiKey(){return localStorage.getItem(LS_KEY)||'';}
+
+function chooseMode(mode){
+  if(mode==='local'){
+    localStorage.setItem(LS_KEY,'__skipped__');
+    document.getElementById('apiOverlay').style.display='none';
+  } else {
+    document.getElementById('apiStep1').style.display='none';
+    document.getElementById('apiStep2').style.display='block';
+  }
+}
 
 function saveApiKey(){
   const val=document.getElementById('apiKeyInput').value.trim();
@@ -612,9 +642,19 @@ function skipApiKey(){
 
 function openSettings(){
   const k=getApiKey();
-  document.getElementById('settingsKeyInput').value=(k&&k!=='__skipped__')?k:'';
+  const isApi=k&&k!=='__skipped__'&&k.length>20;
+  document.getElementById('settingsModeLine').textContent=isApi?'Aktualny tryb: 🌐 TMDB API':'Aktualny tryb: 📦 Darmowa kolekcja';
+  document.getElementById('settingsKeyInput').value=isApi?k:'';
   document.getElementById('settingsErr').textContent='';
   document.getElementById('settingsModal').style.display='flex';
+}
+function switchToLocal(){
+  localStorage.setItem(LS_KEY,'__skipped__');
+  closeSettings();
+}
+function switchToApi(){
+  document.getElementById('settingsApiSection').style.display='block';
+  document.getElementById('settingsModeLine').textContent='Wpisz klucz API poniżej i zapisz:';
 }
 
 function closeSettings(){document.getElementById('settingsModal').style.display='none';}
@@ -1012,6 +1052,31 @@ const FILM_DB={
      overview:'Rodzina wprowadza się do nawiedzonego domu. Klasyczny horror z doskonałą atmosferą i jedną z najlepszych scen finałowych gatunku.',
      streaming:['HBO Max','Netflix'],
      justwatch:'https://www.justwatch.com/pl/film/the-conjuring'},
+    {title:'The Haunting of Hill House',tmdbId:67744,imdb:'tt6763664',year:2018,type:'serial',rating:8.6,
+     genres:['😱 Horror','🎬 Dramat'],
+     overview:'Rodzeństwo powraca do nawiedzonego domu z dzieciństwa. Jeden z najlepszych seriali grozy w historii — psychologiczny, wzruszający i przerażający jednocześnie.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/serial/the-haunting-of-hill-house'},
+    {title:'The Last of Us',tmdbId:100088,imdb:'tt3581920',year:2023,type:'serial',rating:8.8,
+     genres:['😱 Horror','🎬 Dramat'],
+     overview:'Po apokalipsie grzybiczej przemytnik eskortuje odporną dziewczynę przez ruiny Ameryki. Serial, który zmienił standardy gatunku.',
+     streaming:['HBO Max','Max'],
+     justwatch:'https://www.justwatch.com/pl/serial/the-last-of-us'},
+    {title:'Stranger Things',tmdbId:66732,imdb:'tt4574334',year:2016,type:'serial',rating:8.7,
+     genres:['😱 Horror','🚀 Sci-Fi'],
+     overview:'Dzieci z małego miasteczka trafiają na mroczną tajemnicę rządowych eksperymentów i potworów z innego wymiaru. Hołd dla lat 80. i kina Spielberga.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/serial/stranger-things'},
+    {title:'The Terror',tmdbId:71012,imdb:'tt2708480',year:2018,type:'serial',rating:8.1,
+     genres:['😱 Horror','🎬 Dramat'],
+     overview:'Załogi dwóch XIX-wiecznych okrętów utknęły w Arktyce i zmagają się z chłodem, głodem i czymś nadprzyrodzonym. Powolny, lodowaty i niepokojący.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/serial/the-terror'},
+    {title:'Midnight Mass',tmdbId:115919,imdb:'tt10574236',year:2021,type:'serial',rating:7.7,
+     genres:['😱 Horror','🎬 Dramat'],
+     overview:'Na odizolowanej wyspie pojawia się tajemniczy ksiądz i zaczyna dziać się coś niesamowitego. Mike Flanagan w szczytowej formie — horror filozoficzny.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/serial/midnight-mass'},
   ],
   '💘 Romans':[
     {title:'Zakochany bez pamięci',tmdbId:38,imdb:'tt0338013',year:2004,type:'film',rating:8.1,
@@ -1402,12 +1467,15 @@ function useLocalDB(pool){
 }
 
 async function fetchFromTMDB(apiKey,localPool){
-  /* Build genre IDs from selected moods */
-  const TMDB_GENRE_MAP={'😂 Komedia':35,'😱 Horror':27,'💘 Romans':10749,'🎬 Dramat':18,'🚀 Sci-Fi':878,'⚔️ Akcja':28,'🕵️ Thriller':53,'🧸 Animacja':16,'📚 Dokumentalny':99,'🧙 Fantasy':14};
-  const genreIds=[...selectedMoods].map(m=>TMDB_GENRE_MAP[m]).filter(Boolean);
-  const genreParam=genreIds.length?`&with_genres=${genreIds.join('|')}`:''/* | = OR */;
+  /* TMDB genre IDs differ between movies and TV */
+  const TMDB_GENRE_MOVIE={'😂 Komedia':35,'😱 Horror':27,'💘 Romans':10749,'🎬 Dramat':18,'🚀 Sci-Fi':878,'⚔️ Akcja':28,'🕵️ Thriller':53,'🧸 Animacja':16,'📚 Dokumentalny':99,'🧙 Fantasy':14};
+  const TMDB_GENRE_TV={'😂 Komedia':35,'😱 Horror':9648,'💘 Romans':10766,'🎬 Dramat':18,'🚀 Sci-Fi':10765,'⚔️ Akcja':10759,'🕵️ Thriller':9648,'🧸 Animacja':16,'📚 Dokumentalny':99,'🧙 Fantasy':10765};
 
-  const typeParam=movieType==='serial'?'tv':movieType==='film'?'movie':'movie';
+  /* If "all" — randomly pick movie or tv */
+  const typeParam=movieType==='serial'?'tv':movieType==='film'?'movie':(Math.random()<0.5?'movie':'tv');
+  const genreMap=typeParam==='tv'?TMDB_GENRE_TV:TMDB_GENRE_MOVIE;
+  const genreIds=[...selectedMoods].map(m=>genreMap[m]).filter(Boolean);
+  const genreParam=genreIds.length?`&with_genres=${genreIds.join('|')}`:''/* | = OR */;
   const yearParam=selectedYear?(typeParam==='movie'?`&primary_release_date.gte=${selectedYear}-01-01&primary_release_date.lte=${selectedYear}-12-31`:`&first_air_date.gte=${selectedYear}-01-01&first_air_date.lte=${selectedYear}-12-31`):'';
   const page=Math.floor(Math.random()*5)+1;
   const url=`https://api.themoviedb.org/3/discover/${typeParam}?api_key=${apiKey}&language=pl-PL&sort_by=popularity.desc${genreParam}${yearParam}&page=${page}&vote_count.gte=100&vote_average.gte=${selectedMinRating}`;
