@@ -674,10 +674,10 @@ function deleteApiKey(){
 }
 
 /* Show or hide overlay on load */
-(function(){
-  const k=getApiKey();
-  if(k) document.getElementById('apiOverlay').style.display='none';
-})();
+/* Always show overlay on load — user picks mode every time */
+document.getElementById('apiOverlay').style.display='flex';
+document.getElementById('apiStep1').style.display='block';
+document.getElementById('apiStep2').style.display='none';
 
 /* ─── NAVIGATION ─────────────────────────────────────────────────── */
 function switchPage(page){
@@ -1467,51 +1467,60 @@ function useLocalDB(pool){
 }
 
 async function fetchFromTMDB(apiKey,localPool){
-  /* TMDB genre IDs differ between movies and TV */
   const TMDB_GENRE_MOVIE={'😂 Komedia':35,'😱 Horror':27,'💘 Romans':10749,'🎬 Dramat':18,'🚀 Sci-Fi':878,'⚔️ Akcja':28,'🕵️ Thriller':53,'🧸 Animacja':16,'📚 Dokumentalny':99,'🧙 Fantasy':14};
   const TMDB_GENRE_TV={'😂 Komedia':35,'😱 Horror':9648,'💘 Romans':10766,'🎬 Dramat':18,'🚀 Sci-Fi':10765,'⚔️ Akcja':10759,'🕵️ Thriller':9648,'🧸 Animacja':16,'📚 Dokumentalny':99,'🧙 Fantasy':10765};
 
-  /* If "all" — randomly pick movie or tv */
   const typeParam=movieType==='serial'?'tv':movieType==='film'?'movie':(Math.random()<0.5?'movie':'tv');
   const genreMap=typeParam==='tv'?TMDB_GENRE_TV:TMDB_GENRE_MOVIE;
   const genreIds=[...selectedMoods].map(m=>genreMap[m]).filter(Boolean);
-  const genreParam=genreIds.length?`&with_genres=${genreIds.join('|')}`:''/* | = OR */;
-  const yearParam=selectedYear?(typeParam==='movie'?`&primary_release_date.gte=${selectedYear}-01-01&primary_release_date.lte=${selectedYear}-12-31`:`&first_air_date.gte=${selectedYear}-01-01&first_air_date.lte=${selectedYear}-12-31`):'';
+  const genreParam=genreIds.length?`&with_genres=${genreIds.join('|')}`:'';
+  const yearParam=selectedYear?(typeParam==='movie'
+    ?`&primary_release_date.gte=${selectedYear}-01-01&primary_release_date.lte=${selectedYear}-12-31`
+    :`&first_air_date.gte=${selectedYear}-01-01&first_air_date.lte=${selectedYear}-12-31`):'';
+  const ratingParam=selectedMinRating>0?`&vote_average.gte=${selectedMinRating}`:'';
   const page=Math.floor(Math.random()*5)+1;
-  const url=`https://api.themoviedb.org/3/discover/${typeParam}?api_key=${apiKey}&language=pl-PL&sort_by=popularity.desc${genreParam}${yearParam}&page=${page}&vote_count.gte=100&vote_average.gte=${selectedMinRating}`;
+  const url=`https://api.themoviedb.org/3/discover/${typeParam}?api_key=${apiKey}&language=pl-PL&sort_by=popularity.desc${genreParam}${yearParam}${ratingParam}&page=${page}&vote_count.gte=50`;
 
   try{
     const r=await fetch(url);
-    if(!r.ok) throw new Error('bad key');
+    if(r.status===401){
+      document.getElementById('filmSpinner').style.display='none';
+      document.getElementById('filmResult').innerHTML='<p class="err">❌ Nieprawidłowy klucz API. Zmień go w ⚙️ ustawieniach.</p>';
+      return;
+    }
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
     const d=await r.json();
     document.getElementById('filmSpinner').style.display='none';
-    if(!d.results?.length){useLocalDB(localPool);return;}
+    if(!d.results||d.results.length===0){
+      document.getElementById('filmResult').innerHTML='<p class="err">Brak wyników dla tych filtrów. Spróbuj szerszego wyboru.</p>';
+      return;
+    }
+    const pool2=d.results.filter(x=>x.poster_path&&(x.overview||'').length>20);
+    const src=pool2.length?pool2:d.results;
+    const pick=src[Math.floor(Math.random()*Math.min(src.length,10))];
 
-    /* Also fetch watch providers */
-    const results=d.results;
-    const pick=results[Math.floor(Math.random()*Math.min(results.length,10))];
-
-    /* Fetch providers */
     let streaming=[];
     let justwatch='https://www.justwatch.com/pl';
     try{
       const pr=await fetch(`https://api.themoviedb.org/3/${typeParam}/${pick.id}/watch/providers?api_key=${apiKey}`);
-      const pd=await pr.json();
-      const plProviders=pd.results?.PL;
-      if(plProviders){
-        justwatch=plProviders.link||justwatch;
-        const flat=[...(plProviders.flatrate||[]),(plProviders.free||[])];
-        streaming=flat.slice(0,5).map(p=>p.provider_name);
+      if(pr.ok){
+        const pd=await pr.json();
+        const plProviders=pd.results?.PL;
+        if(plProviders){
+          justwatch=plProviders.link||justwatch;
+          const flat=[...(plProviders.flatrate||[]),...(plProviders.free||[]),...(plProviders.ads||[])];
+          streaming=[...new Set(flat.map(p=>p.provider_name))].slice(0,5);
+        }
       }
     }catch(e){}
 
     const tmdbPick={
-      title:pick.title||pick.name,
+      title:pick.title||pick.name||'Nieznany tytuł',
       tmdbId:pick.id,
       imdb:'',
-      year:parseInt((pick.release_date||pick.first_air_date||'0').slice(0,4)),
+      year:parseInt((pick.release_date||pick.first_air_date||'0').slice(0,4))||'?',
       type:typeParam==='tv'?'serial':'film',
-      rating:pick.vote_average?.toFixed(1)||'?',
+      rating:pick.vote_average?pick.vote_average.toFixed(1):'?',
       genres:[...(selectedMoods.size?selectedMoods:[])].slice(0,2),
       overview:pick.overview||'Brak opisu.',
       streaming,
@@ -1521,11 +1530,7 @@ async function fetchFromTMDB(apiKey,localPool){
     renderFilmCard(tmdbPick,d.total_results);
   }catch(e){
     document.getElementById('filmSpinner').style.display='none';
-    if(e.message==='bad key'){
-      document.getElementById('filmResult').innerHTML='<p class="err">Nieprawidłowy klucz API. Sprawdź go w ⚙️ ustawieniach.</p>';
-    } else {
-      useLocalDB(localPool);
-    }
+    document.getElementById('filmResult').innerHTML=`<p class="err">Błąd: ${e.message}. Sprawdź połączenie i spróbuj ponownie.</p>`;
   }
 }
 
