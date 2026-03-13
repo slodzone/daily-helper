@@ -977,17 +977,21 @@ async function findMeal(){
 
     /* 3. Ask Claude to translate + adapt recipe to Polish */
     const plIngs=selIngs.map(s=>s.pl).join(', ');
-    const prompt=`Masz przepis na danie "${found.strMeal}" (kuchnia: ${found.strArea||'międzynarodowa'}, kategoria: ${found.strCategory||''}).
+    const COOK_LANG={
+      pl:'polskim', en:'English', uk:'українській мові'
+    };
+    const cookLang=COOK_LANG[currentLang]||'polskim';
+    const prompt=`You have a recipe for "${found.strMeal}" (cuisine: ${found.strArea||'international'}, category: ${found.strCategory||''}).
 
-Składniki z przepisu: ${mealIngs.join(', ')}
-Składniki użytkownika: ${plIngs}
+Recipe ingredients: ${mealIngs.join(', ')}
+User's ingredients: ${plIngs}
 
-Instrukcja oryginalna (angielski): ${(found.strInstructions||'').slice(0,800)}
+Original instructions (English): ${(found.strInstructions||'').slice(0,800)}
 
-Zadanie: Przetłumacz i zaadaptuj ten przepis na język polski. 
-- Napisz po polsku: nazwę dania, krótki opis (1-2 zdania dlaczego to dobry wybór), listę składników z miarkami, oraz kroki przygotowania (numerowane, jasne).
-- Podkreśl jak użyć składników użytkownika (${plIngs}).
-- Bądź konkretny i praktyczny. Odpowiedz TYLKO w formacie JSON:
+Task: Translate and adapt this recipe. Respond ONLY in ${cookLang}.
+- Write: dish name, short description (1-2 sentences why it's a good choice), ingredient list with measurements, numbered preparation steps.
+- Highlight how to use the user's ingredients (${plIngs}).
+- Be specific and practical. Respond ONLY in JSON (no markdown):
 {"nazwa":"...","opis":"...","skladniki":["..."],"kroki":["..."]}`;
 
     const aiRes=await fetch('https://api.anthropic.com/v1/messages',{
@@ -1331,17 +1335,25 @@ async function getActivityAdvice(){
   document.getElementById('adviceResult').innerHTML='';
   document.getElementById('adviceSpinner').style.display='block';
 
-  const prompt=`Jesteś empatycznym, mądrym przyjacielem. Użytkownik opisał swój nastrój i potrzeby.
+  const ADVICE_LANG={
+    pl:{lang:'polskim',field1:'Nazwa aktywności',field2:'Dlaczego',field3:'Jak zacząć',btn_thinking:'✨ Myślę…',btn_reset:'✨ Daj mi radę',heading:'Propozycje dla Ciebie',btn_more:'🔄 Inne propozycje',tip_label:'Jak zacząć:'},
+    en:{lang:'English',field1:'Activity name',field2:'Why',field3:'How to start',btn_thinking:'✨ Thinking…',btn_reset:'✨ Give me advice',heading:'Suggestions for you',btn_more:'🔄 More suggestions',tip_label:'How to start:'},
+    uk:{lang:'українській мові',field1:'Назва активності',field2:'Чому',field3:'Як почати',btn_thinking:'✨ Думаю…',btn_reset:'✨ Дай мені пораду',heading:'Пропозиції для вас',btn_more:'🔄 Інші пропозиції',tip_label:'Як почати:'},
+  };
+  const al=ADVICE_LANG[currentLang]||ADVICE_LANG.pl;
+  document.getElementById('adviceBtn').textContent=al.btn_thinking;
 
-Nastrój / opis: "${mood||'brak opisu'}"
-Dodatkowy kontekst: ${contexts||'brak'}
+  const prompt=`You are an empathetic, wise friend. The user described their mood and needs. Respond ONLY in ${al.lang}.
 
-Zaproponuj 3 konkretne aktywności idealnie dopasowane do tej osoby. Dla każdej:
-- Nazwa aktywności
-- Dlaczego akurat ta osoba w tym momencie skorzysta na tym działaniu (1-2 zdania, empatycznie i konkretnie)
-- Jak zacząć — praktyczna wskazówka na dziś (1 zdanie)
+Mood / description: "${mood||'no description'}"
+Additional context: ${contexts||'none'}
 
-Bądź ciepły/a, konkretny/a i realistyczny/a. Nie dawaj ogólników. Odpowiedz TYLKO w JSON:
+Suggest 3 specific activities perfectly suited to this person right now. For each:
+- Activity name
+- Why this specific person will benefit from it right now (1-2 sentences, empathetic and concrete)
+- How to start — one practical tip for today
+
+Be warm, specific and realistic. No generic advice. Respond ONLY in JSON (no markdown):
 {"aktywnosci":[{"nazwa":"...","dlaczego":"...","jak_zaczac":"..."},{"nazwa":"...","dlaczego":"...","jak_zaczac":"..."},{"nazwa":"...","dlaczego":"...","jak_zaczac":"..."}]}`;
 
   try{
@@ -1357,7 +1369,7 @@ Bądź ciepły/a, konkretny/a i realistyczny/a. Nie dawaj ogólników. Odpowiedz
     const data=await res.json();
     document.getElementById('adviceSpinner').style.display='none';
     document.getElementById('adviceBtn').disabled=false;
-    document.getElementById('adviceBtn').textContent='✨ Daj mi radę';
+    document.getElementById('adviceBtn').textContent=al.btn_reset;
 
     let result=null;
     try{
@@ -1374,14 +1386,14 @@ Bądź ciepły/a, konkretny/a i realistyczny/a. Nie dawaj ogólników. Odpowiedz
           </div>
           <p style="font-size:.84rem;color:var(--text);line-height:1.7;margin-bottom:8px">${esc(a.dlaczego)}</p>
           <div style="background:var(--surf2);border-radius:6px;padding:8px 12px;font-size:.8rem;color:var(--muted)">
-            💡 <strong>Jak zacząć:</strong> ${esc(a.jak_zaczac)}
+            💡 <strong>${al.tip_label}</strong> ${esc(a.jak_zaczac)}
           </div>
         </div>`).join('');
       document.getElementById('adviceResult').innerHTML=`
         <div style="margin-top:20px">
-          <div style="font-size:.78rem;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em">Propozycje dla Ciebie</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em">${al.heading}</div>
           ${cards}
-          <button class="btn ghost" style="margin-top:4px;font-size:.78rem" onclick="getActivityAdvice()">🔄 Inne propozycje</button>
+          <button class="btn ghost" style="margin-top:4px;font-size:.78rem" onclick="getActivityAdvice()">${al.btn_more}</button>
         </div>`;
     } else {
       document.getElementById('adviceResult').innerHTML='<p class="err">Coś poszło nie tak. Spróbuj ponownie.</p>';
@@ -1389,7 +1401,7 @@ Bądź ciepły/a, konkretny/a i realistyczny/a. Nie dawaj ogólników. Odpowiedz
   }catch(e){
     document.getElementById('adviceSpinner').style.display='none';
     document.getElementById('adviceBtn').disabled=false;
-    document.getElementById('adviceBtn').textContent='✨ Daj mi radę';
+    document.getElementById('adviceBtn').textContent=al.btn_reset;
     document.getElementById('adviceResult').innerHTML=`<p class="err">Błąd: ${e.message}</p>`;
   }
 }
