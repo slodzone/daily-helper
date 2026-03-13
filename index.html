@@ -274,12 +274,15 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 /* ── LANGUAGE SWITCHER ── */
 .lang-switcher{display:flex;gap:6px;align-items:center}
 .lang-btn{
-  background:rgba(201,131,58,0.12);border:1px solid rgba(201,131,58,0.25);
-  color:rgba(245,237,224,0.6);font-family:'Inter',sans-serif;font-size:.72rem;font-weight:600;
-  padding:4px 9px;border-radius:6px;cursor:pointer;transition:all .15s;letter-spacing:.03em;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.25);
+  color:rgba(255,255,255,0.85);
+  font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;
+  padding:5px 11px;border-radius:6px;cursor:pointer;
+  transition:all .15s;letter-spacing:.04em;
 }
-.lang-btn:hover{background:rgba(201,131,58,0.25);color:rgba(245,237,224,1)}
-.lang-btn.on{background:#C9833A;color:#fff;border-color:#C9833A}
+.lang-btn:hover{background:rgba(255,255,255,0.18);color:#fff;border-color:rgba(255,255,255,0.5)}
+.lang-btn.on{background:#C9833A;color:#fff;border-color:#C9833A;box-shadow:0 0 0 2px rgba(201,131,58,0.3)}
 </style>
 </head>
 <body>
@@ -291,10 +294,10 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
     <div id="overlayTagline" class="api-tagline">Twój codzienny pomocnik</div>
 
     <!-- Language selector on welcome screen -->
-    <div style="display:flex;gap:8px;margin-bottom:4px">
-      <button class="lang-btn on" style="font-size:.8rem;padding:6px 14px" onclick="setLang('pl')">🇵🇱 Polski</button>
-      <button class="lang-btn" style="font-size:.8rem;padding:6px 14px" onclick="setLang('en')">🇬🇧 English</button>
-      <button class="lang-btn" style="font-size:.8rem;padding:6px 14px" onclick="setLang('uk')">🇺🇦 Українська</button>
+    <div style="display:flex;gap:10px;margin-bottom:20px;margin-top:4px">
+      <button onclick="setLang('pl')" id="overlayLangPl" style="cursor:pointer;flex:1;background:#fff;border:2px solid #C9833A;border-radius:10px;padding:10px 8px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;color:#1C1008;transition:all .15s">🇵🇱 Polski</button>
+      <button onclick="setLang('en')" id="overlayLangEn" style="cursor:pointer;flex:1;background:#fff;border:2px solid rgba(44,26,14,0.15);border-radius:10px;padding:10px 8px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;color:#1C1008;transition:all .15s">🇬🇧 English</button>
+      <button onclick="setLang('uk')" id="overlayLangUk" style="cursor:pointer;flex:1;background:#fff;border:2px solid rgba(44,26,14,0.15);border-radius:10px;padding:10px 8px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;color:#1C1008;transition:all .15s">🇺🇦 Українська</button>
     </div>
 
     <!-- STEP 1: Choose mode -->
@@ -1944,7 +1947,17 @@ function setLang(lang){
   localStorage.setItem(LS_LANG,lang);
   /* Update all lang buttons */
   document.querySelectorAll('.lang-btn').forEach(b=>{
-    b.classList.toggle('on', b.textContent.includes(lang==='pl'?'PL':lang==='en'?'EN':'УК') || b.getAttribute('onclick')?.includes(`'${lang}'`));
+    b.classList.toggle('on', b.getAttribute('onclick')?.includes(`'${lang}'`));
+  });
+  /* Highlight overlay language buttons */
+  ['pl','en','uk'].forEach(l=>{
+    const el=document.getElementById('overlayLang'+l.charAt(0).toUpperCase()+l.slice(1));
+    if(el){
+      el.style.borderColor=l===lang?'#C9833A':'rgba(44,26,14,0.15)';
+      el.style.background=l===lang?'rgba(201,131,58,0.08)':'#fff';
+      el.style.color='#1C1008';
+      el.style.fontWeight=l===lang?'700':'600';
+    }
   });
   /* Apply translations */
   const t=LANGS[lang]||LANGS.pl;
