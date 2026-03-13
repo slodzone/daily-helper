@@ -433,16 +433,19 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 ════════════════════════════════════════════════════════════ -->
 <div id="gotowanie" class="page">
   <h1>🍳 Co ugotować?</h1>
-  <p class="sub">Wybierz składniki → znajdę przepis (TheMealDB)</p>
+  <p class="sub">Wybierz składniki → znajdę przepis z całego świata</p>
 
   <div class="field">
     <label>Popularne składniki</label>
     <div class="tags" id="ingTags"></div>
   </div>
 
-  <div style="display:flex;gap:10px;margin-top:4px">
-    <input id="customIng" placeholder="Inny składnik…" onkeydown="if(event.key==='Enter')addCustomIng()">
-    <button class="btn ghost" onclick="addCustomIng()" style="flex-shrink:0">+ Dodaj</button>
+  <div class="field" style="margin-top:10px">
+    <label>Dodaj własny składnik po polsku</label>
+    <div style="display:flex;gap:10px">
+      <input id="customIng" placeholder="np. marchewka, ser żółty, indyk…" onkeydown="if(event.key==='Enter')addCustomIng()">
+      <button class="btn ghost" onclick="addCustomIng()" style="flex-shrink:0">+ Dodaj</button>
+    </div>
   </div>
 
   <div id="selectedIngs" class="mt8"></div>
@@ -483,8 +486,15 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
   </div>
 
   <div class="field">
-    <label>Rok produkcji / premiery</label>
+    <label>Rok produkcji</label>
     <div class="tags" id="yearTags"></div>
+  </div>
+
+  <div class="row2">
+    <div class="field">
+      <label>Minimalna ocena</label>
+      <div class="tags" id="ratingTags"></div>
+    </div>
   </div>
 
   <div id="filmErr" class="err"></div>
@@ -800,27 +810,67 @@ function calcBill(){
 }
 
 /* ─── PAGE 4: GOTOWANIE ──────────────────────────────────────────── */
-const ING_LIST=['chicken','pasta','rice','potato','eggs','tomato','onion','garlic','cheese','mushroom','beef','salmon','broccoli','spinach','lemon'];
+/* Polish → English translation map for TheMealDB */
+const ING_TRANSLATE={
+  'kurczak':'chicken','pierś z kurczaka':'chicken','indyk':'turkey','wołowina':'beef',
+  'wieprzowina':'pork','łosoś':'salmon','tuńczyk':'tuna','krewetki':'shrimp',
+  'makaron':'pasta','ryż':'rice','ziemniak':'potato','ziemniaki':'potato',
+  'jajko':'eggs','jajka':'eggs','pomidor':'tomato','pomidory':'tomato',
+  'cebula':'onion','czosnek':'garlic','ser':'cheese','ser żółty':'cheese',
+  'pieczarki':'mushroom','grzyby':'mushroom','brokuły':'broccoli','szpinak':'spinach',
+  'cytryna':'lemon','marchewka':'carrot','marchew':'carrot','papryka':'pepper',
+  'bakłażan':'aubergine','cukinia':'courgette','fasola':'beans','soczewica':'lentils',
+  'kukurydza':'sweetcorn','kapusta':'cabbage','ogórek':'cucumber','rzodkiewka':'radish',
+  'boczek':'bacon','kiełbasa':'sausage','mielone':'minced beef','schab':'pork',
+  'mleko':'milk','śmietana':'cream','masło':'butter','mąka':'flour',
+  'ryba':'fish','dorsz':'cod','mintaj':'pollock','halibut':'halibut',
+  'oliwa':'olive oil','olej':'oil','sól':'salt','pieprz':'pepper',
+};
+
+/* Polish display names → English API names */
+const ING_LIST=[
+  {pl:'Kurczak',en:'chicken'},{pl:'Wołowina',en:'beef'},{pl:'Makaron',en:'pasta'},
+  {pl:'Ryż',en:'rice'},{pl:'Ziemniaki',en:'potato'},{pl:'Jajka',en:'eggs'},
+  {pl:'Pomidory',en:'tomato'},{pl:'Cebula',en:'onion'},{pl:'Czosnek',en:'garlic'},
+  {pl:'Ser',en:'cheese'},{pl:'Pieczarki',en:'mushroom'},{pl:'Łosoś',en:'salmon'},
+  {pl:'Brokuły',en:'broccoli'},{pl:'Szpinak',en:'spinach'},{pl:'Cytryna',en:'lemon'},
+  {pl:'Marchewka',en:'carrot'},{pl:'Papryka',en:'pepper'},{pl:'Boczek',en:'bacon'},
+  {pl:'Indyk',en:'turkey'},{pl:'Krewetki',en:'shrimp'},
+];
+
+/* selIngs stores objects {pl, en} */
 let selIngs=[];
 
 function renderIngTags(){
-  document.getElementById('ingTags').innerHTML=ING_LIST.map(ing=>`
-    <span class="tag${selIngs.includes(ing)?' on':''}" onclick="toggleIng('${ing}')">${ing}</span>
-  `).join('');
+  document.getElementById('ingTags').innerHTML=ING_LIST.map(ing=>{
+    const on=selIngs.some(s=>s.en===ing.en);
+    return `<span class="tag${on?' on':''}" onclick="toggleIng('${ing.pl}','${ing.en}')">${ing.pl}</span>`;
+  }).join('');
   renderSelIngs();
 }
 
 function renderSelIngs(){
   document.getElementById('selectedIngs').innerHTML=selIngs.length
-    ?'<span class="muted">Wybrane: </span>'+selIngs.map(s=>`<span class="chip">${s} <span style="cursor:pointer;margin-left:3px" onclick="toggleIng('${s}')">✕</span></span>`).join('')
+    ?'<span class="muted">Wybrane: </span>'+selIngs.map(s=>`<span class="chip">${s.pl} <span style="cursor:pointer;margin-left:3px" onclick="toggleIng('${s.pl}','${s.en}')">✕</span></span>`).join('')
     :'';
 }
 
-function toggleIng(s){selIngs.includes(s)?selIngs=selIngs.filter(x=>x!==s):selIngs.push(s);renderIngTags()}
-function clearIngs(){selIngs=[];renderIngTags()}
+function toggleIng(pl,en){
+  const idx=selIngs.findIndex(s=>s.en===en);
+  if(idx>=0) selIngs.splice(idx,1); else selIngs.push({pl,en});
+  renderIngTags();
+}
+function clearIngs(){selIngs=[];renderIngTags();}
 function addCustomIng(){
-  const v=document.getElementById('customIng').value.trim().toLowerCase();
-  if(v&&!selIngs.includes(v)){selIngs.push(v);renderIngTags();}
+  const raw=document.getElementById('customIng').value.trim().toLowerCase();
+  if(!raw) return;
+  /* Try to translate Polish to English */
+  const en=ING_TRANSLATE[raw]||raw;
+  const pl=document.getElementById('customIng').value.trim();
+  if(!selIngs.some(s=>s.en===en)){
+    selIngs.push({pl,en});
+    renderIngTags();
+  }
   document.getElementById('customIng').value='';
 }
 
@@ -830,9 +880,9 @@ async function findMeal(){
   document.getElementById('mealResult').innerHTML='';
   document.getElementById('mealSpinner').style.display='block';
   try{
-    const shuffled=[...selIngs].sort(()=>Math.random()-.5);
+    const shuffled=[...selIngs].map(s=>s.en).sort(()=>Math.random()-.5);
     let found=null;
-    for(const ing of shuffled){
+    for(const ing of shuffled){/* ing is now English */
       const r=await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ing}`);
       const d=await r.json();
       if(d.meals?.length){
@@ -1263,17 +1313,13 @@ const ALL_FILMS=(()=>{
   return out;
 })();
 
-const YEAR_RANGES=[
-  {label:'Klasyki (–1989)',min:0,max:1990},
-  {label:'Lata 90.',min:1990,max:2000},
-  {label:'Lata 2000.',min:2000,max:2010},
-  {label:'Lata 2010.',min:2010,max:2020},
-  {label:'Nowe (2020+)',min:2020,max:9999},
-];
+const ALL_YEARS=[...Array(37)].map((_,i)=>2026-i);
+const RATINGS=[{label:'Dowolna',min:0},{label:'6+',min:6},{label:'7+',min:7},{label:'7.5+',min:7.5},{label:'8+',min:8},{label:'8.5+',min:8.5}];
 
 let movieType='all';
 let selectedMoods=new Set();
-let selectedYearRange=null;
+let selectedYear=null;
+let selectedMinRating=0;
 let lastShown=new Set();
 
 /* Init tag rows */
@@ -1281,17 +1327,24 @@ document.getElementById('moodTags').innerHTML=MOODS.map(m=>
   `<span class="tag" onclick="toggleMood(this,'${m.replace(/'/g,"\\'")}')">${m}</span>`
 ).join('');
 document.getElementById('yearTags').innerHTML=
-  `<span class="tag on" data-yr="all" onclick="setYear(this,null)">Dowolny</span>`+
-  YEAR_RANGES.map((r,i)=>`<span class="tag" onclick="setYear(this,${i})">${r.label}</span>`).join('');
+  `<span class="tag on" onclick="setYear(this,null)">Dowolny</span>`+
+  ALL_YEARS.map(y=>`<span class="tag" onclick="setYear(this,${y})">${y}</span>`).join('');
+document.getElementById('ratingTags').innerHTML=
+  RATINGS.map((r,i)=>`<span class="tag${i===0?' on':''}" onclick="setRating(this,${r.min})">${r.label}</span>`).join('');
 
 function setType(el){
   document.querySelectorAll('[data-mtype]').forEach(t=>t.classList.remove('on'));
   el.classList.add('on'); movieType=el.dataset.mtype;
 }
-function setYear(el,idx){
+function setYear(el,yr){
   document.querySelectorAll('#yearTags .tag').forEach(t=>t.classList.remove('on'));
   el.classList.add('on');
-  selectedYearRange=idx===null?null:YEAR_RANGES[idx];
+  selectedYear=yr;/* null = any, number = specific year */
+}
+function setRating(el,min){
+  document.querySelectorAll('#ratingTags .tag').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  selectedMinRating=min;
 }
 function toggleMood(el,m){
   if(selectedMoods.has(m)){selectedMoods.delete(m);el.classList.remove('on');}
@@ -1319,17 +1372,18 @@ function findFilm(){
   let pool=ALL_FILMS;
   if(selectedMoods.size>0) pool=pool.filter(f=>f.genres.some(g=>selectedMoods.has(g)));
   if(movieType!=='all') pool=pool.filter(f=>f.type===movieType);
-  if(selectedYearRange) pool=pool.filter(f=>f.year>=selectedYearRange.min&&f.year<selectedYearRange.max);
+  if(selectedYear) pool=pool.filter(f=>f.year===selectedYear);
+  pool=pool.filter(f=>parseFloat(f.rating)>=selectedMinRating);
 
   const apiKey=getApiKey();
-  const hasKey=apiKey&&apiKey!=='__skipped__';
+  const hasKey=apiKey&&apiKey!=='__skipped__'&&apiKey.length>20;
 
-  /* If no valid key or no filters set — use local DB */
+  /* Always show local DB results if no API key */
   if(!hasKey){
     useLocalDB(pool);return;
   }
 
-  /* Try live TMDB */
+  /* With API key — try live TMDB, fall back to local if it fails */
   fetchFromTMDB(apiKey,pool);
 }
 
@@ -1354,9 +1408,9 @@ async function fetchFromTMDB(apiKey,localPool){
   const genreParam=genreIds.length?`&with_genres=${genreIds.join('|')}`:''/* | = OR */;
 
   const typeParam=movieType==='serial'?'tv':movieType==='film'?'movie':'movie';
-  const yearParam=selectedYearRange?(typeParam==='movie'?`&primary_release_date.gte=${selectedYearRange.min}-01-01&primary_release_date.lte=${selectedYearRange.max-1}-12-31`:`&first_air_date.gte=${selectedYearRange.min}-01-01&first_air_date.lte=${selectedYearRange.max-1}-12-31`):'';
+  const yearParam=selectedYear?(typeParam==='movie'?`&primary_release_date.gte=${selectedYear}-01-01&primary_release_date.lte=${selectedYear}-12-31`:`&first_air_date.gte=${selectedYear}-01-01&first_air_date.lte=${selectedYear}-12-31`):'';
   const page=Math.floor(Math.random()*5)+1;
-  const url=`https://api.themoviedb.org/3/discover/${typeParam}?api_key=${apiKey}&language=pl-PL&sort_by=popularity.desc${genreParam}${yearParam}&page=${page}&vote_count.gte=100`;
+  const url=`https://api.themoviedb.org/3/discover/${typeParam}?api_key=${apiKey}&language=pl-PL&sort_by=popularity.desc${genreParam}${yearParam}&page=${page}&vote_count.gte=100&vote_average.gte=${selectedMinRating}`;
 
   try{
     const r=await fetch(url);
