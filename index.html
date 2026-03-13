@@ -270,6 +270,16 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 .api-input-row input{flex:1}
 .api-note{font-size:.74rem;color:var(--muted);margin-top:10px;line-height:1.5;padding:10px 12px;background:var(--surf2);border-radius:8px;border:1px solid var(--border)}
 .api-err{color:var(--danger);font-size:.8rem;margin-top:8px;min-height:18px}
+
+/* ── LANGUAGE SWITCHER ── */
+.lang-switcher{display:flex;gap:6px;align-items:center}
+.lang-btn{
+  background:rgba(201,131,58,0.12);border:1px solid rgba(201,131,58,0.25);
+  color:rgba(245,237,224,0.6);font-family:'Inter',sans-serif;font-size:.72rem;font-weight:600;
+  padding:4px 9px;border-radius:6px;cursor:pointer;transition:all .15s;letter-spacing:.03em;
+}
+.lang-btn:hover{background:rgba(201,131,58,0.25);color:rgba(245,237,224,1)}
+.lang-btn.on{background:#C9833A;color:#fff;border-color:#C9833A}
 </style>
 </head>
 <body>
@@ -278,25 +288,32 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 <div id="apiOverlay">
   <div class="api-box" style="max-width:560px">
     <div class="api-logo">Daily Helper</div>
-    <div class="api-tagline">Twój codzienny pomocnik</div>
+    <div id="overlayTagline" class="api-tagline">Twój codzienny pomocnik</div>
+
+    <!-- Language selector on welcome screen -->
+    <div style="display:flex;gap:8px;margin-bottom:4px">
+      <button class="lang-btn on" style="font-size:.8rem;padding:6px 14px" onclick="setLang('pl')">🇵🇱 Polski</button>
+      <button class="lang-btn" style="font-size:.8rem;padding:6px 14px" onclick="setLang('en')">🇬🇧 English</button>
+      <button class="lang-btn" style="font-size:.8rem;padding:6px 14px" onclick="setLang('uk')">🇺🇦 Українська</button>
+    </div>
 
     <!-- STEP 1: Choose mode -->
     <div id="apiStep1">
-      <div class="api-title" style="margin-top:20px">🎬 Jak chcesz korzystać z modułu Film?</div>
-      <p style="font-size:.83rem;color:var(--muted);margin:10px 0 20px;line-height:1.6">Wybierz tryb — możesz go zmienić w każdej chwili w ustawieniach.</p>
+      <div class="api-title" style="margin-top:20px" data-i18n="welcome_film_title">🎬 Jak chcesz korzystać z modułu Film?</div>
+      <p style="font-size:.83rem;color:var(--muted);margin:10px 0 20px;line-height:1.6" data-i18n="welcome_film_sub">Wybierz tryb — możesz go zmienić w każdej chwili w ustawieniach.</p>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px">
         <div onclick="chooseMode('local')" style="cursor:pointer;background:var(--surf2);border:2px solid var(--border);border-radius:12px;padding:18px 16px;transition:all .15s" 
              onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'" id="modeCardLocal">
           <div style="font-size:1.6rem;margin-bottom:8px">📦</div>
-          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;margin-bottom:6px">Darmowa kolekcja</div>
-          <div style="font-size:.76rem;color:var(--muted);line-height:1.5">Bez rejestracji. Starannie dobrana baza ~80 filmów i seriali z ocenami i platformami streamingowymi.</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;margin-bottom:6px" data-i18n="mode_local_title">Darmowa kolekcja</div>
+          <div style="font-size:.76rem;color:var(--muted);line-height:1.5" data-i18n="mode_local_desc">Bez rejestracji. Starannie dobrana baza ~80 filmów i seriali z ocenami i platformami streamingowymi.</div>
         </div>
         <div onclick="chooseMode('api')" style="cursor:pointer;background:var(--surf2);border:2px solid var(--border);border-radius:12px;padding:18px 16px;transition:all .15s"
              onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'" id="modeCardApi">
           <div style="font-size:1.6rem;margin-bottom:8px">🌐</div>
-          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;margin-bottom:6px">Baza TMDB</div>
-          <div style="font-size:.76rem;color:var(--muted);line-height:1.5">Wymaga darmowego klucza API. Dostęp do miliona tytułów, aktualnych plakatów i platform streamingowych.</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;margin-bottom:6px" data-i18n="mode_api_title">Baza TMDB</div>
+          <div style="font-size:.76rem;color:var(--muted);line-height:1.5" data-i18n="mode_api_desc">Wymaga darmowego klucza API. Dostęp do miliona tytułów, aktualnych plakatów i platform streamingowych.</div>
         </div>
       </div>
     </div>
@@ -328,7 +345,12 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="logo">Daily Helper</div>
-  <button class="topbar-settings" onclick="openSettings()">⚙️ Klucz API</button>
+  <div class="lang-switcher">
+    <button class="lang-btn on" onclick="setLang('pl')">PL</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('uk')">УК</button>
+  </div>
+  <button class="topbar-settings" onclick="openSettings()" id="btnSettings">⚙️ Klucz API</button>
 </header>
 
 <!-- APP SHELL -->
@@ -336,16 +358,16 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 
 <!-- SIDEBAR -->
 <nav class="sidebar">
-  <div class="sidebar-label">Narzędzia</div>
-  <button class="tab on" data-page="plan"><span class="ico">📅</span>Plan dnia</button>
-  <button class="tab" data-page="wydatki"><span class="ico">💳</span>Wydatki</button>
-  <button class="tab" data-page="rachunek"><span class="ico">🍕</span>Dzielenie rachunku</button>
-  <button class="tab" data-page="gotowanie"><span class="ico">🍳</span>Co ugotować</button>
-  <div class="sidebar-label">Rozrywka</div>
-  <button class="tab" data-page="film"><span class="ico">🎬</span>Co obejrzeć</button>
-  <button class="tab" data-page="decyzja"><span class="ico">🎲</span>Losowa decyzja</button>
-  <div class="sidebar-label">Styl życia</div>
-  <button class="tab" data-page="nawyki"><span class="ico">🌱</span>Nawyki</button>
+  <div class="sidebar-label" data-i18n="cat_tools">Narzędzia</div>
+  <button class="tab on" data-page="plan"><span class="ico">📅</span><span data-i18n="nav_plan">Plan dnia</span></button>
+  <button class="tab" data-page="wydatki"><span class="ico">💳</span><span data-i18n="nav_wydatki">Wydatki</span></button>
+  <button class="tab" data-page="rachunek"><span class="ico">🍕</span><span data-i18n="nav_rachunek">Dzielenie rachunku</span></button>
+  <button class="tab" data-page="gotowanie"><span class="ico">🍳</span><span data-i18n="nav_gotowanie">Co ugotować</span></button>
+  <div class="sidebar-label" data-i18n="cat_entertainment">Rozrywka</div>
+  <button class="tab" data-page="film"><span class="ico">🎬</span><span data-i18n="nav_film">Co obejrzeć</span></button>
+  <button class="tab" data-page="decyzja"><span class="ico">🎲</span><span data-i18n="nav_decyzja">Doradca aktywności</span></button>
+  <div class="sidebar-label" data-i18n="cat_lifestyle">Styl życia</div>
+  <button class="tab" data-page="nawyki"><span class="ico">🌱</span><span data-i18n="nav_nawyki">Nawyki</span></button>
 </nav>
 
 <!-- CONTENT -->
@@ -353,13 +375,13 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 
 <!-- MOBILE BOTTOM NAV -->
 <nav class="mobile-nav">
-  <button class="mobile-tab on" data-page="plan"><span class="ico">📅</span>Plan</button>
-  <button class="mobile-tab" data-page="wydatki"><span class="ico">💳</span>Wydatki</button>
-  <button class="mobile-tab" data-page="rachunek"><span class="ico">🍕</span>Rachunek</button>
-  <button class="mobile-tab" data-page="gotowanie"><span class="ico">🍳</span>Gotowanie</button>
+  <button class="mobile-tab on" data-page="plan"><span class="ico">📅</span><span data-i18n="mob_plan">Plan</span></button>
+  <button class="mobile-tab" data-page="wydatki"><span class="ico">💳</span><span data-i18n="mob_wydatki">Wydatki</span></button>
+  <button class="mobile-tab" data-page="rachunek"><span class="ico">🍕</span><span data-i18n="mob_rachunek">Rachunek</span></button>
+  <button class="mobile-tab" data-page="gotowanie"><span class="ico">🍳</span><span data-i18n="mob_gotowanie">Gotowanie</span></button>
   <button class="mobile-tab" data-page="film"><span class="ico">🎬</span>Film</button>
-  <button class="mobile-tab" data-page="decyzja"><span class="ico">🎲</span>Decyzja</button>
-  <button class="mobile-tab" data-page="nawyki"><span class="ico">🌱</span>Nawyki</button>
+  <button class="mobile-tab" data-page="decyzja"><span class="ico">🎲</span><span data-i18n="mob_decyzja">Decyzja</span></button>
+  <button class="mobile-tab" data-page="nawyki"><span class="ico">🌱</span><span data-i18n="mob_nawyki">Nawyki</span></button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -1826,6 +1848,118 @@ function newChallenge(){
 function toMin(s){const[h,m]=s.split(':').map(Number);return h*60+m}
 function fromMin(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+/* ═══════════════════════════════════════════════════════════════
+   INTERNATIONALIZATION (i18n)
+════════════════════════════════════════════════════════════════ */
+const LANGS={
+  pl:{
+    /* Overlay */
+    overlayTagline:'Twój codzienny pomocnik',
+    welcome_film_title:'🎬 Jak chcesz korzystać z modułu Film?',
+    welcome_film_sub:'Wybierz tryb — możesz go zmienić w każdej chwili w ustawieniach.',
+    mode_local_title:'Darmowa kolekcja',
+    mode_local_desc:'Bez rejestracji. Starannie dobrana baza ~80 filmów i seriali z ocenami i platformami streamingowymi.',
+    mode_api_title:'Baza TMDB',
+    mode_api_desc:'Wymaga darmowego klucza API. Dostęp do miliona tytułów, aktualnych plakatów i platform streamingowych.',
+    step2_title:'🔑 Wpisz klucz API TMDB',
+    api_key_label:'Twój klucz API (v3)',
+    api_save_btn:'Zapisz →',
+    api_back_btn:'← Wróć',
+    api_note:'🔒 Klucz zapisuje się wyłącznie w Twojej przeglądarce. Nikt inny go nie widzi.',
+    /* Nav */
+    cat_tools:'Narzędzia', cat_entertainment:'Rozrywka', cat_lifestyle:'Styl życia',
+    nav_plan:'Plan dnia', nav_wydatki:'Wydatki', nav_rachunek:'Dzielenie rachunku',
+    nav_gotowanie:'Co ugotować', nav_film:'Co obejrzeć', nav_decyzja:'Doradca aktywności', nav_nawyki:'Nawyki',
+    mob_plan:'Plan', mob_wydatki:'Wydatki', mob_rachunek:'Rachunek',
+    mob_gotowanie:'Gotowanie', mob_decyzja:'Decyzja', mob_nawyki:'Nawyki',
+    /* Settings */
+    btnSettings:'⚙️ Klucz API',
+    settings_title:'⚙️ Ustawienia modułu Film',
+    settings_mode_api:'Aktualny tryb: 🌐 TMDB API',
+    settings_mode_local:'Aktualny tryb: 📦 Darmowa kolekcja',
+    settings_switch_local:'📦 Przełącz na darmową kolekcję',
+    settings_switch_api:'🌐 Przełącz na TMDB API',
+    settings_close:'Zamknij',
+  },
+  en:{
+    overlayTagline:'Your daily companion',
+    welcome_film_title:'🎬 How do you want to use the Film module?',
+    welcome_film_sub:'Choose a mode — you can change it anytime in settings.',
+    mode_local_title:'Free Collection',
+    mode_local_desc:'No registration needed. A curated database of ~80 movies and series with ratings and streaming platforms.',
+    mode_api_title:'TMDB Database',
+    mode_api_desc:'Requires a free API key. Access to one million titles, current posters and streaming platforms.',
+    step2_title:'🔑 Enter your TMDB API key',
+    api_key_label:'Your API Key (v3)',
+    api_save_btn:'Save →',
+    api_back_btn:'← Back',
+    api_note:'🔒 Your key is stored only in your browser. No one else can see it.',
+    cat_tools:'Tools', cat_entertainment:'Entertainment', cat_lifestyle:'Lifestyle',
+    nav_plan:'Daily Plan', nav_wydatki:'Expenses', nav_rachunek:'Split Bill',
+    nav_gotowanie:'What to Cook', nav_film:'What to Watch', nav_decyzja:'Activity Advisor', nav_nawyki:'Habits',
+    mob_plan:'Plan', mob_wydatki:'Expenses', mob_rachunek:'Bill',
+    mob_gotowanie:'Cook', mob_decyzja:'Advisor', mob_nawyki:'Habits',
+    btnSettings:'⚙️ API Key',
+    settings_title:'⚙️ Film Module Settings',
+    settings_mode_api:'Current mode: 🌐 TMDB API',
+    settings_mode_local:'Current mode: 📦 Free Collection',
+    settings_switch_local:'📦 Switch to Free Collection',
+    settings_switch_api:'🌐 Switch to TMDB API',
+    settings_close:'Close',
+  },
+  uk:{
+    overlayTagline:'Ваш щоденний помічник',
+    welcome_film_title:'🎬 Як ви хочете використовувати модуль Фільм?',
+    welcome_film_sub:'Оберіть режим — ви можете змінити його в будь-який момент у налаштуваннях.',
+    mode_local_title:'Безкоштовна колекція',
+    mode_local_desc:'Без реєстрації. Ретельно підібрана база ~80 фільмів та серіалів з оцінками та стримінговими платформами.',
+    mode_api_title:'База TMDB',
+    mode_api_desc:'Потребує безкоштовного API-ключа. Доступ до мільйона назв, актуальних постерів та стримінгових платформ.',
+    step2_title:'🔑 Введіть ваш API-ключ TMDB',
+    api_key_label:'Ваш API-ключ (v3)',
+    api_save_btn:'Зберегти →',
+    api_back_btn:'← Назад',
+    api_note:'🔒 Ключ зберігається лише у вашому браузері. Ніхто інший його не бачить.',
+    cat_tools:'Інструменти', cat_entertainment:'Розваги', cat_lifestyle:'Спосіб життя',
+    nav_plan:'План дня', nav_wydatki:'Витрати', nav_rachunek:'Розділити рахунок',
+    nav_gotowanie:'Що приготувати', nav_film:'Що подивитися', nav_decyzja:'Порадник активності', nav_nawyki:'Звички',
+    mob_plan:'План', mob_wydatki:'Витрати', mob_rachunek:'Рахунок',
+    mob_gotowanie:'Їжа', mob_decyzja:'Порада', mob_nawyki:'Звички',
+    btnSettings:'⚙️ API-ключ',
+    settings_title:'⚙️ Налаштування модуля Фільм',
+    settings_mode_api:'Поточний режим: 🌐 TMDB API',
+    settings_mode_local:'Поточний режим: 📦 Безкоштовна колекція',
+    settings_switch_local:'📦 Перейти на безкоштовну колекцію',
+    settings_switch_api:'🌐 Перейти на TMDB API',
+    settings_close:'Закрити',
+  }
+};
+
+const LS_LANG='dh_lang';
+let currentLang=localStorage.getItem(LS_LANG)||'pl';
+
+function setLang(lang){
+  currentLang=lang;
+  localStorage.setItem(LS_LANG,lang);
+  /* Update all lang buttons */
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('on', b.textContent.includes(lang==='pl'?'PL':lang==='en'?'EN':'УК') || b.getAttribute('onclick')?.includes(`'${lang}'`));
+  });
+  /* Apply translations */
+  const t=LANGS[lang]||LANGS.pl;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    if(t[key]) el.textContent=t[key];
+  });
+  /* Special elements */
+  if(document.getElementById('overlayTagline')) document.getElementById('overlayTagline').textContent=t.overlayTagline;
+  if(document.getElementById('btnSettings')) document.getElementById('btnSettings').textContent=t.btnSettings;
+}
+
+/* Apply language on load */
+setLang(currentLang);
+
 </script>
 </body>
 </html>
