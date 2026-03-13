@@ -34,12 +34,11 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'In
 /* ── TOPBAR ── */
 .topbar{
   position:sticky;top:0;z-index:200;
-  background:var(--surf);
-  border-bottom:2px solid var(--border);
+  background:#2C1A0E;
   display:flex;align-items:center;
   padding:0 24px;
-  height:60px;
-  box-shadow:0 2px 12px rgba(139,90,43,0.08);
+  height:64px;
+  box-shadow:0 2px 20px rgba(44,26,14,0.3);
 }
 .logo{
   font-family:'Playfair Display',serif;font-weight:800;font-size:1.2rem;
@@ -48,11 +47,11 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'In
 }
 .topbar-settings{
   background:none;border:1px solid var(--border);border-radius:8px;
-  color:var(--muted);font-family:'Inter',sans-serif;font-size:.8rem;
-  padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px;
+  color:rgba(245,237,224,0.7);font-family:'Inter',sans-serif;font-size:.78rem;
+  padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:6px;
   transition:all .15s;
 }
-.topbar-settings:hover{border-color:var(--accent);color:var(--accent)}
+.topbar-settings:hover{background:rgba(201,131,58,0.28);color:#fff}
 
 /* ── APP SHELL ── */
 .shell{
@@ -62,36 +61,38 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'In
 
 /* ── SIDEBAR ── */
 .sidebar{
-  width:220px;
+  width:230px;
   flex-shrink:0;
-  background:var(--surf);
-  border-right:1px solid var(--border);
-  padding:20px 12px;
+  background:#2C1A0E;
+  padding:24px 14px;
   position:sticky;
   top:64px;
   height:calc(100vh - 64px);
   overflow-y:auto;
+  scrollbar-width:none;
 }
+.sidebar::-webkit-scrollbar{display:none}
 .sidebar-label{
-  font-size:.68rem;font-weight:600;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.1em;
-  padding:0 10px;margin-bottom:8px;margin-top:16px;
+  font-size:.65rem;font-weight:600;
+  color:rgba(245,237,224,0.45);
+  text-transform:uppercase;letter-spacing:.12em;
+  padding:0 12px;margin-bottom:6px;margin-top:22px;
 }
-.sidebar-label:first-child{margin-top:0}
+.sidebar-label:first-child{margin-top:4px}
 .tab{
-  display:flex;align-items:center;gap:10px;
+  display:flex;align-items:center;gap:11px;
   width:100%;background:none;border:none;
-  color:var(--text);font-family:'Inter',sans-serif;
-  font-size:.88rem;font-weight:400;
-  padding:9px 12px;border-radius:8px;
+  color:rgba(245,237,224,0.65);
+  font-family:'Inter',sans-serif;
+  font-size:.85rem;font-weight:400;
+  padding:10px 12px;border-radius:8px;
   cursor:pointer;text-align:left;
-  transition:background .15s,color .15s;
+  transition:all .15s;
   margin-bottom:2px;
 }
-.tab .ico{font-size:1.1rem;flex-shrink:0}
-.tab:hover{background:var(--surf2);color:var(--accent)}
-.tab.on{background:var(--accent);color:#fff;font-weight:600}
-.tab.on .ico{filter:none}
+.tab .ico{font-size:1rem;flex-shrink:0}
+.tab:hover{background:rgba(201,131,58,0.18);color:rgba(245,237,224,1)}
+.tab.on{background:#C9833A;color:#fff;font-weight:600}
 
 /* ── MAIN CONTENT ── */
 .content{
@@ -559,7 +560,7 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 
 
 <!-- SETTINGS MODAL -->
-<div id="settingsModal" style="display:none;position:fixed;inset:0;z-index:999;background:var(--sidebar-bg);align-items:center;justify-content:center;padding:24px">
+<div id="settingsModal" style="display:none;position:fixed;inset:0;z-index:999;background:#2C1A0E;align-items:center;justify-content:center;padding:24px">
   <div class="api-box" style="max-width:440px">
     <div class="api-title" style="margin-top:0">⚙️ Ustawienia klucza TMDB</div>
     <p style="font-size:.83rem;color:var(--muted);margin-bottom:14px">Zmień lub usuń swój klucz API.</p>
