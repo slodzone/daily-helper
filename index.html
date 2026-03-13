@@ -391,8 +391,8 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
      PAGE 1: PLAN DNIA
 ════════════════════════════════════════════════════════════ -->
 <div id="plan" class="page on">
-  <h1>📅 Plan dnia</h1>
-  <p class="sub">Wpisz zadania → wygeneruję harmonogram</p>
+  <h1 data-i18n="h1_plan">📅 Plan dnia</h1>
+  <p class="sub" data-i18n="sub_plan">Wpisz zadania → wygeneruję harmonogram</p>
 
   <div class="field">
     <label>Godzina startu</label>
@@ -402,8 +402,8 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
   <div id="taskList"></div>
 
   <div class="btn-row">
-    <button class="btn ghost" onclick="addTask()">+ Dodaj zadanie</button>
-    <button class="btn primary" onclick="generatePlan()">✨ Generuj harmonogram</button>
+    <button class="btn ghost" onclick="addTask()"><span data-i18n="btn_add_task">+ Dodaj zadanie</span></button>
+    <button class="btn primary" onclick="generatePlan()"><span data-i18n="btn_generate">✨ Generuj harmonogram</span></button>
   </div>
   <div id="planResult"></div>
 </div>
@@ -412,11 +412,11 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
      PAGE 2: WYDATKI
 ════════════════════════════════════════════════════════════ -->
 <div id="wydatki" class="page">
-  <h1>💳 Kalkulator wydatków</h1>
-  <p class="sub">Sprawdź ile zostaje po wszystkich wydatkach</p>
+  <h1 data-i18n="h1_wydatki">💳 Kalkulator wydatków</h1>
+  <p class="sub" data-i18n="sub_wydatki">Sprawdź ile zostaje po wszystkich wydatkach</p>
 
   <div class="field">
-    <label>Miesięczny dochód (PLN)</label>
+    <label data-i18n="lbl_income">Miesięczny dochód (PLN)</label>
     <input type="number" id="income" placeholder="np. 5000" style="max-width:240px">
   </div>
   <div class="div"></div>
@@ -425,8 +425,8 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
   <div id="expList"></div>
 
   <div class="btn-row">
-    <button class="btn ghost" onclick="addExp()">+ Dodaj kategorię</button>
-    <button class="btn primary" onclick="calcExp()">📊 Oblicz</button>
+    <button class="btn ghost" onclick="addExp()"><span data-i18n="btn_add_category">+ Dodaj kategorię</span></button>
+    <button class="btn primary" onclick="calcExp()"><span data-i18n="btn_calc">📊 Oblicz</span></button>
   </div>
   <div id="expResult"></div>
 </div>
@@ -435,22 +435,22 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
      PAGE 3: RACHUNEK
 ════════════════════════════════════════════════════════════ -->
 <div id="rachunek" class="page">
-  <h1>🍕 Dzielenie rachunku</h1>
-  <p class="sub">Szybko podziel rachunek z napiwkiem</p>
+  <h1 data-i18n="h1_rachunek">🍕 Dzielenie rachunku</h1>
+  <p class="sub" data-i18n="sub_rachunek">Szybko podziel rachunek z napiwkiem</p>
 
   <div class="card">
     <div class="row2">
       <div class="field">
-        <label>Kwota rachunku (PLN)</label>
+        <label data-i18n="lbl_bill">Kwota rachunku (PLN)</label>
         <input type="number" id="billTotal" placeholder="np. 180">
       </div>
       <div class="field last">
-        <label>Liczba osób</label>
+        <label data-i18n="lbl_people">Liczba osób</label>
         <input type="number" id="billPeople" value="2" min="1" max="50">
       </div>
     </div>
     <div>
-      <label>Napiwek</label>
+      <label data-i18n="lbl_tip">Napiwek</label>
       <div class="tags" id="tipTags">
         <span class="tag on" data-tip="0">0%</span>
         <span class="tag" data-tip="5">5%</span>
@@ -464,7 +464,7 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
     </div>
   </div>
 
-  <button class="btn primary" onclick="calcBill()">🧮 Oblicz</button>
+  <button class="btn primary" onclick="calcBill()"><span data-i18n="btn_calc_bill">🧮 Oblicz</span></button>
   <div id="billResult"></div>
 </div>
 
@@ -472,19 +472,19 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
      PAGE 4: GOTOWANIE
 ════════════════════════════════════════════════════════════ -->
 <div id="gotowanie" class="page">
-  <h1>🍳 Co ugotować?</h1>
-  <p class="sub">Wybierz składniki — AI dopasuje przepis i przetłumaczy go na polski</p>
+  <h1 data-i18n="h1_gotowanie">🍳 Co ugotować?</h1>
+  <p class="sub" data-i18n="sub_gotowanie">Wybierz składniki — AI dopasuje przepis i przetłumaczy go na polski</p>
 
   <div class="field">
-    <label>Popularne składniki</label>
+    <label data-i18n="lbl_ingredients">Popularne składniki</label>
     <div class="tags" id="ingTags"></div>
   </div>
 
   <div class="field" style="margin-top:10px">
-    <label>Dodaj własny składnik</label>
+    <label data-i18n="lbl_add_ing">Dodaj własny składnik</label>
     <div style="display:flex;gap:10px">
       <input id="customIng" placeholder="np. marchewka, ser żółty, indyk…" onkeydown="if(event.key==='Enter')addCustomIng()">
-      <button class="btn ghost" onclick="addCustomIng()" style="flex-shrink:0">+ Dodaj</button>
+      <button class="btn ghost" onclick="addCustomIng()" style="flex-shrink:0"><span data-i18n="btn_add">+ Dodaj</span></button>
     </div>
   </div>
 
@@ -492,8 +492,8 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
   <div id="ingErr" class="err"></div>
 
   <div class="btn-row">
-    <button class="btn primary" onclick="findMeal()">🍳 Znajdź przepis</button>
-    <button class="btn ghost" onclick="clearIngs()">Wyczyść</button>
+    <button class="btn primary" onclick="findMeal()"><span data-i18n="btn_find_meal">🍳 Znajdź przepis</span></button>
+    <button class="btn ghost" onclick="clearIngs()"><span data-i18n="btn_clear">Wyczyść</span></button>
   </div>
 
   <div id="mealSpinner" style="display:none"><div class="spinner"></div></div>
@@ -504,11 +504,11 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
      PAGE 5: FILM
 ════════════════════════════════════════════════════════════ -->
 <div id="film" class="page">
-  <h1>🎬 Co oglądać dziś?</h1>
-  <p class="sub">Wybierz gatunek, rok i format → dostaniesz propozycję</p>
+  <h1 data-i18n="h1_film">🎬 Co oglądać dziś?</h1>
+  <p class="sub" data-i18n="sub_film">Wybierz gatunek, rok i format → dostaniesz propozycję</p>
 
   <div class="field">
-    <label>Format</label>
+    <label data-i18n="lbl_format">Format</label>
     <div class="tags">
       <span class="tag on" data-mtype="all" onclick="setType(this)">🎬 Wszystko</span>
       <span class="tag" data-mtype="film" onclick="setType(this)">🎥 Film</span>
@@ -520,26 +520,26 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
     <label>Gatunek <span style="font-weight:300;text-transform:none;letter-spacing:0;color:var(--muted);font-size:.78rem">— możesz wybrać kilka</span></label>
     <div class="tags" id="moodTags"></div>
     <div style="margin-top:8px;display:flex;gap:8px">
-      <button class="btn ghost" style="padding:5px 12px;font-size:.75rem" onclick="selectAllMoods()">Zaznacz wszystkie</button>
+      <button class="btn ghost" style="padding:5px 12px;font-size:.75rem" onclick="selectAllMoods()"><span data-i18n="btn_select_all">Zaznacz wszystkie</span></button>
       <button class="btn ghost" style="padding:5px 12px;font-size:.75rem" onclick="clearMoods()">Wyczyść</button>
     </div>
   </div>
 
   <div class="field">
-    <label>Rok produkcji</label>
+    <label data-i18n="lbl_year">Rok produkcji</label>
     <div class="tags" id="yearTags"></div>
   </div>
 
   <div class="row2">
     <div class="field">
-      <label>Minimalna ocena</label>
+      <label data-i18n="lbl_rating">Minimalna ocena</label>
       <div class="tags" id="ratingTags"></div>
     </div>
   </div>
 
   <div id="filmErr" class="err"></div>
   <div class="btn-row">
-    <button class="btn blue" onclick="findFilm()">🎲 Losuj propozycję</button>
+    <button class="btn blue" onclick="findFilm()"><span data-i18n="btn_random_film">🎲 Losuj propozycję</span></button>
   </div>
 
   <div id="filmSpinner" style="display:none"><div class="spinner"></div></div>
@@ -550,21 +550,21 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
      PAGE 6: DECYZJA
 ════════════════════════════════════════════════════════════ -->
 <div id="decyzja" class="page">
-  <h1>🎯 Doradca aktywności</h1>
-  <p class="sub">Opisz jak się czujesz, na co masz ochotę lub jaki masz nastrój — dostaniesz spersonalizowaną radę</p>
+  <h1 data-i18n="h1_decyzja">🎯 Doradca aktywności</h1>
+  <p class="sub" data-i18n="sub_decyzja">Opisz jak się czujesz, na co masz ochotę lub jaki masz nastrój — dostaniesz spersonalizowaną radę</p>
 
   <div class="field">
-    <label>Jak się teraz czujesz? Co Cię interesuje?</label>
+    <label data-i18n="lbl_mood">Jak się teraz czujesz? Co Cię interesuje?</label>
     <textarea id="moodInput" rows="4" placeholder="np. Jestem zmęczona po pracy, mam ochotę na coś relaksującego ale nie chcę siedzieć bezczynnie. Lubię być na świeżym powietrzu…"></textarea>
   </div>
 
   <div class="field">
-    <label>Opcjonalnie — dodaj kontekst</label>
+    <label data-i18n="lbl_context">Opcjonalnie — dodaj kontekst</label>
     <div class="tags" id="moodContextTags"></div>
   </div>
 
   <div class="btn-row">
-    <button class="btn purple" id="adviceBtn" onclick="getActivityAdvice()" style="font-size:.92rem;padding:12px 24px">✨ Daj mi radę</button>
+    <button class="btn purple" id="adviceBtn" onclick="getActivityAdvice()" style="font-size:.92rem;padding:12px 24px"><span data-i18n="btn_advice">✨ Daj mi radę</span></button>
   </div>
 
   <div id="adviceSpinner" style="display:none"><div class="spinner"></div></div>
@@ -575,17 +575,17 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
      PAGE 7: NAWYKI
 ════════════════════════════════════════════════════════════ -->
 <div id="nawyki" class="page">
-  <h1>🌱 Ograniczanie nawyków</h1>
-  <p class="sub">Stopniowy plan + tracker 30 dni + mini-wyzwania</p>
+  <h1 data-i18n="h1_nawyki">🌱 Ograniczanie nawyków</h1>
+  <p class="sub" data-i18n="sub_nawyki">Stopniowy plan + tracker 30 dni + mini-wyzwania</p>
 
   <div class="field">
-    <label>Wybierz nawyk</label>
+    <label data-i18n="lbl_habit">Wybierz nawyk</label>
     <div class="tags" id="habitTags"></div>
   </div>
 
   <div id="habitContent" style="display:none">
     <div class="field">
-      <label>Aktualny poziom (ile dziennie)</label>
+      <label data-i18n="lbl_habit_level">Aktualny poziom (ile dziennie)</label>
       <input type="text" id="habitCurrent" placeholder="np. 20">
     </div>
 
@@ -903,10 +903,17 @@ const ING_LIST=[
 
 let selIngs=[];
 
+const ING_LIST_I18N={
+  pl:['Kurczak','Wołowina','Makaron','Ryż','Ziemniaki','Jajka','Pomidory','Cebula','Czosnek','Ser','Pieczarki','Łosoś','Brokuły','Szpinak','Cytryna','Marchewka','Papryka','Boczek','Indyk','Krewetki'],
+  en:['Chicken','Beef','Pasta','Rice','Potatoes','Eggs','Tomatoes','Onion','Garlic','Cheese','Mushrooms','Salmon','Broccoli','Spinach','Lemon','Carrot','Pepper','Bacon','Turkey','Shrimp'],
+  uk:['Курка','Яловичина','Макарони','Рис','Картопля','Яйця','Помідори','Цибуля','Часник','Сир','Гриби','Лосось','Броколі','Шпинат','Лимон','Морква','Перець','Бекон','Індик','Креветки'],
+};
 function renderIngTags(){
-  document.getElementById('ingTags').innerHTML=ING_LIST.map(ing=>{
+  const labels=ING_LIST_I18N[currentLang]||ING_LIST_I18N.pl;
+  document.getElementById('ingTags').innerHTML=ING_LIST.map((ing,i)=>{
     const on=selIngs.some(s=>s.en===ing.en);
-    return `<span class="tag${on?' on':''}" onclick="toggleIng('${ing.pl}','${ing.en}')">${ing.pl}</span>`;
+    const label=labels[i]||ing.pl;
+    return `<span class="tag${on?' on':''}" onclick="toggleIng('${ing.pl}','${ing.en}')">${label}</span>`;
   }).join('');
   renderSelIngs();
 }
@@ -1047,435 +1054,39 @@ Zadanie: Przetłumacz i zaadaptuj ten przepis na język polski.
 renderIngTags();
 
 /* ─── PAGE 5: FILM ───────────────────────────────────────────────── */
-const MOODS=['😂 Komedia','😱 Horror','💘 Romans','🎬 Dramat','🚀 Sci-Fi','⚔️ Akcja','🕵️ Thriller','🧸 Animacja','📚 Dokumentalny','🧙 Fantasy'];
-
-/* Streaming platform colors & icons */
-const PLATFORM_STYLE={
-  'Netflix':        {bg:'#E50914',icon:'N'},
-  'Disney+':        {bg:'#113CCF',icon:'D+'},
-  'HBO Max':        {bg:'#7B2FBE',icon:'HBO'},
-  'Max':            {bg:'#002BE7',icon:'Max'},
-  'Amazon Prime':   {bg:'#00A8E1',icon:'Prime'},
-  'Apple TV+':      {bg:'#1C1C1E',icon:'🍎'},
-  'Canal+':         {bg:'#000000',icon:'C+'},
-  'Polsat Box Go':  {bg:'#E4002B',icon:'PBG'},
-  'Player.pl':      {bg:'#00ADEF',icon:'▶'},
-  'TVP VOD':        {bg:'#1A3A6B',icon:'TVP'},
-  'Cineman':        {bg:'#F5A623',icon:'Cin'},
-  'SkyShowtime':    {bg:'#0072CE',icon:'Sky'},
-  'Mubi':           {bg:'#000000',icon:'M'},
-  'YouTube':        {bg:'#FF0000',icon:'▶'},
-  'Rakuten TV':     {bg:'#BF0000',icon:'Rak'},
+const MOODS={
+  pl:['😂 Komedia','😱 Horror','💘 Romans','🎬 Dramat','🚀 Sci-Fi','⚔️ Akcja','🕵️ Thriller','🧸 Animacja','📚 Dokumentalny','🧙 Fantasy'],
+  en:['😂 Comedy','😱 Horror','💘 Romance','🎬 Drama','🚀 Sci-Fi','⚔️ Action','🕵️ Thriller','🧸 Animation','📚 Documentary','🧙 Fantasy'],
+  uk:['😂 Комедія','😱 Жахи','💘 Романтика','🎬 Драма','🚀 Фантастика','⚔️ Бойовик','🕵️ Трилер','🧸 Анімація','📚 Документальний','🧙 Фентезі'],
 };
-
-const FILM_DB={
-  '😂 Komedia':[
-    {title:'Superbad',tmdbId:8363,imdb:'tt0829482',year:2007,type:'film',rating:7.6,
-     genres:['😂 Komedia'],
-     overview:'Dwóch niezdarnych przyjaciół próbuje kupić alkohol przed studniówką. Klasyk komedii lat 2000 pełen absurdalnych sytuacji.',
-     streaming:['Netflix','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/superbad'},
-    {title:'Dzień świstaka',tmdbId:137,imdb:'tt0107048',year:1993,type:'film',rating:8.1,
-     genres:['😂 Komedia'],
-     overview:'Reporter utknął w pętli czasowej i każdy dzień przeżywa od nowa. Filozoficzna komedia z Billem Murrayem, która z każdym obejrzeniem daje więcej do myślenia.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/dzien-swistaka'},
-    {title:'Głupi i głupszy',tmdbId:10760,imdb:'tt0109686',year:1994,type:'film',rating:7.3,
-     genres:['😂 Komedia'],
-     overview:'Dwaj kompletnie nierozgarnięci przyjaciele jadą przez całą Amerykę, by oddać walizkę pięknej kobiecie. Absurd doprowadzony do perfekcji.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/glupii-i-glupszy'},
-    {title:'Szkoła rocka',tmdbId:7270,imdb:'tt0332379',year:2003,type:'film',rating:7.1,
-     genres:['😂 Komedia'],
-     overview:'Bezrobotny muzyk podszywa się pod nauczyciela i zakłada szkolny zespół rockowy. Jack Black w życiowej roli — radosny, głośny i zaraźliwy.',
-     streaming:['Netflix','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/szkola-rocka'},
-    {title:'Co robimy w ukryciu',tmdbId:215999,imdb:'tt3416742',year:2014,type:'film',rating:7.9,
-     genres:['😂 Komedia','😱 Horror'],
-     overview:'Mockumentary o wampirach-współlokatorach w Wellington. Genialnie absurdalne i nieoczekiwanie ciepłe.',
-     streaming:['Disney+'],
-     justwatch:'https://www.justwatch.com/pl/film/co-robimy-w-ukryciu'},
-    {title:'Wielka Lebowski',tmdbId:115,imdb:'tt0118715',year:1998,type:'film',rating:8.1,
-     genres:['😂 Komedia','🕵️ Thriller'],
-     overview:'Przypadkowa pomyłka tożsamości wciąga leniwego amanta w absurdalną intrygę kryminalną. Kult w każdym kadrze.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/wielki-lebowski'},
-  ],
-  '😱 Horror':[
-    {title:'Hereditary',tmdbId:493922,imdb:'tt7784604',year:2018,type:'film',rating:7.3,
-     genres:['😱 Horror'],
-     overview:'Po śmierci babci rodzina odkrywa przerażające dziedzictwo. Jeden z najlepszych horrorów dekady — psychologiczny, bezlitosny i głęboko poruszający.',
-     streaming:['HBO Max'],
-     justwatch:'https://www.justwatch.com/pl/film/hereditary'},
-    {title:'Midsommar',tmdbId:530385,imdb:'tt8772262',year:2019,type:'film',rating:7.1,
-     genres:['😱 Horror'],
-     overview:'Wyprawa na szwedzki festiwal letni zamienia się w koszmar. Jasny, słoneczny horror, który przeraża bardziej niż mrok — i mówi wiele o toksycznych związkach.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/midsommar'},
-    {title:'To (2017)',tmdbId:346364,imdb:'tt1396484',year:2017,type:'film',rating:7.3,
-     genres:['😱 Horror'],
-     overview:'Dziecięca banda staje naprzeciw kosmicznemu złu pod postacią klauna Pennywisego. Strach i przyjaźń w równych proporcjach.',
-     streaming:['HBO Max','Max'],
-     justwatch:'https://www.justwatch.com/pl/film/to-2017'},
-    {title:'Uciekaj!',tmdbId:419430,imdb:'tt5052448',year:2017,type:'film',rating:7.7,
-     genres:['😱 Horror','🕵️ Thriller'],
-     overview:'Czarny mężczyzna jedzie poznać rodzinę białej dziewczyny. Napięcie narasta od pierwszej minuty — horror społeczny, który zmusza do refleksji.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/get-out'},
-    {title:'Ciche miejsce',tmdbId:447332,imdb:'tt6644200',year:2018,type:'film',rating:7.5,
-     genres:['😱 Horror'],
-     overview:'Rodzina przeżywa w świecie opanowanym przez stwory reagujące na dźwięk. Cisza jako narzędzie napięcia — działa wyśmienicie.',
-     streaming:['Netflix','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/ciche-miejsce'},
-    {title:'Suspiria (1977)',tmdbId:11175,imdb:'tt0076786',year:1977,type:'film',rating:7.4,
-     genres:['😱 Horror'],
-     overview:'Młoda tancerka przybywa do berlińskiej szkoły baletu kryjącej mroczne sekrety. Wizualny majstersztyk — kolorowy, halucynacyjny, niepokojący.',
-     streaming:['Mubi'],
-     justwatch:'https://www.justwatch.com/pl/film/suspiria'},
-    {title:'Obecność',tmdbId:74907,imdb:'tt1457767',year:2013,type:'film',rating:7.2,
-     genres:['😱 Horror'],
-     overview:'Rodzina wprowadza się do nawiedzonego domu. Klasyczny horror z doskonałą atmosferą i jedną z najlepszych scen finałowych gatunku.',
-     streaming:['HBO Max','Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/the-conjuring'},
-    {title:'The Haunting of Hill House',tmdbId:67744,imdb:'tt6763664',year:2018,type:'serial',rating:8.6,
-     genres:['😱 Horror','🎬 Dramat'],
-     overview:'Rodzeństwo powraca do nawiedzonego domu z dzieciństwa. Jeden z najlepszych seriali grozy w historii — psychologiczny, wzruszający i przerażający jednocześnie.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/serial/the-haunting-of-hill-house'},
-    {title:'The Last of Us',tmdbId:100088,imdb:'tt3581920',year:2023,type:'serial',rating:8.8,
-     genres:['😱 Horror','🎬 Dramat'],
-     overview:'Po apokalipsie grzybiczej przemytnik eskortuje odporną dziewczynę przez ruiny Ameryki. Serial, który zmienił standardy gatunku.',
-     streaming:['HBO Max','Max'],
-     justwatch:'https://www.justwatch.com/pl/serial/the-last-of-us'},
-    {title:'Stranger Things',tmdbId:66732,imdb:'tt4574334',year:2016,type:'serial',rating:8.7,
-     genres:['😱 Horror','🚀 Sci-Fi'],
-     overview:'Dzieci z małego miasteczka trafiają na mroczną tajemnicę rządowych eksperymentów i potworów z innego wymiaru. Hołd dla lat 80. i kina Spielberga.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/serial/stranger-things'},
-    {title:'The Terror',tmdbId:71012,imdb:'tt2708480',year:2018,type:'serial',rating:8.1,
-     genres:['😱 Horror','🎬 Dramat'],
-     overview:'Załogi dwóch XIX-wiecznych okrętów utknęły w Arktyce i zmagają się z chłodem, głodem i czymś nadprzyrodzonym. Powolny, lodowaty i niepokojący.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/serial/the-terror'},
-    {title:'Midnight Mass',tmdbId:115919,imdb:'tt10574236',year:2021,type:'serial',rating:7.7,
-     genres:['😱 Horror','🎬 Dramat'],
-     overview:'Na odizolowanej wyspie pojawia się tajemniczy ksiądz i zaczyna dziać się coś niesamowitego. Mike Flanagan w szczytowej formie — horror filozoficzny.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/serial/midnight-mass'},
-  ],
-  '💘 Romans':[
-    {title:'Zakochany bez pamięci',tmdbId:38,imdb:'tt0338013',year:2004,type:'film',rating:8.1,
-     genres:['💘 Romans'],
-     overview:'Para usuwa wspomnienia o sobie nawzajem, ale uczucia okazują się silniejsze niż technologia. Wzruszający, oryginalny i nie do zapomnienia.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/zakochany-bez-pamieci'},
-    {title:'La La Land',tmdbId:313369,imdb:'tt3783958',year:2016,type:'film',rating:8.0,
-     genres:['💘 Romans','🎬 Dramat'],
-     overview:'Aspirująca aktorka i jazzman zakochują się w Los Angeles. Muzyczny romans o marzeniach, kompromisach i tym, czego nie możemy mieć jednocześnie.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/la-la-land'},
-    {title:'Czas na miłość',tmdbId:155733,imdb:'tt2194499',year:2013,type:'film',rating:7.8,
-     genres:['💘 Romans'],
-     overview:'Mężczyzna odkrywa, że może cofać się w czasie i stara się zbudować idealne życie z ukochaną. Ciepły, mądry i nieoczekiwanie wzruszający.',
-     streaming:['Netflix','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/czas-na-milosc'},
-    {title:'Kiedy Harry poznał Sally',tmdbId:9593,imdb:'tt0098635',year:1989,type:'film',rating:7.6,
-     genres:['💘 Romans','😂 Komedia'],
-     overview:'Czy mężczyzna i kobieta mogą być tylko przyjaciółmi? Jedna z najlepszych komedii romantycznych w historii. Dialogi na najwyższym poziomie.',
-     streaming:['HBO Max'],
-     justwatch:'https://www.justwatch.com/pl/film/kiedy-harry-poznal-sally'},
-    {title:'Notting Hill',tmdbId:1605,imdb:'tt0125439',year:1999,type:'film',rating:7.1,
-     genres:['💘 Romans','😂 Komedia'],
-     overview:'Zwykły właściciel księgarni zakochuje się w największej gwieździe Hollywood. Urokliwy, nieśpieszny i pełen ciepła.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/notting-hill'},
-    {title:'Carol',tmdbId:258230,imdb:'tt2402927',year:2015,type:'film',rating:7.2,
-     genres:['💘 Romans','🎬 Dramat'],
-     overview:'Młoda sprzedawczyni zakochuje się w zamężnej kobiecie w konserwatywnych latach 50. Elegancki, powściągliwy i poruszający.',
-     streaming:['Mubi','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/carol'},
-  ],
-  '🎬 Dramat':[
-    {title:'Parasite',tmdbId:496243,imdb:'tt6751668',year:2019,type:'film',rating:8.5,
-     genres:['🎬 Dramat','🕵️ Thriller'],
-     overview:'Biedna koreańska rodzina stopniowo infiltruje życie bogatych sąsiadów. Oscarowy majstersztyk łączący czarną komedię z thrillerem społecznym.',
-     streaming:['Mubi','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/parasite-2019'},
-    {title:'Skazani na Shawshank',tmdbId:278,imdb:'tt0111161',year:1994,type:'film',rating:9.3,
-     genres:['🎬 Dramat'],
-     overview:'Niewinnie skazany bankier buduje przyjaźń i nadzieję za kratami. Najwyżej oceniany film w historii IMDb — i zasługuje na każdą gwiazdkę.',
-     streaming:['Netflix','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/skazani-na-shawshank'},
-    {title:'Whiplash',tmdbId:244786,imdb:'tt2582802',year:2014,type:'film',rating:8.5,
-     genres:['🎬 Dramat'],
-     overview:'Młody perkusista trafia pod skrzydła bezlitosnego instruktora. Thriller o ambicji, poświęceniu i granicy między inspiracją a torturą.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/whiplash'},
-    {title:'1917',tmdbId:530915,imdb:'tt8579674',year:2019,type:'film',rating:8.3,
-     genres:['🎬 Dramat','⚔️ Akcja'],
-     overview:'Dwaj żołnierze mają 24 godziny, by dostarczyć wiadomość przez linię wroga. Nakręcony jako pozornie jedno ujęcie — immersja totalna.',
-     streaming:['Netflix','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/1917'},
-    {title:'Zielona mila',tmdbId:497,imdb:'tt0120689',year:1999,type:'film',rating:8.6,
-     genres:['🎬 Dramat'],
-     overview:'Strażnik więzienny odkrywa niezwykłą moc skazańca czekającego na krzesło elektryczne. Długi, powolny i absolutnie wciągający.',
-     streaming:['Netflix','HBO Max'],
-     justwatch:'https://www.justwatch.com/pl/film/zielona-mila'},
-    {title:'Spotlight',tmdbId:314365,imdb:'tt1895587',year:2015,type:'film',rating:8.1,
-     genres:['🎬 Dramat','🕵️ Thriller'],
-     overview:'Redakcja Boston Globe ujawnia systemowe tuszowanie nadużyć w Kościele katolickim. Jedno z najlepszych dziennikarskich kino-śledztw.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/spotlight'},
-    {title:'Schindlers Lista',tmdbId:424,imdb:'tt0108052',year:1993,type:'film',rating:8.9,
-     genres:['🎬 Dramat'],
-     overview:'Niemiecki przedsiębiorca ratuje życie ponad tysiąca Żydów podczas Holokaustu. Obowiązkowy i wstrząsający.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/lista-schindlera'},
-  ],
-  '🚀 Sci-Fi':[
-    {title:'Interstellar',tmdbId:157336,imdb:'tt0816692',year:2014,type:'film',rating:8.6,
-     genres:['🚀 Sci-Fi','🎬 Dramat'],
-     overview:'Astronauci przemierzają galaktykę przez czarną dziurę w poszukiwaniu nowego domu dla ludzkości. Spektakularny, wzruszający i naukowo ambitny.',
-     streaming:['Netflix','SkyShowtime'],
-     justwatch:'https://www.justwatch.com/pl/film/interstellar'},
-    {title:'Arrival',tmdbId:329865,imdb:'tt2543164',year:2016,type:'film',rating:7.9,
-     genres:['🚀 Sci-Fi','🎬 Dramat'],
-     overview:'Językoznawczyni musi porozumieć się z kosmitami, zanim rządy świata zdecydują się na wojnę. Sci-fi dla miłośników opowieści — nie laserów.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/arrival'},
-    {title:'Ex Machina',tmdbId:264660,imdb:'tt0470752',year:2014,type:'film',rating:7.7,
-     genres:['🚀 Sci-Fi','🕵️ Thriller'],
-     overview:'Programista testuje sztuczną inteligencję zamkniętą w kobiecym ciele. Mroczny, filozoficzny i trzymający w napięciu do ostatniej sceny.',
-     streaming:['Amazon Prime','Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/ex-machina'},
-    {title:'Matrix',tmdbId:603,imdb:'tt0133093',year:1999,type:'film',rating:8.7,
-     genres:['🚀 Sci-Fi','⚔️ Akcja'],
-     overview:'Haker odkrywa, że rzeczywistość jest symulacją. Kultowa rewolucja kina akcji i sci-fi, która do dziś pozostaje aktualna filozoficznie.',
-     streaming:['HBO Max','Max'],
-     justwatch:'https://www.justwatch.com/pl/film/matrix'},
-    {title:'Marsjanin',tmdbId:286217,imdb:'tt3659388',year:2015,type:'film',rating:8.0,
-     genres:['🚀 Sci-Fi','😂 Komedia'],
-     overview:'Astronauta zostaje sam na Marsie i musi przeżyć do kolejnej misji. Optymistyczny survival z genialnym humorem i Mattem Damonem w szczytowej formie.',
-     streaming:['Disney+','HBO Max'],
-     justwatch:'https://www.justwatch.com/pl/film/marsjanin'},
-    {title:'Blade Runner 2049',tmdbId:335984,imdb:'tt1856101',year:2017,type:'film',rating:8.0,
-     genres:['🚀 Sci-Fi','🕵️ Thriller'],
-     overview:'Łowca androidów odkrywa sekret mogący zmienić przyszłość ludzkości. Wizualnie hipnotyzujący i mądrzejszy niż większość sequeli.',
-     streaming:['Amazon Prime','Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/blade-runner-2049'},
-    {title:'Annihilation',tmdbId:300668,imdb:'tt2798920',year:2018,type:'film',rating:6.9,
-     genres:['🚀 Sci-Fi','😱 Horror'],
-     overview:'Ekspedycja naukowa wkracza do tajemniczej strefy anomalii. Nielinearny, surrealistyczny horror sci-fi — nie dla każdego, ale niezapomniany.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/unicestwienie'},
-  ],
-  '⚔️ Akcja':[
-    {title:'Mad Max: Na drodze gniewu',tmdbId:76341,imdb:'tt1392190',year:2015,type:'film',rating:8.1,
-     genres:['⚔️ Akcja','🚀 Sci-Fi'],
-     overview:'Furiosa ucieka z despotycznym władcą. Dwie godziny szalonego pościgu przez pustynię — choreografia chaosu podniesiona do rangi sztuki.',
-     streaming:['Netflix','HBO Max'],
-     justwatch:'https://www.justwatch.com/pl/film/mad-max-na-drodze-gniewu'},
-    {title:'John Wick',tmdbId:245891,imdb:'tt2911666',year:2014,type:'film',rating:7.4,
-     genres:['⚔️ Akcja','🕵️ Thriller'],
-     overview:'Emerytowany zabójca wraca do gry, gdy gangsterzy zabijają jego psa. Choreografia walki na poziomie baletowym — zdefiniował gatunek.',
-     streaming:['Netflix','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/john-wick'},
-    {title:'Top Gun: Maverick',tmdbId:361743,imdb:'tt1745960',year:2022,type:'film',rating:8.3,
-     genres:['⚔️ Akcja'],
-     overview:'Legendarny pilot wraca, by wytrenować elitarną grupę na niemożliwą misję. Jeden z najlepszych sequeli w historii — emocje i adrenalina gwarantowane.',
-     streaming:['Amazon Prime','SkyShowtime'],
-     justwatch:'https://www.justwatch.com/pl/film/top-gun-maverick'},
-    {title:'Mission: Impossible — Fallout',tmdbId:353081,imdb:'tt4912910',year:2018,type:'film',rating:7.7,
-     genres:['⚔️ Akcja','🕵️ Thriller'],
-     overview:'Ethan Hunt ściga plutonium przez połowę świata. Najlepszy film z serii, kaskadersko niewiarygodny — każda scena to majstersztyk.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/mission-impossible-fallout'},
-    {title:'Gladiator',tmdbId:98,imdb:'tt0172495',year:2000,type:'film',rating:8.5,
-     genres:['⚔️ Akcja','🎬 Dramat'],
-     overview:'Generał-niewolnik walczy o zemstę na cesarzu, który zamordował jego rodzinę. Epickie, emocjonalne i z Russellem Croweiem w roli życia.',
-     streaming:['Netflix','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/gladiator'},
-    {title:'Oppenheimer',tmdbId:872585,imdb:'tt15398776',year:2023,type:'film',rating:8.9,
-     genres:['⚔️ Akcja','🎬 Dramat'],
-     overview:'Twórca bomby atomowej zmaga się z konsekwencjami swojego dzieła. Trzy godziny absolutnego skupienia — kino wielkiego formatu.',
-     streaming:['SkyShowtime','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/oppenheimer'},
-    {title:'Dredd',tmdbId:73590,imdb:'tt1343727',year:2012,type:'film',rating:7.1,
-     genres:['⚔️ Akcja','🚀 Sci-Fi'],
-     overview:'Sędzia Dredd i rekrut uwięzieni w 200-piętrowym bloku rządzonym przez bezlitosną gangsterkę. Niedoceniony klejnot gatunku.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/dredd'},
-  ],
-  '🕵️ Thriller':[
-    {title:'Zodiak',tmdbId:10929,imdb:'tt0443706',year:2007,type:'film',rating:7.7,
-     genres:['🕵️ Thriller','🎬 Dramat'],
-     overview:'Dziennikarz i detektyw przez dwie dekady ścigają seryjnego mordercę wysyłającego zaszyfrowane listy. Fincher w najlepszej formie — powolny jak obsesja.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/zodiac'},
-    {title:'Prestiż',tmdbId:1124,imdb:'tt0482571',year:2006,type:'film',rating:8.5,
-     genres:['🕵️ Thriller','🎬 Dramat'],
-     overview:'Dwóch rywalizujących iluzjonistów posunęłoby się do wszystkiego, by pokonać konkurenta. Jeden z najinteligentniejszych thrillerów Nolana.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/prestiz'},
-    {title:'Siedem',tmdbId:807,imdb:'tt0114369',year:1995,type:'film',rating:8.6,
-     genres:['🕵️ Thriller','😱 Horror'],
-     overview:'Detektywi ścigają seryjnego mordercę inspirowanego siedmioma grzechami głównymi. Mroczny, nieuchronny i z jednym z najlepszych finałów w historii kina.',
-     streaming:['Netflix','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/siedem'},
-    {title:'Dziewczyna z tatuażem',tmdbId:65754,imdb:'tt1568346',year:2011,type:'film',rating:7.8,
-     genres:['🕵️ Thriller'],
-     overview:'Dziennikarz śledczy i hakerka rozwiązują tajemnicę zaginięcia sprzed czterdziestu lat. Fincher i klimat skandynawski — połączenie idealne.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/dziewczyna-z-tatuazem-2011'},
-    {title:'Oldboy',tmdbId:670,imdb:'tt0364569',year:2003,type:'film',rating:8.4,
-     genres:['🕵️ Thriller','😱 Horror'],
-     overview:'Mężczyzna wychodzi z więzienia po piętnastu latach i szuka odpowiedzi. Szokujące koreańskie arcydzieło z kultową sceną walki.',
-     streaming:['Mubi','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/oldboy'},
-    {title:'Knives Out',tmdbId:546554,imdb:'tt8946378',year:2019,type:'film',rating:7.9,
-     genres:['🕵️ Thriller','😂 Komedia'],
-     overview:'Ekscentryczny detektyw rozwiązuje śmierć pisarza kryminałów. Błyskotliwy, współczesny whodunit z gwiazdorską obsadą.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/knives-out'},
-    {title:'Nocne zwierzęta',tmdbId:336004,imdb:'tt4550098',year:2016,type:'film',rating:7.3,
-     genres:['🕵️ Thriller','🎬 Dramat'],
-     overview:'Projektantka mody dostaje rękopis powieści od byłego męża i pogrąża się w mrocznej historii. Dwa równoległe, wzajemnie komentujące się thrillery.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/nocne-zwierzeta'},
-  ],
-  '🧸 Animacja':[
-    {title:'Spider-Man: Poprzez multiwersum',tmdbId:569094,imdb:'tt9362722',year:2023,type:'film',rating:8.6,
-     genres:['🧸 Animacja','⚔️ Akcja'],
-     overview:'Miles Morales trafia do innych wymiarów pełnych Spider-Manów. Przełomowy wizualnie i emocjonalnie kompletny — każda klatka to obraz.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/spider-man-poprzez-multiwersum'},
-    {title:'Spirited Away',tmdbId:129,imdb:'tt0245429',year:2001,type:'film',rating:8.6,
-     genres:['🧸 Animacja','🧙 Fantasy'],
-     overview:'Dziesięciolatka trafia do świata duchów i musi pracować w łaźni, by uwolnić rodziców. Miyazaki w szczytowej formie — oniryczny, mądry i niezapomniany.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/spirited-away'},
-    {title:'The Incredibles',tmdbId:9806,imdb:'tt0317705',year:2004,type:'film',rating:8.0,
-     genres:['🧸 Animacja','⚔️ Akcja'],
-     overview:'Superbohaterowie zmuszeni do życia w ukryciu wracają do gry. Świetny film familijny, ale też błyskotliwa satyra na superbohaterski gatunek.',
-     streaming:['Disney+'],
-     justwatch:'https://www.justwatch.com/pl/film/iniemamocni'},
-    {title:'Klaus',tmdbId:508965,imdb:'tt4729430',year:2019,type:'film',rating:8.2,
-     genres:['🧸 Animacja'],
-     overview:'Cyniczny listonosz trafia na najdalszą północ i przyjaźni się z tajemniczym cieślą. Jeden z najpiękniejszych filmów bożonarodzeniowych.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/klaus'},
-    {title:'Twoje imię',tmdbId:372058,imdb:'tt5311514',year:2016,type:'film',rating:8.4,
-     genres:['🧸 Animacja','💘 Romans'],
-     overview:'Dwoje nastolatków z różnych miast tajemniczo zamienia się ciałami i zaczyna się komunikować. Makoto Shinkai stworzył coś absolutnie wyjątkowego.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/twoje-imie'},
-    {title:'Ratatouille',tmdbId:2062,imdb:'tt0382932',year:2007,type:'film',rating:8.1,
-     genres:['🧸 Animacja','😂 Komedia'],
-     overview:'Szczur marzy o zostaniu kucharzem w najlepszej paryskiej restauracji. Pixar w szczytowej formie — o pasji, odwadze i smaku.',
-     streaming:['Disney+'],
-     justwatch:'https://www.justwatch.com/pl/film/ratatuj'},
-    {title:'Księżniczka Mononoke',tmdbId:128,imdb:'tt0119698',year:1997,type:'film',rating:8.4,
-     genres:['🧸 Animacja','🧙 Fantasy'],
-     overview:'Młody wojownik staje między bogami lasu a industrialną osadą. Miyazaki bez kompromisów — nie ma tu czystego zła ani dobra.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/ksiezniczka-mononoke'},
-  ],
-  '📚 Dokumentalny':[
-    {title:'Free Solo',tmdbId:538228,imdb:'tt7775622',year:2018,type:'film',rating:8.2,
-     genres:['📚 Dokumentalny'],
-     overview:'Alex Honnold wspina się bez liny ubezpieczającej na pionową ścianę El Capitan (900m). Trzyma za gardło przez cały seans — i zmienia perspektywę.',
-     streaming:['Disney+','Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/free-solo'},
-    {title:'Making a Murderer',tmdbId:63351,imdb:'tt5189670',year:2015,type:'serial',rating:8.6,
-     genres:['📚 Dokumentalny','🕵️ Thriller'],
-     overview:'Historia Stevena Averyego skazanego za morderstwo — czy jest niewinny? Wciągający jak najlepszy serial kryminalny.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/serial/making-a-murderer'},
-    {title:'13th',tmdbId:399055,imdb:'tt5895028',year:2016,type:'film',rating:8.2,
-     genres:['📚 Dokumentalny'],
-     overview:'Jak system więziennictwa w USA zastąpił niewolnictwo. Porażający, ważny i poparty twardymi danymi.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/13th'},
-    {title:'The Last Dance',tmdbId:86311,imdb:'tt8420184',year:2020,type:'serial',rating:9.1,
-     genres:['📚 Dokumentalny'],
-     overview:'Dziesięcioodcinkowa historia ostatniego sezonu Michaela Jordana z Chicago Bulls. Nawet jeśli nie interesujesz się koszykówką — wciągnie.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/serial/the-last-dance'},
-    {title:'Icarus',tmdbId:468569,imdb:'tt6333060',year:2017,type:'film',rating:7.9,
-     genres:['📚 Dokumentalny','🕵️ Thriller'],
-     overview:'Amatorski kolarz filmuje własny doping, a sprawa urasta do afery państwowej. Zaczyna się jak eksperyment, kończy jak thriller.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/icarus'},
-    {title:"Won't You Be My Neighbor?",tmdbId:486985,imdb:'tt7681766',year:2018,type:'film',rating:8.4,
-     genres:['📚 Dokumentalny'],
-     overview:'Portret Freda Rogersa — człowieka, który przez dekady uczył dzieci empatii przez telewizję. Wzruszający i potrzebny w każdym czasie.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/wont-you-be-my-neighbor'},
-    {title:'Seaspiracy',tmdbId:742906,imdb:'tt14152756',year:2021,type:'film',rating:7.8,
-     genres:['📚 Dokumentalny'],
-     overview:'Wpływ przemysłu rybnego na oceany i klimat. Kontrowersyjny, miejscami uproszczony, ale zmuszający do myślenia.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/seaspiracy'},
-  ],
-  '🧙 Fantasy':[
-    {title:'Władca Pierścieni: Drużyna Pierścienia',tmdbId:120,imdb:'tt0120737',year:2001,type:'film',rating:8.8,
-     genres:['🧙 Fantasy','⚔️ Akcja'],
-     overview:'Hobbit wyrusza z ośmioma towarzyszami, by zniszczyć Pierścień Władzy. Epika, która zdefiniowała gatunek filmowego fantasy na dekady.',
-     streaming:['HBO Max','Max'],
-     justwatch:'https://www.justwatch.com/pl/film/wladca-pierscieni-druzyna-pierscienia'},
-    {title:'Wiedźmin (sezon 1)',tmdbId:71912,imdb:'tt5180504',year:2019,type:'serial',rating:8.2,
-     genres:['🧙 Fantasy','⚔️ Akcja'],
-     overview:'Geralt z Rivii, mutant-łowca potworów, wędruje przez kontynent pełen politycznych intryg i magii. Doskonała adaptacja dla fanów sagi.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/serial/wiedzmin'},
-    {title:'Labirynt Fauna',tmdbId:1368,imdb:'tt0457430',year:2006,type:'film',rating:8.2,
-     genres:['🧙 Fantasy','😱 Horror'],
-     overview:'Dziewczynka w powojennej Hiszpanii trafia do ciemnego królestwa pełnego mitycznych stworzeń. Del Toro stworzył coś między bajką a horrorem.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/labirynt-fauna'},
-    {title:'Stardust',tmdbId:7353,imdb:'tt0486655',year:2007,type:'film',rating:7.6,
-     genres:['🧙 Fantasy','💘 Romans'],
-     overview:'Młody mężczyzna przekracza mur do magicznego królestwa, by przynieść ukochanej spadającą gwiazdę. Niedoceniana, urocza przygoda fantasy.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/gwiezdny-pyl'},
-    {title:'Księżniczka Mononoke',tmdbId:128,imdb:'tt0119698',year:1997,type:'film',rating:8.4,
-     genres:['🧙 Fantasy','🧸 Animacja'],
-     overview:'Młody wojownik staje między bogami lasu a industrialną osadą wydobywającą żelazo. Miyazaki bez kompromisów — nie ma tu czystego zła ani dobra.',
-     streaming:['Netflix'],
-     justwatch:'https://www.justwatch.com/pl/film/ksiezniczka-mononoke'},
-    {title:'Czarownica',tmdbId:310631,imdb:'tt4263482',year:2015,type:'film',rating:6.9,
-     genres:['🧙 Fantasy','😱 Horror'],
-     overview:'Purytańska rodzina w XVII-wiecznej Nowej Anglii staje naprzeciw mrocznych sił w lesie. Powolny, atmosferyczny horror historyczny.',
-     streaming:['Amazon Prime'],
-     justwatch:'https://www.justwatch.com/pl/film/czarownica'},
-    {title:'Shang-Chi',tmdbId:566525,imdb:'tt9376612',year:2021,type:'film',rating:7.4,
-     genres:['🧙 Fantasy','⚔️ Akcja'],
-     overview:'Syn legendarnego wojownika staje twarzą w twarz z własną przeszłością. Najlepszy film MCU pod kątem choreografii walki i wizualnego rozmachu.',
-     streaming:['Disney+'],
-     justwatch:'https://www.justwatch.com/pl/film/shang-chi-i-legenda-dziesieciu-pierscieni'},
-  ],
+/* Map display label -> TMDB genre key (always Polish key for TMDB lookup) */
+const MOODS_TO_TMDB={
+  '😂 Komedia':'😂 Komedia','😂 Comedy':'😂 Komedia','😂 Комедія':'😂 Komedia',
+  '😱 Horror':'😱 Horror','😱 Жахи':'😱 Horror',
+  '💘 Romans':'💘 Romans','💘 Romance':'💘 Romans','💘 Романтика':'💘 Romans',
+  '🎬 Dramat':'🎬 Dramat','🎬 Drama':'🎬 Dramat','🎬 Драма':'🎬 Dramat',
+  '🚀 Sci-Fi':'🚀 Sci-Fi','🚀 Фантастика':'🚀 Sci-Fi',
+  '⚔️ Akcja':'⚔️ Akcja','⚔️ Action':'⚔️ Akcja','⚔️ Бойовик':'⚔️ Akcja',
+  '🕵️ Thriller':'🕵️ Thriller','🕵️ Трилер':'🕵️ Thriller',
+  '🧸 Animacja':'🧸 Animacja','🧸 Animation':'🧸 Animacja','🧸 Анімація':'🧸 Animacja',
+  '📚 Dokumentalny':'📚 Dokumentalny','📚 Documentary':'📚 Dokumentalny','📚 Документальний':'📚 Dokumentalny',
+  '🧙 Fantasy':'🧙 Fantasy','🧙 Фентезі':'🧙 Fantasy',
 };
-
-/* Deduplicated flat pool */
-const ALL_FILMS=(()=>{
-  const seen=new Set(), out=[];
-  Object.values(FILM_DB).forEach(arr=>arr.forEach(f=>{if(!seen.has(f.imdb)){seen.add(f.imdb);out.push(f);}}));
-  return out;
-})();
-
-const ALL_YEARS=[...Array(37)].map((_,i)=>2026-i);
-const RATINGS=[{label:'Dowolna',min:0},{label:'6+',min:6},{label:'7+',min:7},{label:'7.5+',min:7.5},{label:'8+',min:8},{label:'8.5+',min:8.5}];
-
-let movieType='all';
+function renderMoodTags(){
+  const list=MOODS[currentLang]||MOODS.pl;
+  document.getElementById('moodTags').innerHTML=list.map(m=>{
+    const tmdbKey=MOODS_TO_TMDB[m]||m;
+    const on=selectedMoods.has(tmdbKey);
+    return `<span class="tag${on?' on':''}" onclick="toggleMood(this,'${m.replace(/'/g,"\'")}') ">${m}</span>`;
+  }).join('');
+}
 let selectedMoods=new Set();
 let selectedYear=null;
 let selectedMinRating=0;
 let lastShown=new Set();
 
 /* Init tag rows */
-document.getElementById('moodTags').innerHTML=MOODS.map(m=>
-  `<span class="tag" onclick="toggleMood(this,'${m.replace(/'/g,"\\'")}')">${m}</span>`
-).join('');
+renderMoodTags();
 document.getElementById('yearTags').innerHTML=
   `<span class="tag on" onclick="setYear(this,null)">Dowolny</span>`+
   ALL_YEARS.map(y=>`<span class="tag" onclick="setYear(this,${y})">${y}</span>`).join('');
@@ -1497,11 +1108,13 @@ function setRating(el,min){
   selectedMinRating=min;
 }
 function toggleMood(el,m){
-  if(selectedMoods.has(m)){selectedMoods.delete(m);el.classList.remove('on');}
-  else{selectedMoods.add(m);el.classList.add('on');}
+  const tmdbKey=MOODS_TO_TMDB[m]||m;
+  if(selectedMoods.has(tmdbKey)){selectedMoods.delete(tmdbKey);el.classList.remove('on');}
+  else{selectedMoods.add(tmdbKey);el.classList.add('on');}
 }
 function selectAllMoods(){
-  selectedMoods=new Set(MOODS);
+  const list=MOODS[currentLang]||MOODS.pl;
+  selectedMoods=new Set(list.map(m=>MOODS_TO_TMDB[m]||m));
   document.querySelectorAll('#moodTags .tag').forEach(t=>t.classList.add('on'));
 }
 function clearMoods(){
@@ -1677,16 +1290,28 @@ function renderFilmCard(pick,totalCount){
 
 
 /* ─── PAGE 6: DECYZJA ────────────────────────────────────────────── */
-const MOOD_CONTEXT=[
-  '😴 Jestem zmęczony/a','⚡ Mam dużo energii','😰 Jestem zestresowany/a',
-  '😊 Jestem w świetnym humorze','🏠 Wolę zostać w domu','🌤️ Chcę wyjść na zewnątrz',
-  '👥 Wolę coś w towarzystwie','🧘 Potrzebuję spokoju','🎉 Szukam przygody',
-  '💪 Chcę być aktywny/a','🧠 Chcę się czegoś nauczyć','🎨 Mam ochotę na coś kreatywnego',
-];
-document.getElementById('moodContextTags').innerHTML=MOOD_CONTEXT.map(m=>
-  `<span class="tag" onclick="toggleContext(this,'${m.replace(/'/g,"\'")}') ">${m}</span>`
-).join('');
-
+const MOOD_CONTEXT={
+  pl:['😴 Jestem zmęczony/a','⚡ Mam dużo energii','😰 Jestem zestresowany/a',
+      '😊 Jestem w świetnym humorze','🏠 Wolę zostać w domu','🌤️ Chcę wyjść na zewnątrz',
+      '👥 Wolę coś w towarzystwie','🧘 Potrzebuję spokoju','🎉 Szukam przygody',
+      '💪 Chcę być aktywny/a','🧠 Chcę się czegoś nauczyć','🎨 Mam ochotę na coś kreatywnego'],
+  en:['😴 I am tired','⚡ I have lots of energy','😰 I am stressed',
+      '😊 I am in a great mood','🏠 I prefer staying home','🌤️ I want to go outside',
+      '👥 I prefer company','🧘 I need peace and quiet','🎉 I seek adventure',
+      '💪 I want to be active','🧠 I want to learn something','🎨 I feel creative'],
+  uk:['😴 Я втомлений/а','⚡ Маю багато енергії','😰 Я в стресі',
+      '😊 Я в чудовому настрої','🏠 Хочу залишитися вдома','🌤️ Хочу вийти на свіже повітря',
+      '👥 Хочу провести час з людьми','🧘 Потребую спокою','🎉 Шукаю пригод',
+      '💪 Хочу бути активним/ою','🧠 Хочу чогось навчитися','🎨 Хочу творити'],
+};
+function renderMoodContext(){
+  selectedContexts.clear();
+  const list=MOOD_CONTEXT[currentLang]||MOOD_CONTEXT.pl;
+  document.getElementById('moodContextTags').innerHTML=list.map(m=>
+    `<span class="tag" onclick="toggleContext(this,'${m.replace(/'/g,"\'")}') ">${m}</span>`
+  ).join('');
+}
+renderMoodContext();
 let selectedContexts=new Set();
 function toggleContext(el,val){
   if(selectedContexts.has(val)){selectedContexts.delete(val);el.classList.remove('on');}
@@ -1770,29 +1395,48 @@ Bądź ciepły/a, konkretny/a i realistyczny/a. Nie dawaj ogólników. Odpowiedz
 }
 
 /* ─── PAGE 7: NAWYKI ─────────────────────────────────────────────── */
+const HABITS_KEYS=['🚬','📱','🍬','🍺','☕','🎮'];
+const HABITS_LABELS={
+  pl:{'🚬':'🚬 Papierosy','📱':'📱 Telefon','🍬':'🍬 Słodycze','🍺':'🍺 Alkohol','☕':'☕ Kofeina','🎮':'🎮 Gry wideo'},
+  en:{'🚬':'🚬 Cigarettes','📱':'📱 Phone','🍬':'🍬 Sweets','🍺':'🍺 Alcohol','☕':'☕ Caffeine','🎮':'🎮 Video Games'},
+  uk:{'🚬':'🚬 Цигарки','📱':'📱 Телефон','🍬':'🍬 Солодощі','🍺':'🍺 Алкоголь','☕':'☕ Кофеїн','🎮':'🎮 Відеоігри'},
+};
+const HABITS_UNITS={
+  pl:{'🚬':'папіросів/день','📱':'год. екрану','🍬':'порцій/день','🍺':'порцій/день','☕':'чашок/день','🎮':'год./день'},
+  en:{'🚬':'cigarettes/day','📱':'hours of screen','🍬':'servings/day','🍺':'servings/day','☕':'cups/day','🎮':'hours/day'},
+  uk:{'🚬':'цигарок/день','📱':'год. екрану','🍬':'порцій/день','🍺':'порцій/день','☕':'чашок/день','🎮':'год./день'},
+};
 const HABITS={
   '🚬 Papierosy':{unit:'papierosów/dzień',steps:[20,15,10,7,5,3,1,0]},
   '📱 Telefon':{unit:'godz. ekranu',steps:[8,6,5,4,3,2.5,2,1.5]},
-  '🍬 Słodycze':{unit:'porcji/dzień',steps:[5,4,3,2.5,2,1.5,1,0]},
-  '☕ Kawa':{unit:'kaw/dzień',steps:[6,5,4,3,2.5,2,1,0.5]},
-  '🍺 Alkohol':{unit:'drinków/tydzień',steps:[14,10,7,5,4,3,2,0]},
+  '🍬 Słodycze':{unit:'porcji/dzień',steps:[5,4,3,2,1.5,1,0.5,0]},
+  '🍺 Alkohol':{unit:'porcji/dzień',steps:[7,5,4,3,2,1,0.5,0]},
+  '☕ Kofeina':{unit:'filiżanek/dzień',steps:[6,5,4,3,2,1.5,1,0]},
+  '🎮 Gry wideo':{unit:'godz./dzień',steps:[8,6,5,4,3,2,1,0]},
 };
-const CHALLENGES=[
-  '💧 Wypisz 3 powody, dla których chcesz to zmienić',
-  '🚶 Gdy masz ochotę — wyjdź na 5-minutowy spacer',
-  '📔 Zapisuj swoje uczucia przez 2 minuty zamiast ulegać',
-  '🧘 Zrób 10 głębokich oddechów zamiast sięgać po nawyk',
-  '📞 Zadzwoń do kogoś bliskiego zamiast ulegać nawykowi',
-  '🎵 Odtwórz ulubioną piosenkę i poczekaj aż się skończy',
-  '🥤 Wypij szklankę wody i oceń, czy nadal masz ochotę',
-  '⏱️ Odczekaj 15 minut — ochota często mija sama',
-];
+function getHabitLabel(key){return (HABITS_LABELS[currentLang]||HABITS_LABELS.pl)[key]||key;}
+function getHabitUnit(key){return (HABITS_UNITS[currentLang]||HABITS_UNITS.pl)[key]||'';}
+function renderHabitTags(){
+  const sel=document.getElementById('habitSelect');
+  if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">-- wybierz --</option>'+HABITS_KEYS.map(k=>{
+    const label=getHabitLabel(k);
+    return `<option value="${label}"${cur===label?' selected':''}>${label}</option>`;
+  }).join('');
+}
 
 let selHabit=null, habitWeek=0, tracker=new Array(30).fill(null);
 
-document.getElementById('habitTags').innerHTML=Object.keys(HABITS).map(h=>
-  `<span class="tag" onclick="pickHabit(this,'${h}')">${h}</span>`
-).join('');
+function renderHabitTags(){
+  const labels=HABITS_LABELS[currentLang]||HABITS_LABELS.pl;
+  document.getElementById('habitTags').innerHTML=HABITS_KEYS.map(k=>{
+    const label=labels[k]||k;
+    const plKey=HABITS_LABELS.pl[k]||k; /* always use PL key for HABITS lookup */
+    return `<span class="tag" onclick="pickHabit(this,'${plKey}')">${label}</span>`;
+  }).join('');
+}
+renderHabitTags();
 
 function pickHabit(el,h){
   document.querySelectorAll('#habitTags .tag').forEach(t=>t.classList.remove('on'));
@@ -1857,7 +1501,6 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 ════════════════════════════════════════════════════════════════ */
 const LANGS={
   pl:{
-    /* Overlay */
     overlayTagline:'Twój codzienny pomocnik',
     welcome_film_title:'🎬 Jak chcesz korzystać z modułu Film?',
     welcome_film_sub:'Wybierz tryb — możesz go zmienić w każdej chwili w ustawieniach.',
@@ -1865,18 +1508,6 @@ const LANGS={
     mode_local_desc:'Bez rejestracji. Starannie dobrana baza ~80 filmów i seriali z ocenami i platformami streamingowymi.',
     mode_api_title:'Baza TMDB',
     mode_api_desc:'Wymaga darmowego klucza API. Dostęp do miliona tytułów, aktualnych plakatów i platform streamingowych.',
-    step2_title:'🔑 Wpisz klucz API TMDB',
-    api_key_label:'Twój klucz API (v3)',
-    api_save_btn:'Zapisz →',
-    api_back_btn:'← Wróć',
-    api_note:'🔒 Klucz zapisuje się wyłącznie w Twojej przeglądarce. Nikt inny go nie widzi.',
-    /* Nav */
-    cat_tools:'Narzędzia', cat_entertainment:'Rozrywka', cat_lifestyle:'Styl życia',
-    nav_plan:'Plan dnia', nav_wydatki:'Wydatki', nav_rachunek:'Dzielenie rachunku',
-    nav_gotowanie:'Co ugotować', nav_film:'Co obejrzeć', nav_decyzja:'Doradca aktywności', nav_nawyki:'Nawyki',
-    mob_plan:'Plan', mob_wydatki:'Wydatki', mob_rachunek:'Rachunek',
-    mob_gotowanie:'Gotowanie', mob_decyzja:'Decyzja', mob_nawyki:'Nawyki',
-    /* Settings */
     btnSettings:'⚙️ Klucz API',
     settings_title:'⚙️ Ustawienia modułu Film',
     settings_mode_api:'Aktualny tryb: 🌐 TMDB API',
@@ -1884,6 +1515,28 @@ const LANGS={
     settings_switch_local:'📦 Przełącz na darmową kolekcję',
     settings_switch_api:'🌐 Przełącz na TMDB API',
     settings_close:'Zamknij',
+    cat_tools:'Narzędzia', cat_entertainment:'Rozrywka', cat_lifestyle:'Styl życia',
+    nav_plan:'Plan dnia', nav_wydatki:'Wydatki', nav_rachunek:'Dzielenie rachunku',
+    nav_gotowanie:'Co ugotować', nav_film:'Co obejrzeć', nav_decyzja:'Doradca aktywności', nav_nawyki:'Nawyki',
+    mob_plan:'Plan', mob_wydatki:'Wydatki', mob_rachunek:'Rachunek',
+    mob_gotowanie:'Gotowanie', mob_decyzja:'Decyzja', mob_nawyki:'Nawyki',
+    h1_plan:'📅 Plan dnia', sub_plan:'Wpisz zadania → wygeneruję harmonogram',
+    h1_wydatki:'💳 Kalkulator wydatków', sub_wydatki:'Sprawdź ile zostaje po wszystkich wydatkach',
+    h1_rachunek:'🍕 Dzielenie rachunku', sub_rachunek:'Szybko podziel rachunek z napiwkiem',
+    h1_gotowanie:'🍳 Co ugotować?', sub_gotowanie:'Wybierz składniki — AI dopasuje przepis i przetłumaczy go na polski',
+    h1_film:'🎬 Co oglądać dziś?', sub_film:'Wybierz gatunek, rok i format → dostaniesz propozycję',
+    h1_decyzja:'🎯 Doradca aktywności', sub_decyzja:'Opisz jak się czujesz, na co masz ochotę lub jaki masz nastrój — dostaniesz spersonalizowaną radę',
+    h1_nawyki:'🌱 Ograniczanie nawyków', sub_nawyki:'Stopniowy plan + tracker 30 dni + mini-wyzwania',
+    lbl_income:'Miesięczny dochód (PLN)', lbl_bill:'Kwota rachunku (PLN)', lbl_people:'Liczba osób', lbl_tip:'Napiwek',
+    lbl_ingredients:'Popularne składniki', lbl_add_ing:'Dodaj własny składnik',
+    lbl_format:'Format', lbl_year:'Rok produkcji', lbl_rating:'Minimalna ocena',
+    lbl_mood:'Jak się teraz czujesz? Co Cię interesuje?', lbl_context:'Opcjonalnie — dodaj kontekst',
+    lbl_habit:'Wybierz nawyk', lbl_habit_level:'Aktualny poziom (ile dziennie)',
+    btn_generate:'✨ Generuj harmonogram', btn_add_task:'+ Dodaj zadanie',
+    btn_add_category:'+ Dodaj kategorię', btn_calc:'📊 Oblicz', btn_calc_bill:'🧮 Oblicz',
+    btn_find_meal:'🍳 Znajdź przepis', btn_add:'+ Dodaj',
+    btn_random_film:'🎲 Losuj propozycję', btn_select_all:'Zaznacz wszystkie', btn_clear:'Wyczyść',
+    btn_advice:'✨ Daj mi radę',
   },
   en:{
     overlayTagline:'Your daily companion',
@@ -1893,16 +1546,6 @@ const LANGS={
     mode_local_desc:'No registration needed. A curated database of ~80 movies and series with ratings and streaming platforms.',
     mode_api_title:'TMDB Database',
     mode_api_desc:'Requires a free API key. Access to one million titles, current posters and streaming platforms.',
-    step2_title:'🔑 Enter your TMDB API key',
-    api_key_label:'Your API Key (v3)',
-    api_save_btn:'Save →',
-    api_back_btn:'← Back',
-    api_note:'🔒 Your key is stored only in your browser. No one else can see it.',
-    cat_tools:'Tools', cat_entertainment:'Entertainment', cat_lifestyle:'Lifestyle',
-    nav_plan:'Daily Plan', nav_wydatki:'Expenses', nav_rachunek:'Split Bill',
-    nav_gotowanie:'What to Cook', nav_film:'What to Watch', nav_decyzja:'Activity Advisor', nav_nawyki:'Habits',
-    mob_plan:'Plan', mob_wydatki:'Expenses', mob_rachunek:'Bill',
-    mob_gotowanie:'Cook', mob_decyzja:'Advisor', mob_nawyki:'Habits',
     btnSettings:'⚙️ API Key',
     settings_title:'⚙️ Film Module Settings',
     settings_mode_api:'Current mode: 🌐 TMDB API',
@@ -1910,25 +1553,37 @@ const LANGS={
     settings_switch_local:'📦 Switch to Free Collection',
     settings_switch_api:'🌐 Switch to TMDB API',
     settings_close:'Close',
+    cat_tools:'Tools', cat_entertainment:'Entertainment', cat_lifestyle:'Lifestyle',
+    nav_plan:'Daily Plan', nav_wydatki:'Expenses', nav_rachunek:'Split Bill',
+    nav_gotowanie:'What to Cook', nav_film:'What to Watch', nav_decyzja:'Activity Advisor', nav_nawyki:'Habits',
+    mob_plan:'Plan', mob_wydatki:'Expenses', mob_rachunek:'Bill',
+    mob_gotowanie:'Cook', mob_decyzja:'Advisor', mob_nawyki:'Habits',
+    h1_plan:'📅 Daily Plan', sub_plan:'Enter your tasks → I will generate a schedule',
+    h1_wydatki:'💳 Expense Calculator', sub_wydatki:'See how much is left after all your expenses',
+    h1_rachunek:'🍕 Split Bill', sub_rachunek:'Quickly split the bill with tip',
+    h1_gotowanie:'🍳 What to Cook?', sub_gotowanie:'Choose ingredients — AI will find and translate a recipe for you',
+    h1_film:'🎬 What to Watch?', sub_film:'Choose genre, year and format → get a suggestion',
+    h1_decyzja:'🎯 Activity Advisor', sub_decyzja:'Describe how you feel or what you are in the mood for — get a personalized suggestion',
+    h1_nawyki:'🌱 Habit Control', sub_nawyki:'Gradual plan + 30-day tracker + mini challenges',
+    lbl_income:'Monthly Income (PLN)', lbl_bill:'Bill Amount (PLN)', lbl_people:'Number of people', lbl_tip:'Tip',
+    lbl_ingredients:'Popular ingredients', lbl_add_ing:'Add your own ingredient',
+    lbl_format:'Format', lbl_year:'Year of production', lbl_rating:'Minimum rating',
+    lbl_mood:'How are you feeling right now? What interests you?', lbl_context:'Optional — add context',
+    lbl_habit:'Choose a habit', lbl_habit_level:'Current level (how many per day)',
+    btn_generate:'✨ Generate schedule', btn_add_task:'+ Add task',
+    btn_add_category:'+ Add category', btn_calc:'📊 Calculate', btn_calc_bill:'🧮 Calculate',
+    btn_find_meal:'🍳 Find recipe', btn_add:'+ Add',
+    btn_random_film:'🎲 Random suggestion', btn_select_all:'Select all', btn_clear:'Clear',
+    btn_advice:'✨ Give me advice',
   },
   uk:{
     overlayTagline:'Ваш щоденний помічник',
     welcome_film_title:'🎬 Як ви хочете використовувати модуль Фільм?',
-    welcome_film_sub:'Оберіть режим — ви можете змінити його в будь-який момент у налаштуваннях.',
+    welcome_film_sub:'Оберіть режим — ви можете змінити його будь-коли в налаштуваннях.',
     mode_local_title:'Безкоштовна колекція',
     mode_local_desc:'Без реєстрації. Ретельно підібрана база ~80 фільмів та серіалів з оцінками та стримінговими платформами.',
     mode_api_title:'База TMDB',
     mode_api_desc:'Потребує безкоштовного API-ключа. Доступ до мільйона назв, актуальних постерів та стримінгових платформ.',
-    step2_title:'🔑 Введіть ваш API-ключ TMDB',
-    api_key_label:'Ваш API-ключ (v3)',
-    api_save_btn:'Зберегти →',
-    api_back_btn:'← Назад',
-    api_note:'🔒 Ключ зберігається лише у вашому браузері. Ніхто інший його не бачить.',
-    cat_tools:'Інструменти', cat_entertainment:'Розваги', cat_lifestyle:'Спосіб життя',
-    nav_plan:'План дня', nav_wydatki:'Витрати', nav_rachunek:'Розділити рахунок',
-    nav_gotowanie:'Що приготувати', nav_film:'Що подивитися', nav_decyzja:'Порадник активності', nav_nawyki:'Звички',
-    mob_plan:'План', mob_wydatki:'Витрати', mob_rachunek:'Рахунок',
-    mob_gotowanie:'Їжа', mob_decyzja:'Порада', mob_nawyki:'Звички',
     btnSettings:'⚙️ API-ключ',
     settings_title:'⚙️ Налаштування модуля Фільм',
     settings_mode_api:'Поточний режим: 🌐 TMDB API',
@@ -1936,8 +1591,31 @@ const LANGS={
     settings_switch_local:'📦 Перейти на безкоштовну колекцію',
     settings_switch_api:'🌐 Перейти на TMDB API',
     settings_close:'Закрити',
+    cat_tools:'Інструменти', cat_entertainment:'Розваги', cat_lifestyle:'Спосіб життя',
+    nav_plan:'План дня', nav_wydatki:'Витрати', nav_rachunek:'Розділити рахунок',
+    nav_gotowanie:'Що приготувати', nav_film:'Що подивитися', nav_decyzja:'Порадник активності', nav_nawyki:'Звички',
+    mob_plan:'План', mob_wydatki:'Витрати', mob_rachunek:'Рахунок',
+    mob_gotowanie:'Їжа', mob_decyzja:'Порада', mob_nawyki:'Звички',
+    h1_plan:'📅 План дня', sub_plan:'Введіть завдання → я згенерую розклад',
+    h1_wydatki:'💳 Калькулятор витрат', sub_wydatki:'Перевірте, скільки залишається після всіх витрат',
+    h1_rachunek:'🍕 Розділити рахунок', sub_rachunek:'Швидко розділіть рахунок з чайовими',
+    h1_gotowanie:'🍳 Що приготувати?', sub_gotowanie:'Оберіть інгредієнти — AI підбере та перекладе рецепт',
+    h1_film:'🎬 Що подивитися?', sub_film:'Оберіть жанр, рік та формат → отримайте пропозицію',
+    h1_decyzja:'🎯 Порадник активності', sub_decyzja:'Опишіть свій настрій та бажання — отримайте персоналізовану пораду',
+    h1_nawyki:'🌱 Контроль звичок', sub_nawyki:'Поступовий план + трекер 30 днів + міні-виклики',
+    lbl_income:'Місячний дохід (PLN)', lbl_bill:'Сума рахунку (PLN)', lbl_people:'Кількість осіб', lbl_tip:'Чайові',
+    lbl_ingredients:'Популярні інгредієнти', lbl_add_ing:'Додати власний інгредієнт',
+    lbl_format:'Формат', lbl_year:'Рік виробництва', lbl_rating:'Мінімальна оцінка',
+    lbl_mood:'Як ви зараз почуваєтесь? Що вас цікавить?', lbl_context:'Необовʼязково — додайте контекст',
+    lbl_habit:'Оберіть звичку', lbl_habit_level:'Поточний рівень (скільки на день)',
+    btn_generate:'✨ Згенерувати розклад', btn_add_task:'+ Додати завдання',
+    btn_add_category:'+ Додати категорію', btn_calc:'📊 Розрахувати', btn_calc_bill:'🧮 Розрахувати',
+    btn_find_meal:'🍳 Знайти рецепт', btn_add:'+ Додати',
+    btn_random_film:'🎲 Випадкова пропозиція', btn_select_all:'Вибрати всі', btn_clear:'Очистити',
+    btn_advice:'✨ Дай мені пораду',
   }
 };
+
 
 const LS_LANG='dh_lang';
 let currentLang=localStorage.getItem(LS_LANG)||'pl';
@@ -1945,10 +1623,12 @@ let currentLang=localStorage.getItem(LS_LANG)||'pl';
 function setLang(lang){
   currentLang=lang;
   localStorage.setItem(LS_LANG,lang);
-  /* Update all lang buttons */
+
+  /* Update topbar lang buttons */
   document.querySelectorAll('.lang-btn').forEach(b=>{
     b.classList.toggle('on', b.getAttribute('onclick')?.includes(`'${lang}'`));
   });
+
   /* Highlight overlay language buttons */
   ['pl','en','uk'].forEach(l=>{
     const el=document.getElementById('overlayLang'+l.charAt(0).toUpperCase()+l.slice(1));
@@ -1959,15 +1639,47 @@ function setLang(lang){
       el.style.fontWeight=l===lang?'700':'600';
     }
   });
-  /* Apply translations */
+
+  /* Re-render dynamic tag lists */
+  if(typeof renderMoodTags==='function') renderMoodTags();
+  if(typeof renderMoodContext==='function') renderMoodContext();
+  if(typeof renderIngTags==='function') renderIngTags();
+  if(typeof renderHabitTags==='function') renderHabitTags();
+
+  /* Apply all translations */
   const t=LANGS[lang]||LANGS.pl;
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const key=el.getAttribute('data-i18n');
-    if(t[key]) el.textContent=t[key];
+    if(!t[key]) return;
+    /* Use textContent safely — only set if element has no child elements */
+    if(el.children.length===0){
+      el.textContent=t[key];
+    } else {
+      /* Has child elements — find first text node and update it, or prepend */
+      const nodes=[...el.childNodes];
+      const textNode=nodes.find(n=>n.nodeType===3&&n.textContent.trim());
+      if(textNode) textNode.textContent=t[key];
+      else el.insertBefore(document.createTextNode(t[key]),el.firstChild);
+    }
   });
-  /* Special elements */
-  if(document.getElementById('overlayTagline')) document.getElementById('overlayTagline').textContent=t.overlayTagline;
-  if(document.getElementById('btnSettings')) document.getElementById('btnSettings').textContent=t.btnSettings;
+
+  /* Placeholders */
+  const phMap={
+    moodInput:{pl:'np. Jestem zmęczona po pracy, mam ochotę na coś relaksującego ale nie chcę siedzieć bezczynnie. Lubię być na świeżym powietrzu…',
+               en:'e.g. I am tired after work, I want something relaxing but I don't want to sit idle. I like being outdoors…',
+               uk:'напр. Я втомлена після роботи, хочу щось розслаблююче, але не хочу сидіти без діла. Люблю бути на свіжому повітрі…'},
+    customIng:{pl:'np. marchewka, ser żółty, indyk…',en:'e.g. carrot, yellow cheese, turkey…',uk:'напр. морква, жовтий сир, індик…'},
+  };
+  Object.entries(phMap).forEach(([id,translations])=>{
+    const el=document.getElementById(id);
+    if(el&&translations[lang]) el.placeholder=translations[lang];
+  });
+
+  /* Special elements not covered by data-i18n */
+  const el=document.getElementById('btnSettings');
+  if(el) el.textContent=t.btnSettings||'⚙️ API';
+  const tg=document.getElementById('overlayTagline');
+  if(tg) tg.textContent=t.overlayTagline||'';
 }
 
 /* Apply language on load */
