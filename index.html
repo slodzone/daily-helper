@@ -11,17 +11,17 @@
 /* ── RESET & VARS ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#FFF9F4;
-  --surf:#FFFFFF;
-  --surf2:#FEF3E8;
-  --border:rgba(201,131,58,0.18);
-  --accent:#C9833A;
-  --a2:#2E86AB;
-  --a3:#9B4F96;
-  --text:#1A1714;
-  --muted:#8A7D74;
-  --danger:#C0392B;
-  --ok:#2D7D46;
+  --bg:#EDE0D0;
+  --surf:#FAF4EC;
+  --surf2:#F0E6D6;
+  --border:rgba(139,90,43,0.2);
+  --accent:#A85C1E;
+  --a2:#2E6E9E;
+  --a3:#7B3F8C;
+  --text:#1A1209;
+  --muted:#7A6A5A;
+  --danger:#B03020;
+  --ok:#256638;
   --r:12px;
 }
 html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.5}
@@ -29,7 +29,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM
 /* ── NAV ── */
 nav{
 position:sticky;top:0;z-index:100;
-background:rgba(250,248,245,.92);
+background:rgba(237,224,208,.95);
 backdrop-filter:blur(18px);
 border-bottom:1px solid var(–border);
 display:flex;align-items:stretch;
@@ -123,7 +123,7 @@ transition:all .15s;
 
 /* ── RESULT BOX ── */
 .result{
-background:var(–surf2);border:1px solid rgba(201,131,58,.2);
+background:var(–surf2);border:1px solid rgba(168,92,30,.25);
 border-radius:var(–r);padding:18px;margin-top:16px;
 animation:fadeUp .3s ease;
 box-shadow:0 2px 12px rgba(26,23,20,0.06);
@@ -177,7 +177,7 @@ details p{font-size:.82rem;color:var(–muted);line-height:1.65;margin-top:8px}
 /* ── API KEY MODAL ── */
 #apiOverlay{
 position:fixed;inset:0;z-index:1000;
-background:rgba(250,248,245,.97);
+background:rgba(237,224,208,.97);
 display:flex;align-items:center;justify-content:center;
 padding:24px;
 }
@@ -485,7 +485,7 @@ animation:fadeUp .35s ease;
 
 <!-- SETTINGS MODAL -->
 
-<div id="settingsModal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(250,248,245,.92);align-items:center;justify-content:center;padding:24px">
+<div id="settingsModal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(237,224,208,.95);align-items:center;justify-content:center;padding:24px">
   <div class="api-box" style="max-width:440px">
     <div class="api-title" style="margin-top:0">⚙️ Ustawienia klucza TMDB</div>
     <p style="font-size:.83rem;color:var(--muted);margin-bottom:14px">Zmień lub usuń swój klucz API.</p>
@@ -1352,7 +1352,7 @@ function renderFilmCard(pick,totalCount){
         <div style="flex:1;min-width:180px">
           <div class="rtitle" style="margin-bottom:8px">${esc(pick.title)}</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
-            <span class="chip" style="background:rgba(201,131,58,.12);border-color:rgba(201,131,58,.35);color:var(--accent)">⭐ ${pick.rating}</span>
+            <span class="chip" style="background:rgba(168,92,30,.12);border-color:rgba(168,92,30,.35);color:var(--accent)">⭐ ${pick.rating}</span>
             <span class="chip">📅 ${pick.year}</span>
             <span class="chip">${pick.type==='serial'?'📺 Serial':'🎥 Film'}</span>
             ${genreBadges}
