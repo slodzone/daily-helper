@@ -448,7 +448,7 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 ════════════════════════════════════════════════════════════ -->
 <div id="gotowanie" class="page">
   <h1>🍳 Co ugotować?</h1>
-  <p class="sub">Wybierz składniki → znajdę przepis z całego świata</p>
+  <p class="sub">Wybierz składniki — AI dopasuje przepis i przetłumaczy go na polski</p>
 
   <div class="field">
     <label>Popularne składniki</label>
@@ -456,7 +456,7 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
   </div>
 
   <div class="field" style="margin-top:10px">
-    <label>Dodaj własny składnik po polsku</label>
+    <label>Dodaj własny składnik</label>
     <div style="display:flex;gap:10px">
       <input id="customIng" placeholder="np. marchewka, ser żółty, indyk…" onkeydown="if(event.key==='Enter')addCustomIng()">
       <button class="btn ghost" onclick="addCustomIng()" style="flex-shrink:0">+ Dodaj</button>
@@ -467,7 +467,7 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
   <div id="ingErr" class="err"></div>
 
   <div class="btn-row">
-    <button class="btn primary" onclick="findMeal()">🎲 Losuj przepis</button>
+    <button class="btn primary" onclick="findMeal()">🍳 Znajdź przepis</button>
     <button class="btn ghost" onclick="clearIngs()">Wyczyść</button>
   </div>
 
@@ -525,25 +525,25 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
      PAGE 6: DECYZJA
 ════════════════════════════════════════════════════════════ -->
 <div id="decyzja" class="page">
-  <h1>🎲 Losowa decyzja</h1>
-  <p class="sub">Nie możesz się zdecydować? Zdaj się na los!</p>
+  <h1>🎯 Doradca aktywności</h1>
+  <p class="sub">Opisz jak się czujesz, na co masz ochotę lub jaki masz nastrój — dostaniesz spersonalizowaną radę</p>
 
   <div class="field">
-    <label>Gotowe kategorie</label>
-    <div class="tags" id="catTags"></div>
+    <label>Jak się teraz czujesz? Co Cię interesuje?</label>
+    <textarea id="moodInput" rows="4" placeholder="np. Jestem zmęczona po pracy, mam ochotę na coś relaksującego ale nie chcę siedzieć bezczynnie. Lubię być na świeżym powietrzu…"></textarea>
   </div>
 
-  <div id="ownOptions">
-    <div class="field">
-      <label>Lub wpisz własne opcje (oddziel przecinkami lub Enterem)</label>
-      <textarea id="optionsText" rows="4" placeholder="np. Restauracja A, Restauracja B, Gotowanie w domu…"></textarea>
-    </div>
+  <div class="field">
+    <label>Opcjonalnie — dodaj kontekst</label>
+    <div class="tags" id="moodContextTags"></div>
   </div>
 
-  <div id="catPreview" class="mt8" style="display:none"></div>
+  <div class="btn-row">
+    <button class="btn purple" id="adviceBtn" onclick="getActivityAdvice()" style="font-size:.92rem;padding:12px 24px">✨ Daj mi radę</button>
+  </div>
 
-  <button class="btn purple" id="spinBtn" onclick="spinDecision()" style="font-size:.95rem;padding:13px 26px">🎯 Losuj!</button>
-  <div id="decisionResult"></div>
+  <div id="adviceSpinner" style="display:none"><div class="spinner"></div></div>
+  <div id="adviceResult"></div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -850,7 +850,6 @@ function calcBill(){
 }
 
 /* ─── PAGE 4: GOTOWANIE ──────────────────────────────────────────── */
-/* Polish → English translation map for TheMealDB */
 const ING_TRANSLATE={
   'kurczak':'chicken','pierś z kurczaka':'chicken','indyk':'turkey','wołowina':'beef',
   'wieprzowina':'pork','łosoś':'salmon','tuńczyk':'tuna','krewetki':'shrimp',
@@ -860,14 +859,13 @@ const ING_TRANSLATE={
   'pieczarki':'mushroom','grzyby':'mushroom','brokuły':'broccoli','szpinak':'spinach',
   'cytryna':'lemon','marchewka':'carrot','marchew':'carrot','papryka':'pepper',
   'bakłażan':'aubergine','cukinia':'courgette','fasola':'beans','soczewica':'lentils',
-  'kukurydza':'sweetcorn','kapusta':'cabbage','ogórek':'cucumber','rzodkiewka':'radish',
-  'boczek':'bacon','kiełbasa':'sausage','mielone':'minced beef','schab':'pork',
-  'mleko':'milk','śmietana':'cream','masło':'butter','mąka':'flour',
-  'ryba':'fish','dorsz':'cod','mintaj':'pollock','halibut':'halibut',
-  'oliwa':'olive oil','olej':'oil','sól':'salt','pieprz':'pepper',
+  'kukurydza':'sweetcorn','kapusta':'cabbage','ogórek':'cucumber','boczek':'bacon',
+  'kiełbasa':'sausage','mielone':'minced beef','schab':'pork','mleko':'milk',
+  'śmietana':'cream','masło':'butter','mąka':'flour','ryba':'fish','dorsz':'cod',
+  'oliwa':'olive oil','olej':'oil','cukier':'sugar','miód':'honey','jabłko':'apple',
+  'banan':'banana','truskawki':'strawberries','maliny':'raspberries','winogrona':'grapes',
 };
 
-/* Polish display names → English API names */
 const ING_LIST=[
   {pl:'Kurczak',en:'chicken'},{pl:'Wołowina',en:'beef'},{pl:'Makaron',en:'pasta'},
   {pl:'Ryż',en:'rice'},{pl:'Ziemniaki',en:'potato'},{pl:'Jajka',en:'eggs'},
@@ -878,7 +876,6 @@ const ING_LIST=[
   {pl:'Indyk',en:'turkey'},{pl:'Krewetki',en:'shrimp'},
 ];
 
-/* selIngs stores objects {pl, en} */
 let selIngs=[];
 
 function renderIngTags(){
@@ -888,13 +885,11 @@ function renderIngTags(){
   }).join('');
   renderSelIngs();
 }
-
 function renderSelIngs(){
   document.getElementById('selectedIngs').innerHTML=selIngs.length
     ?'<span class="muted">Wybrane: </span>'+selIngs.map(s=>`<span class="chip">${s.pl} <span style="cursor:pointer;margin-left:3px" onclick="toggleIng('${s.pl}','${s.en}')">✕</span></span>`).join('')
     :'';
 }
-
 function toggleIng(pl,en){
   const idx=selIngs.findIndex(s=>s.en===en);
   if(idx>=0) selIngs.splice(idx,1); else selIngs.push({pl,en});
@@ -904,13 +899,9 @@ function clearIngs(){selIngs=[];renderIngTags();}
 function addCustomIng(){
   const raw=document.getElementById('customIng').value.trim().toLowerCase();
   if(!raw) return;
-  /* Try to translate Polish to English */
   const en=ING_TRANSLATE[raw]||raw;
   const pl=document.getElementById('customIng').value.trim();
-  if(!selIngs.some(s=>s.en===en)){
-    selIngs.push({pl,en});
-    renderIngTags();
-  }
+  if(!selIngs.some(s=>s.en===en)){selIngs.push({pl,en});renderIngTags();}
   document.getElementById('customIng').value='';
 }
 
@@ -919,43 +910,112 @@ async function findMeal(){
   document.getElementById('ingErr').textContent='';
   document.getElementById('mealResult').innerHTML='';
   document.getElementById('mealSpinner').style.display='block';
+
   try{
+    /* 1. Find a recipe from TheMealDB using English ingredient names */
     const shuffled=[...selIngs].map(s=>s.en).sort(()=>Math.random()-.5);
     let found=null;
-    for(const ing of shuffled){/* ing is now English */
-      const r=await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ing}`);
+    for(const ing of shuffled){
+      const r=await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ing)}`);
       const d=await r.json();
       if(d.meals?.length){
-        const pick=d.meals[Math.floor(Math.random()*Math.min(d.meals.length,10))];
+        /* Pick random from top 20 */
+        const candidates=d.meals.slice(0,20);
+        const pick=candidates[Math.floor(Math.random()*candidates.length)];
         const r2=await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${pick.idMeal}`);
         const d2=await r2.json();
         found=d2.meals?.[0];
-        if(found)break;
+        if(found) break;
       }
     }
+
+    if(!found){
+      document.getElementById('mealSpinner').style.display='none';
+      document.getElementById('mealResult').innerHTML='<p class="err">Nie znaleziono przepisu. Spróbuj innych składników.</p>';
+      return;
+    }
+
+    /* 2. Extract ingredients from meal */
+    const mealIngs=[];
+    for(let i=1;i<=20;i++){
+      const ing=found[`strIngredient${i}`];
+      const measure=found[`strMeasure${i}`];
+      if(ing&&ing.trim()) mealIngs.push(`${measure?measure.trim()+' ':''} ${ing.trim()}`);
+    }
+
+    /* 3. Ask Claude to translate + adapt recipe to Polish */
+    const plIngs=selIngs.map(s=>s.pl).join(', ');
+    const prompt=`Masz przepis na danie "${found.strMeal}" (kuchnia: ${found.strArea||'międzynarodowa'}, kategoria: ${found.strCategory||''}).
+
+Składniki z przepisu: ${mealIngs.join(', ')}
+Składniki użytkownika: ${plIngs}
+
+Instrukcja oryginalna (angielski): ${(found.strInstructions||'').slice(0,800)}
+
+Zadanie: Przetłumacz i zaadaptuj ten przepis na język polski. 
+- Napisz po polsku: nazwę dania, krótki opis (1-2 zdania dlaczego to dobry wybór), listę składników z miarkami, oraz kroki przygotowania (numerowane, jasne).
+- Podkreśl jak użyć składników użytkownika (${plIngs}).
+- Bądź konkretny i praktyczny. Odpowiedz TYLKO w formacie JSON:
+{"nazwa":"...","opis":"...","skladniki":["..."],"kroki":["..."]}`;
+
+    const aiRes=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const aiData=await aiRes.json();
     document.getElementById('mealSpinner').style.display='none';
-    if(found){
+
+    let recipe=null;
+    try{
+      const txt=aiData.content?.[0]?.text||'';
+      const clean=txt.replace(/```json|```/g,'').trim();
+      recipe=JSON.parse(clean);
+    }catch(e){}
+
+    if(recipe){
+      document.getElementById('mealResult').innerHTML=`
+        <div class="result">
+          <div style="display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-start">
+            ${found.strMealThumb?`<img src="${found.strMealThumb}" style="width:120px;height:90px;object-fit:cover;border-radius:10px;flex-shrink:0">`:''}
+            <div style="flex:1;min-width:160px">
+              <div class="rtitle">${esc(recipe.nazwa)}</div>
+              <p style="font-size:.84rem;color:var(--muted);margin-top:4px;line-height:1.6">${esc(recipe.opis)}</p>
+              ${found.strYoutube?`<a href="${found.strYoutube}" target="_blank" style="color:var(--a2);font-size:.8rem;margin-top:6px;display:inline-block">▶ Zobacz na YouTube</a>`:''}
+            </div>
+          </div>
+          <details open>
+            <summary>🛒 Składniki</summary>
+            <ul style="margin:10px 0 0 18px;font-size:.85rem;line-height:1.9">
+              ${recipe.skladniki.map(s=>`<li>${esc(s)}</li>`).join('')}
+            </ul>
+          </details>
+          <details style="margin-top:10px" open>
+            <summary>👨‍🍳 Sposób przygotowania</summary>
+            <ol style="margin:10px 0 0 18px;font-size:.85rem;line-height:1.9">
+              ${recipe.kroki.map(k=>`<li style="margin-bottom:6px">${esc(k)}</li>`).join('')}
+            </ol>
+          </details>
+          <button class="btn ghost" style="margin-top:14px;font-size:.78rem" onclick="findMeal()">🔄 Inny przepis</button>
+        </div>`;
+    } else {
+      /* Fallback - show raw meal data if AI fails */
       document.getElementById('mealResult').innerHTML=`
         <div class="result">
           <div class="rtitle">${esc(found.strMeal)}</div>
-          <div style="display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap">
-            ${found.strMealThumb?`<img src="${found.strMealThumb}" style="width:110px;height:80px;object-fit:cover;border-radius:8px;flex-shrink:0">`:''}
-            <div>
-              <div class="muted" style="margin-bottom:6px">${found.strCategory||''} · ${found.strArea||''}</div>
-              ${found.strYoutube?`<a href="${found.strYoutube}" target="_blank" style="color:var(--a2);font-size:.83rem">▶ Obejrzyj na YouTube</a>`:''}
-            </div>
-          </div>
-          <details>
-            <summary>📋 Instrukcja przygotowania</summary>
-            <p>${esc((found.strInstructions||'').slice(0,500))}…</p>
-          </details>
+          <p class="muted">${found.strCategory||''} · ${found.strArea||''}</p>
+          <details style="margin-top:10px"><summary>📋 Instrukcja (angielski)</summary>
+          <p style="font-size:.83rem;line-height:1.7;margin-top:8px">${esc((found.strInstructions||'').slice(0,600))}…</p></details>
+          <button class="btn ghost" style="margin-top:14px;font-size:.78rem" onclick="findMeal()">🔄 Inny przepis</button>
         </div>`;
-    } else {
-      document.getElementById('mealResult').innerHTML='<p class="err">Nie znaleziono przepisów. Spróbuj innych składników.</p>';
     }
-  } catch(e){
+  }catch(e){
     document.getElementById('mealSpinner').style.display='none';
-    document.getElementById('mealResult').innerHTML='<p class="err">Błąd połączenia z API.</p>';
+    document.getElementById('mealResult').innerHTML=`<p class="err">Błąd: ${e.message}</p>`;
   }
 }
 
@@ -1592,49 +1652,96 @@ function renderFilmCard(pick,totalCount){
 
 
 /* ─── PAGE 6: DECYZJA ────────────────────────────────────────────── */
-const CATEGORIES={
-  '🍽️ Co zjeść':['Pizza','Sushi','Makaron','Sałatka','Kebab','Zupa','Kanapki','Ryba','Burger'],
-  '🏃 Aktywność':['Bieganie','Siłownia','Rower','Pływanie','Spacer','Joga','Taniec'],
-  '😴 Wieczór':['Film','Książka','Gra wideo','Serial','Podcast','Spotkanie ze znajomymi'],
-  '🌍 Destination':['Kraków','Gdańsk','Wrocław','Zakopane','Warszawa','Poznań','Szczecin'],
-};
-let selCat=null;
-
-document.getElementById('catTags').innerHTML=Object.keys(CATEGORIES).map(c=>
-  `<span class="tag" onclick="pickCat(this,'${c}')">${c}</span>`
+const MOOD_CONTEXT=[
+  '😴 Jestem zmęczony/a','⚡ Mam dużo energii','😰 Jestem zestresowany/a',
+  '😊 Jestem w świetnym humorze','🏠 Wolę zostać w domu','🌤️ Chcę wyjść na zewnątrz',
+  '👥 Wolę coś w towarzystwie','🧘 Potrzebuję spokoju','🎉 Szukam przygody',
+  '💪 Chcę być aktywny/a','🧠 Chcę się czegoś nauczyć','🎨 Mam ochotę na coś kreatywnego',
+];
+document.getElementById('moodContextTags').innerHTML=MOOD_CONTEXT.map(m=>
+  `<span class="tag" onclick="toggleContext(this,'${m.replace(/'/g,"\'")}') ">${m}</span>`
 ).join('');
 
-function pickCat(el,cat){
-  if(selCat===cat){
-    selCat=null;el.classList.remove('on');
-    document.getElementById('ownOptions').style.display='block';
-    document.getElementById('catPreview').style.display='none';
-    return;
-  }
-  document.querySelectorAll('#catTags .tag').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on');selCat=cat;
-  document.getElementById('ownOptions').style.display='none';
-  const prev=document.getElementById('catPreview');
-  prev.style.display='block';
-  prev.innerHTML='<span class="muted">Opcje: </span>'+CATEGORIES[cat].map(o=>`<span class="chip">${o}</span>`).join('');
+let selectedContexts=new Set();
+function toggleContext(el,val){
+  if(selectedContexts.has(val)){selectedContexts.delete(val);el.classList.remove('on');}
+  else{selectedContexts.add(val);el.classList.add('on');}
 }
 
-function spinDecision(){
-  const pool=selCat?CATEGORIES[selCat]:(document.getElementById('optionsText').value.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean));
-  if(!pool.length)return;
-  const btn=document.getElementById('spinBtn');
-  btn.disabled=true;btn.textContent='🌀 Losuję…';
-  document.getElementById('decisionResult').innerHTML='';
-  setTimeout(()=>{
-    const pick=pool[Math.floor(Math.random()*pool.length)];
-    document.getElementById('decisionResult').innerHTML=`
-      <div class="result" style="text-align:center">
-        <div class="muted" style="margin-bottom:6px">Twój los mówi…</div>
-        <div class="big">${esc(pick)}</div>
-        <button class="btn ghost" style="margin-top:6px" onclick="spinDecision()">🔄 Jeszcze raz</button>
-      </div>`;
-    btn.disabled=false;btn.textContent='🎯 Losuj!';
-  },600);
+async function getActivityAdvice(){
+  const mood=document.getElementById('moodInput').value.trim();
+  const contexts=[...selectedContexts].join(', ');
+  if(!mood&&!contexts){
+    document.getElementById('moodInput').placeholder='Napisz coś o sobie, żebym mógł/a lepiej doradzić…';
+    document.getElementById('moodInput').focus();
+    return;
+  }
+  document.getElementById('adviceBtn').disabled=true;
+  document.getElementById('adviceBtn').textContent='✨ Myślę…';
+  document.getElementById('adviceResult').innerHTML='';
+  document.getElementById('adviceSpinner').style.display='block';
+
+  const prompt=`Jesteś empatycznym, mądrym przyjacielem. Użytkownik opisał swój nastrój i potrzeby.
+
+Nastrój / opis: "${mood||'brak opisu'}"
+Dodatkowy kontekst: ${contexts||'brak'}
+
+Zaproponuj 3 konkretne aktywności idealnie dopasowane do tej osoby. Dla każdej:
+- Nazwa aktywności
+- Dlaczego akurat ta osoba w tym momencie skorzysta na tym działaniu (1-2 zdania, empatycznie i konkretnie)
+- Jak zacząć — praktyczna wskazówka na dziś (1 zdanie)
+
+Bądź ciepły/a, konkretny/a i realistyczny/a. Nie dawaj ogólników. Odpowiedz TYLKO w JSON:
+{"aktywnosci":[{"nazwa":"...","dlaczego":"...","jak_zaczac":"..."},{"nazwa":"...","dlaczego":"...","jak_zaczac":"..."},{"nazwa":"...","dlaczego":"...","jak_zaczac":"..."}]}`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await res.json();
+    document.getElementById('adviceSpinner').style.display='none';
+    document.getElementById('adviceBtn').disabled=false;
+    document.getElementById('adviceBtn').textContent='✨ Daj mi radę';
+
+    let result=null;
+    try{
+      const txt=data.content?.[0]?.text||'';
+      result=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    }catch(e){}
+
+    if(result?.aktywnosci?.length){
+      const cards=result.aktywnosci.map((a,i)=>`
+        <div class="card" style="border-left:3px solid var(--accent);margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="background:var(--accent);color:#fff;font-family:'Playfair Display',serif;font-weight:700;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">${i+1}</span>
+            <div class="task-title" style="font-size:.95rem">${esc(a.nazwa)}</div>
+          </div>
+          <p style="font-size:.84rem;color:var(--text);line-height:1.7;margin-bottom:8px">${esc(a.dlaczego)}</p>
+          <div style="background:var(--surf2);border-radius:6px;padding:8px 12px;font-size:.8rem;color:var(--muted)">
+            💡 <strong>Jak zacząć:</strong> ${esc(a.jak_zaczac)}
+          </div>
+        </div>`).join('');
+      document.getElementById('adviceResult').innerHTML=`
+        <div style="margin-top:20px">
+          <div style="font-size:.78rem;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em">Propozycje dla Ciebie</div>
+          ${cards}
+          <button class="btn ghost" style="margin-top:4px;font-size:.78rem" onclick="getActivityAdvice()">🔄 Inne propozycje</button>
+        </div>`;
+    } else {
+      document.getElementById('adviceResult').innerHTML='<p class="err">Coś poszło nie tak. Spróbuj ponownie.</p>';
+    }
+  }catch(e){
+    document.getElementById('adviceSpinner').style.display='none';
+    document.getElementById('adviceBtn').disabled=false;
+    document.getElementById('adviceBtn').textContent='✨ Daj mi radę';
+    document.getElementById('adviceResult').innerHTML=`<p class="err">Błąd: ${e.message}</p>`;
+  }
 }
 
 /* ─── PAGE 7: NAWYKI ─────────────────────────────────────────────── */
