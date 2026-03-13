@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
@@ -34,101 +33,101 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'In
 
 /* ── TOPBAR ── */
 .topbar{
-position:sticky;top:0;z-index:200;
-background:var(–surf);
-border-bottom:2px solid var(–border);
-display:flex;align-items:center;
-padding:0 24px;
-height:60px;
-box-shadow:0 2px 12px rgba(139,90,43,0.08);
+  position:sticky;top:0;z-index:200;
+  background:var(--surf);
+  border-bottom:2px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 24px;
+  height:60px;
+  box-shadow:0 2px 12px rgba(139,90,43,0.08);
 }
 .logo{
-font-family:‘Playfair Display’,serif;font-weight:800;font-size:1.2rem;
-color:var(–accent);letter-spacing:-.03em;
-margin-right:auto;
+  font-family:'Playfair Display',serif;font-weight:800;font-size:1.2rem;
+  color:var(--accent);letter-spacing:-.03em;
+  margin-right:auto;
 }
 .topbar-settings{
-background:none;border:1px solid var(–border);border-radius:8px;
-color:var(–muted);font-family:‘Inter’,sans-serif;font-size:.8rem;
-padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px;
-transition:all .15s;
+  background:none;border:1px solid var(--border);border-radius:8px;
+  color:var(--muted);font-family:'Inter',sans-serif;font-size:.8rem;
+  padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px;
+  transition:all .15s;
 }
-.topbar-settings:hover{border-color:var(–accent);color:var(–accent)}
+.topbar-settings:hover{border-color:var(--accent);color:var(--accent)}
 
 /* ── APP SHELL ── */
 .shell{
-display:flex;
-min-height:calc(100vh - 64px);
+  display:flex;
+  min-height:calc(100vh - 64px);
 }
 
 /* ── SIDEBAR ── */
 .sidebar{
-width:220px;
-flex-shrink:0;
-background:var(–surf);
-border-right:1px solid var(–border);
-padding:20px 12px;
-position:sticky;
-top:64px;
-height:calc(100vh - 64px);
-overflow-y:auto;
+  width:220px;
+  flex-shrink:0;
+  background:var(--surf);
+  border-right:1px solid var(--border);
+  padding:20px 12px;
+  position:sticky;
+  top:64px;
+  height:calc(100vh - 64px);
+  overflow-y:auto;
 }
 .sidebar-label{
-font-size:.68rem;font-weight:600;color:var(–muted);
-text-transform:uppercase;letter-spacing:.1em;
-padding:0 10px;margin-bottom:8px;margin-top:16px;
+  font-size:.68rem;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.1em;
+  padding:0 10px;margin-bottom:8px;margin-top:16px;
 }
 .sidebar-label:first-child{margin-top:0}
 .tab{
-display:flex;align-items:center;gap:10px;
-width:100%;background:none;border:none;
-color:var(–text);font-family:‘Inter’,sans-serif;
-font-size:.88rem;font-weight:400;
-padding:9px 12px;border-radius:8px;
-cursor:pointer;text-align:left;
-transition:background .15s,color .15s;
-margin-bottom:2px;
+  display:flex;align-items:center;gap:10px;
+  width:100%;background:none;border:none;
+  color:var(--text);font-family:'Inter',sans-serif;
+  font-size:.88rem;font-weight:400;
+  padding:9px 12px;border-radius:8px;
+  cursor:pointer;text-align:left;
+  transition:background .15s,color .15s;
+  margin-bottom:2px;
 }
 .tab .ico{font-size:1.1rem;flex-shrink:0}
-.tab:hover{background:var(–surf2);color:var(–accent)}
-.tab.on{background:var(–accent);color:#fff;font-weight:600}
+.tab:hover{background:var(--surf2);color:var(--accent)}
+.tab.on{background:var(--accent);color:#fff;font-weight:600}
 .tab.on .ico{filter:none}
 
 /* ── MAIN CONTENT ── */
 .content{
-flex:1;
-padding:36px 40px 72px;
-min-width:0;
-max-width:740px;
-background:var(–bg);
+  flex:1;
+  padding:36px 40px 72px;
+  min-width:0;
+  max-width:740px;
+  background:var(--bg);
 }
 
 /* ── MOBILE: bottom nav ── */
 @media(max-width:700px){
-.sidebar{display:none}
-.mobile-nav{
-display:flex;
-position:fixed;bottom:0;left:0;right:0;z-index:150;
-background:var(–surf);border-top:1px solid var(–border);
-box-shadow:0 -2px 12px rgba(139,90,43,0.08);
-overflow-x:auto;scrollbar-width:none;
-padding:4px 8px;
-gap:2px;
-}
-.mobile-nav::-webkit-scrollbar{display:none}
-.mobile-tab{
-display:flex;flex-direction:column;align-items:center;gap:2px;
-background:none;border:none;color:var(–muted);
-font-family:‘Inter’,sans-serif;font-size:.64rem;font-weight:500;
-padding:6px 10px;border-radius:8px;cursor:pointer;
-white-space:nowrap;flex-shrink:0;transition:all .15s;
-}
-.mobile-tab .ico{font-size:1.2rem}
-.mobile-tab.on{color:var(–accent);background:rgba(168,92,30,.08)}
-.content{padding:24px 18px 80px}
+  .sidebar{display:none}
+  .mobile-nav{
+    display:flex;
+    position:fixed;bottom:0;left:0;right:0;z-index:150;
+    background:var(--surf);border-top:1px solid var(--border);
+    box-shadow:0 -2px 12px rgba(139,90,43,0.08);
+    overflow-x:auto;scrollbar-width:none;
+    padding:4px 8px;
+    gap:2px;
+  }
+  .mobile-nav::-webkit-scrollbar{display:none}
+  .mobile-tab{
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+    background:none;border:none;color:var(--muted);
+    font-family:'Inter',sans-serif;font-size:.64rem;font-weight:500;
+    padding:6px 10px;border-radius:8px;cursor:pointer;
+    white-space:nowrap;flex-shrink:0;transition:all .15s;
+  }
+  .mobile-tab .ico{font-size:1.2rem}
+  .mobile-tab.on{color:var(--accent);background:rgba(168,92,30,.08)}
+  .content{padding:24px 18px 80px}
 }
 @media(min-width:701px){
-.mobile-nav{display:none}
+  .mobile-nav{display:none}
 }
 
 .page{display:none}
@@ -136,197 +135,190 @@ white-space:nowrap;flex-shrink:0;transition:all .15s;
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── HEADINGS ── */
-h1{font-family:‘Playfair Display’,serif;font-weight:800;font-size:clamp(1.5rem,4vw,2.2rem);letter-spacing:-.03em;margin-bottom:4px;line-height:1.1}
-.sub{color:var(–muted);font-size:.88rem;font-weight:300;margin-bottom:24px}
+h1{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(1.5rem,4vw,2.2rem);letter-spacing:-.03em;margin-bottom:4px;line-height:1.1}
+.sub{color:var(--muted);font-size:.88rem;font-weight:300;margin-bottom:24px}
 
 /* ── FORM ELEMENTS ── */
-label{display:block;font-size:.74rem;font-weight:500;color:var(–muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+label{display:block;font-size:.74rem;font-weight:500;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
 input,textarea,select{
-display:block;width:100%;
-background:var(–surf2);border:1px solid var(–border);border-radius:8px;
-color:var(–text);font-family:‘Inter’,sans-serif;font-size:.9rem;
-padding:10px 13px;outline:none;
-transition:border-color .2s;
--webkit-appearance:none;appearance:none;
+  display:block;width:100%;
+  background:var(--surf2);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;
+  padding:10px 13px;outline:none;
+  transition:border-color .2s;
+  -webkit-appearance:none;appearance:none;
 }
-input:focus,textarea:focus,select:focus{border-color:var(–accent)}
-input::placeholder,textarea::placeholder{color:var(–muted)}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+input::placeholder,textarea::placeholder{color:var(--muted)}
 .field{margin-bottom:14px}
 .field.last{margin-bottom:0}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:480px){.row2{grid-template-columns:1fr}}
 
 /* ── CARDS ── */
-.card{background:var(–surf);border:1px solid var(–border);border-radius:var(–r);padding:20px;margin-bottom:14px;box-shadow:0 1px 8px rgba(44,26,14,0.07)}
+.card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;box-shadow:0 1px 8px rgba(44,26,14,0.07)}
 .card.last{margin-bottom:0}
 
 /* ── BUTTONS ── */
 .btn{
-display:inline-flex;align-items:center;gap:7px;
-font-family:‘Playfair Display’,serif;font-weight:700;font-size:.82rem;
-border:none;border-radius:8px;padding:10px 18px;cursor:pointer;
-transition:opacity .15s,transform .1s;letter-spacing:.02em;
-white-space:nowrap;
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'Playfair Display',serif;font-weight:700;font-size:.82rem;
+  border:none;border-radius:8px;padding:10px 18px;cursor:pointer;
+  transition:opacity .15s,transform .1s;letter-spacing:.02em;
+  white-space:nowrap;
 }
 .btn:hover{opacity:.85}
 .btn:active{transform:scale(.97)}
-.btn.primary{background:var(–accent);color:#000}
-.btn.ghost{background:var(–surf2);color:var(–text);border:1px solid var(–border)}
-.btn.red{background:var(–danger);color:#fff}
-.btn.green{background:var(–ok);color:#fff}
-.btn.blue{background:var(–a2);color:#000}
-.btn.purple{background:var(–a3);color:#fff}
+.btn.primary{background:var(--accent);color:#000}
+.btn.ghost{background:var(--surf2);color:var(--text);border:1px solid var(--border)}
+.btn.red{background:var(--danger);color:#fff}
+.btn.green{background:var(--ok);color:#fff}
+.btn.blue{background:var(--a2);color:#000}
+.btn.purple{background:var(--a3);color:#fff}
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 
 /* ── TAGS ── */
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .tag{
-background:var(–surf2);border:1px solid var(–border);border-radius:99px;
-padding:6px 14px;font-size:.8rem;cursor:pointer;user-select:none;
-transition:all .15s;
+  background:var(--surf2);border:1px solid var(--border);border-radius:99px;
+  padding:6px 14px;font-size:.8rem;cursor:pointer;user-select:none;
+  transition:all .15s;
 }
-.tag:hover{border-color:var(–accent);color:var(–accent)}
-.tag.on{background:var(–accent);color:#000;border-color:var(–accent);font-weight:600}
+.tag:hover{border-color:var(--accent);color:var(--accent)}
+.tag.on{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
 
 /* ── DIVIDER ── */
-.div{height:1px;background:var(–border);margin:18px 0}
+.div{height:1px;background:var(--border);margin:18px 0}
 
 /* ── RESULT BOX ── */
 .result{
-background:var(–surf2);border:1px solid rgba(168,92,30,.25);
-border-radius:var(–r);padding:18px;margin-top:16px;
-animation:fadeUp .3s ease;
+  background:var(--surf2);border:1px solid rgba(168,92,30,.25);
+  border-radius:var(--r);padding:18px;margin-top:16px;
+  animation:fadeUp .3s ease;
 box-shadow:0 2px 12px rgba(26,23,20,0.06);
 }
-.rtitle{font-family:‘Playfair Display’,serif;font-weight:700;font-size:1rem;color:var(–accent);margin-bottom:12px}
+.rtitle{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:var(--accent);margin-bottom:12px}
 
 /* ── STAT BARS ── */
 .bar-wrap{margin-bottom:10px}
 .bar-label{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:4px}
-.bar-track{height:7px;background:var(–surf2);border-radius:4px;overflow:hidden}
+.bar-track{height:7px;background:var(--surf2);border-radius:4px;overflow:hidden}
 .bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.22,1,.36,1)}
 
 /* ── SCHEDULE ── */
-.sch-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(–border)}
+.sch-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
 .sch-item:last-child{border-bottom:none}
 .sch-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
-.sch-time{font-family:‘Playfair Display’,serif;font-weight:700;font-size:.82rem;color:var(–accent);min-width:48px;flex-shrink:0}
+.sch-time{font-family:'Playfair Display',serif;font-weight:700;font-size:.82rem;color:var(--accent);min-width:48px;flex-shrink:0}
 .sch-name{font-size:.88rem}
-.sch-meta{font-size:.76rem;color:var(–muted)}
+.sch-meta{font-size:.76rem;color:var(--muted)}
 
 /* ── TRACKER DOTS ── */
 .dots{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
 .dot{
-width:34px;height:34px;border-radius:8px;
-background:var(–surf2);border:1px solid var(–border);
-display:flex;align-items:center;justify-content:center;
-font-size:.68rem;font-weight:600;cursor:pointer;
-transition:all .15s;color:var(–muted);user-select:none;
+  width:34px;height:34px;border-radius:8px;
+  background:var(--surf2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.68rem;font-weight:600;cursor:pointer;
+  transition:all .15s;color:var(--muted);user-select:none;
 }
-.dot.ok{background:var(–ok);border-color:var(–ok);color:#fff}
-.dot.no{background:var(–danger);border-color:var(–danger);color:#fff}
+.dot.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.dot.no{background:var(--danger);border-color:var(--danger);color:#fff}
 
 /* ── BIG NUMBER ── */
-.big{font-family:‘Playfair Display’,serif;font-weight:800;font-size:3rem;color:var(–accent);text-align:center;padding:16px 0;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+.big{font-family:'Playfair Display',serif;font-weight:800;font-size:3rem;color:var(--accent);text-align:center;padding:16px 0;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
 @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
 
 /* ── MISC ── */
-.chip{display:inline-block;background:var(–surf2);border:1px solid var(–border);border-radius:6px;padding:2px 9px;font-size:.76rem;margin:2px}
+.chip{display:inline-block;background:var(--surf2);border:1px solid var(--border);border-radius:6px;padding:2px 9px;font-size:.76rem;margin:2px}
 .between{display:flex;justify-content:space-between;align-items:center}
-.muted{color:var(–muted);font-size:.82rem}
+.muted{color:var(--muted);font-size:.82rem}
 .mt8{margin-top:8px}
 .mt14{margin-top:14px}
-.err{color:var(–danger);font-size:.82rem;margin-top:8px}
-.spinner{width:28px;height:28px;border:3px solid var(–border);border-top-color:var(–accent);border-radius:50%;animation:spin .7s linear infinite;margin:20px auto}
+.err{color:var(--danger);font-size:.82rem;margin-top:8px}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:20px auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 .task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.task-title{font-family:‘Playfair Display’,serif;font-weight:700;font-size:.88rem}
+.task-title{font-family:'Playfair Display',serif;font-weight:700;font-size:.88rem}
 summary{cursor:pointer;font-weight:500;font-size:.85rem;padding:4px 0}
-details p{font-size:.82rem;color:var(–muted);line-height:1.65;margin-top:8px}
+details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 
 /* ── API KEY MODAL ── */
 #apiOverlay{
-position:fixed;inset:0;z-index:1000;
-background:rgba(245,237,224,.97);
-display:flex;align-items:center;justify-content:center;
-padding:24px;
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(245,237,224,.97);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
 }
 .api-box{
-background:var(–surf);border:1px solid var(–border);
-border-radius:18px;padding:36px 32px;
-max-width:500px;width:100%;
-box-shadow:0 24px 80px rgba(26,23,20,.15);
-animation:fadeUp .35s ease;
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:18px;padding:36px 32px;
+  max-width:500px;width:100%;
+  box-shadow:0 24px 80px rgba(26,23,20,.15);
+  animation:fadeUp .35s ease;
 }
-.api-logo{font-family:‘Playfair Display’,serif;font-weight:800;font-size:1.8rem;color:var(–accent);letter-spacing:-.03em;margin-bottom:4px}
-.api-tagline{color:var(–muted);font-size:.85rem;margin-bottom:28px}
-.api-title{font-family:‘Playfair Display’,serif;font-weight:700;font-size:1rem;margin-bottom:12px;color:var(–text)}
+.api-logo{font-family:'Playfair Display',serif;font-weight:800;font-size:1.8rem;color:var(--accent);letter-spacing:-.03em;margin-bottom:4px}
+.api-tagline{color:var(--muted);font-size:.85rem;margin-bottom:28px}
+.api-title{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;margin-bottom:12px;color:var(--text)}
 .api-steps{list-style:none;counter-reset:step;margin:0 0 20px}
-.api-steps li{counter-increment:step;display:flex;gap:10px;align-items:flex-start;font-size:.83rem;color:var(–muted);line-height:1.55;margin-bottom:9px}
-.api-steps li::before{content:counter(step);background:var(–surf2);border:1px solid var(–border);color:var(–accent);font-family:‘Playfair Display’,serif;font-weight:700;font-size:.72rem;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.api-steps a{color:var(–a2);text-decoration:none}
+.api-steps li{counter-increment:step;display:flex;gap:10px;align-items:flex-start;font-size:.83rem;color:var(--muted);line-height:1.55;margin-bottom:9px}
+.api-steps li::before{content:counter(step);background:var(--surf2);border:1px solid var(--border);color:var(--accent);font-family:'Playfair Display',serif;font-weight:700;font-size:.72rem;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.api-steps a{color:var(--a2);text-decoration:none}
 .api-steps a:hover{text-decoration:underline}
 .api-input-row{display:flex;gap:10px;margin-top:4px}
 .api-input-row input{flex:1}
-.api-note{font-size:.74rem;color:var(–muted);margin-top:10px;line-height:1.5;padding:10px 12px;background:var(–surf2);border-radius:8px;border:1px solid var(–border)}
-.api-err{color:var(–danger);font-size:.8rem;margin-top:8px;min-height:18px}
+.api-note{font-size:.74rem;color:var(--muted);margin-top:10px;line-height:1.5;padding:10px 12px;background:var(--surf2);border-radius:8px;border:1px solid var(--border)}
+.api-err{color:var(--danger);font-size:.8rem;margin-top:8px;min-height:18px}
 </style>
-
 </head>
 <body>
 
 <!-- API KEY MODAL -->
-
 <div id="apiOverlay">
   <div class="api-box">
     <div class="api-logo">Daily Helper</div>
     <div class="api-tagline">Twój codzienny pomocnik</div>
 
-```
-<div class="api-title">🎬 Jeden krok do pełnej wersji</div>
-<p style="font-size:.84rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
-  Moduł „Co obejrzeć" korzysta z bazy TMDB. Potrzebujesz darmowego klucza API — wpisujesz go raz, zapisuje się w Twojej przeglądarce.
-</p>
+    <div class="api-title">🎬 Jeden krok do pełnej wersji</div>
+    <p style="font-size:.84rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
+      Moduł „Co obejrzeć" korzysta z bazy TMDB. Potrzebujesz darmowego klucza API — wpisujesz go raz, zapisuje się w Twojej przeglądarce.
+    </p>
 
-<ol class="api-steps">
-  <li>Wejdź na <a href="https://www.themoviedb.org/settings/api" target="_blank">themoviedb.org/settings/api</a></li>
-  <li>Kliknij <strong>Create</strong> → <strong>Developer</strong></li>
-  <li>Wypełnij formularz (dowolna nazwa, np. "Daily Helper")</li>
-  <li>Skopiuj <strong>API Key (v3 auth)</strong> i wklej poniżej</li>
-</ol>
+    <ol class="api-steps">
+      <li>Wejdź na <a href="https://www.themoviedb.org/settings/api" target="_blank">themoviedb.org/settings/api</a></li>
+      <li>Kliknij <strong>Create</strong> → <strong>Developer</strong></li>
+      <li>Wypełnij formularz (dowolna nazwa, np. "Daily Helper")</li>
+      <li>Skopiuj <strong>API Key (v3 auth)</strong> i wklej poniżej</li>
+    </ol>
 
-<label>Twój klucz API (v3)</label>
-<div class="api-input-row">
-  <input type="password" id="apiKeyInput" placeholder="np. a1b2c3d4e5f6...">
-  <button class="btn primary" onclick="saveApiKey()">Zapisz i wejdź →</button>
-</div>
-<div class="api-err" id="apiErr"></div>
+    <label>Twój klucz API (v3)</label>
+    <div class="api-input-row">
+      <input type="password" id="apiKeyInput" placeholder="np. a1b2c3d4e5f6...">
+      <button class="btn primary" onclick="saveApiKey()">Zapisz i wejdź →</button>
+    </div>
+    <div class="api-err" id="apiErr"></div>
 
-<div class="api-note">
-  🔒 Klucz zapisuje się wyłącznie w Twojej przeglądarce (localStorage). Nikt inny go nie widzi. Możesz go usunąć w każdej chwili klikając ⚙️ w nawigacji.
-</div>
+    <div class="api-note">
+      🔒 Klucz zapisuje się wyłącznie w Twojej przeglądarce (localStorage). Nikt inny go nie widzi. Możesz go usunąć w każdej chwili klikając ⚙️ w nawigacji.
+    </div>
 
-<div style="margin-top:16px;text-align:center">
-  <button class="btn ghost" style="font-size:.78rem;padding:7px 14px" onclick="skipApiKey()">Pomiń — używaj bez modułu Film</button>
-</div>
-```
-
+    <div style="margin-top:16px;text-align:center">
+      <button class="btn ghost" style="font-size:.78rem;padding:7px 14px" onclick="skipApiKey()">Pomiń — używaj bez modułu Film</button>
+    </div>
   </div>
 </div>
 
-<!-- TOPBAR -->
 
+<!-- TOPBAR -->
 <header class="topbar">
   <div class="logo">Daily Helper</div>
   <button class="topbar-settings" onclick="openSettings()">⚙️ Klucz API</button>
 </header>
 
 <!-- APP SHELL -->
-
 <div class="shell">
 
 <!-- SIDEBAR -->
-
 <nav class="sidebar">
   <div class="sidebar-label">Narzędzia</div>
   <button class="tab on" data-page="plan"><span class="ico">📅</span>Plan dnia</button>
@@ -341,11 +333,9 @@ animation:fadeUp .35s ease;
 </nav>
 
 <!-- CONTENT -->
-
 <div class="content">
 
 <!-- MOBILE BOTTOM NAV -->
-
 <nav class="mobile-nav">
   <button class="mobile-tab on" data-page="plan"><span class="ico">📅</span>Plan</button>
   <button class="mobile-tab" data-page="wydatki"><span class="ico">💳</span>Wydatki</button>
@@ -359,7 +349,6 @@ animation:fadeUp .35s ease;
 <!-- ═══════════════════════════════════════════════════════════
      PAGE 1: PLAN DNIA
 ════════════════════════════════════════════════════════════ -->
-
 <div id="plan" class="page on">
   <h1>📅 Plan dnia</h1>
   <p class="sub">Wpisz zadania → wygeneruję harmonogram</p>
@@ -381,7 +370,6 @@ animation:fadeUp .35s ease;
 <!-- ═══════════════════════════════════════════════════════════
      PAGE 2: WYDATKI
 ════════════════════════════════════════════════════════════ -->
-
 <div id="wydatki" class="page">
   <h1>💳 Kalkulator wydatków</h1>
   <p class="sub">Sprawdź ile zostaje po wszystkich wydatkach</p>
@@ -405,7 +393,6 @@ animation:fadeUp .35s ease;
 <!-- ═══════════════════════════════════════════════════════════
      PAGE 3: RACHUNEK
 ════════════════════════════════════════════════════════════ -->
-
 <div id="rachunek" class="page">
   <h1>🍕 Dzielenie rachunku</h1>
   <p class="sub">Szybko podziel rachunek z napiwkiem</p>
@@ -436,15 +423,13 @@ animation:fadeUp .35s ease;
     </div>
   </div>
 
-<button class="btn primary" onclick="calcBill()">🧮 Oblicz</button>
-
+  <button class="btn primary" onclick="calcBill()">🧮 Oblicz</button>
   <div id="billResult"></div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
      PAGE 4: GOTOWANIE
 ════════════════════════════════════════════════════════════ -->
-
 <div id="gotowanie" class="page">
   <h1>🍳 Co ugotować?</h1>
   <p class="sub">Wybierz składniki → znajdę przepis (TheMealDB)</p>
@@ -474,7 +459,6 @@ animation:fadeUp .35s ease;
 <!-- ═══════════════════════════════════════════════════════════
      PAGE 5: FILM
 ════════════════════════════════════════════════════════════ -->
-
 <div id="film" class="page">
   <h1>🎬 Co oglądać dziś?</h1>
   <p class="sub">Wybierz gatunek, rok i format → dostaniesz propozycję</p>
@@ -514,7 +498,6 @@ animation:fadeUp .35s ease;
 <!-- ═══════════════════════════════════════════════════════════
      PAGE 6: DECYZJA
 ════════════════════════════════════════════════════════════ -->
-
 <div id="decyzja" class="page">
   <h1>🎲 Losowa decyzja</h1>
   <p class="sub">Nie możesz się zdecydować? Zdaj się na los!</p>
@@ -533,15 +516,13 @@ animation:fadeUp .35s ease;
 
   <div id="catPreview" class="mt8" style="display:none"></div>
 
-<button class="btn purple" id="spinBtn" onclick="spinDecision()" style="font-size:.95rem;padding:13px 26px">🎯 Losuj!</button>
-
+  <button class="btn purple" id="spinBtn" onclick="spinDecision()" style="font-size:.95rem;padding:13px 26px">🎯 Losuj!</button>
   <div id="decisionResult"></div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
      PAGE 7: NAWYKI
 ════════════════════════════════════════════════════════════ -->
-
 <div id="nawyki" class="page">
   <h1>🌱 Ograniczanie nawyków</h1>
   <p class="sub">Stopniowy plan + tracker 30 dni + mini-wyzwania</p>
@@ -557,30 +538,27 @@ animation:fadeUp .35s ease;
       <input type="text" id="habitCurrent" placeholder="np. 20">
     </div>
 
-```
-<div class="card" id="habitPlanCard"></div>
+    <div class="card" id="habitPlanCard"></div>
 
-<div class="card">
-  <div class="between" style="margin-bottom:10px">
-    <span style="font-family:'Playfair Display',serif;font-weight:700">Tracker 30 dni</span>
-    <span class="muted" id="trackerCount">✅ 0 / 0 dni</span>
-  </div>
-  <div class="dots" id="trackerDots"></div>
-  <p class="muted" style="font-size:.74rem;margin-top:6px">Kliknij: raz = ✅ sukces · dwa razy = ✗ porażka · trzy razy = czyste</p>
-</div>
+    <div class="card">
+      <div class="between" style="margin-bottom:10px">
+        <span style="font-family:'Playfair Display',serif;font-weight:700">Tracker 30 dni</span>
+        <span class="muted" id="trackerCount">✅ 0 / 0 dni</span>
+      </div>
+      <div class="dots" id="trackerDots"></div>
+      <p class="muted" style="font-size:.74rem;margin-top:6px">Kliknij: raz = ✅ sukces · dwa razy = ✗ porażka · trzy razy = czyste</p>
+    </div>
 
-<div class="card last">
-  <p style="font-family:'Playfair Display',serif;font-weight:700;margin-bottom:10px">Mini-wyzwanie na dziś</p>
-  <div id="challengeText" class="muted">Kliknij przycisk, by dostać wyzwanie</div>
-  <button class="btn green" style="margin-top:12px" onclick="newChallenge()">✨ Daj mi wyzwanie</button>
-</div>
-```
-
+    <div class="card last">
+      <p style="font-family:'Playfair Display',serif;font-weight:700;margin-bottom:10px">Mini-wyzwanie na dziś</p>
+      <div id="challengeText" class="muted">Kliknij przycisk, by dostać wyzwanie</div>
+      <button class="btn green" style="margin-top:12px" onclick="newChallenge()">✨ Daj mi wyzwanie</button>
+    </div>
   </div>
 </div>
+
 
 <!-- SETTINGS MODAL -->
-
 <div id="settingsModal" style="display:none;position:fixed;inset:0;z-index:999;background:var(--sidebar-bg);align-items:center;justify-content:center;padding:24px">
   <div class="api-box" style="max-width:440px">
     <div class="api-title" style="margin-top:0">⚙️ Ustawienia klucza TMDB</div>
@@ -1614,6 +1592,5 @@ function toMin(s){const[h,m]=s.split(':').map(Number);return h*60+m}
 function fromMin(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 </script>
-
 </body>
 </html>
