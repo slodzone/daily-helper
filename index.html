@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Helper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & VARS ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;
+  --surf:#14171f;
+  --surf2:#1c2030;
+  --border:rgba(255,255,255,0.08);
+  --accent:#f0c060;
+  --a2:#60c0f0;
+  --a3:#b06af0;
+  --text:#e8eaf0;
+  --muted:#6b7280;
+  --danger:#f06070;
+  --ok:#60f0a0;
+  --r:12px;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.5}
+
+/* ── NAV ── */
+nav{
+position:sticky;top:0;z-index:100;
+background:rgba(13,15,20,.9);
+backdrop-filter:blur(18px);
+border-bottom:1px solid var(–border);
+display:flex;align-items:stretch;
+overflow-x:auto;scrollbar-width:none;
+}
+nav::-webkit-scrollbar{display:none}
+.logo{
+font-family:‘Syne’,sans-serif;font-weight:800;font-size:1rem;
+color:var(–accent);white-space:nowrap;
+padding:0 20px;display:flex;align-items:center;
+border-right:1px solid var(–border);flex-shrink:0;
+letter-spacing:-.02em;
+}
+.tab{
+background:none;border:none;color:var(–muted);
+font-family:‘DM Sans’,sans-serif;font-size:.78rem;font-weight:500;
+padding:14px 16px;cursor:pointer;white-space:nowrap;
+display:flex;flex-direction:column;align-items:center;gap:3px;
+border-bottom:2px solid transparent;transition:color .2s,border-color .2s;
+flex-shrink:0;
+}
+.tab .ico{font-size:1.15rem;line-height:1}
+.tab:hover{color:var(–text)}
+.tab.on{color:var(–accent);border-bottom-color:var(–accent)}
+
+/* ── LAYOUT ── */
+.wrap{
+max-width:760px;margin:0 auto;
+padding:28px 20px 72px;
+width:100%;
+}
+.page{display:none}
+.page.on{display:block;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HEADINGS ── */
+h1{font-family:‘Syne’,sans-serif;font-weight:800;font-size:clamp(1.5rem,4vw,2.2rem);letter-spacing:-.03em;margin-bottom:4px;line-height:1.1}
+.sub{color:var(–muted);font-size:.88rem;font-weight:300;margin-bottom:24px}
+
+/* ── FORM ELEMENTS ── */
+label{display:block;font-size:.74rem;font-weight:500;color:var(–muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+input,textarea,select{
+display:block;width:100%;
+background:var(–surf2);border:1px solid var(–border);border-radius:8px;
+color:var(–text);font-family:‘DM Sans’,sans-serif;font-size:.9rem;
+padding:10px 13px;outline:none;
+transition:border-color .2s;
+-webkit-appearance:none;appearance:none;
+}
+input:focus,textarea:focus,select:focus{border-color:var(–accent)}
+input::placeholder,textarea::placeholder{color:var(–muted)}
+.field{margin-bottom:14px}
+.field.last{margin-bottom:0}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:480px){.row2{grid-template-columns:1fr}}
+
+/* ── CARDS ── */
+.card{background:var(–surf);border:1px solid var(–border);border-radius:var(–r);padding:18px;margin-bottom:14px}
+.card.last{margin-bottom:0}
+
+/* ── BUTTONS ── */
+.btn{
+display:inline-flex;align-items:center;gap:7px;
+font-family:‘Syne’,sans-serif;font-weight:700;font-size:.82rem;
+border:none;border-radius:8px;padding:10px 18px;cursor:pointer;
+transition:opacity .15s,transform .1s;letter-spacing:.02em;
+white-space:nowrap;
+}
+.btn:hover{opacity:.85}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(–accent);color:#000}
+.btn.ghost{background:var(–surf2);color:var(–text);border:1px solid var(–border)}
+.btn.red{background:var(–danger);color:#fff}
+.btn.green{background:var(–ok);color:#000}
+.btn.blue{background:var(–a2);color:#000}
+.btn.purple{background:var(–a3);color:#fff}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+/* ── TAGS ── */
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{
+background:var(–surf2);border:1px solid var(–border);border-radius:99px;
+padding:6px 14px;font-size:.8rem;cursor:pointer;user-select:none;
+transition:all .15s;
+}
+.tag:hover{border-color:var(–accent);color:var(–accent)}
+.tag.on{background:var(–accent);color:#000;border-color:var(–accent);font-weight:600}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(–border);margin:18px 0}
+
+/* ── RESULT BOX ── */
+.result{
+background:var(–surf2);border:1px solid rgba(240,192,96,.2);
+border-radius:var(–r);padding:18px;margin-top:16px;
+animation:fadeUp .3s ease;
+}
+.rtitle{font-family:‘Syne’,sans-serif;font-weight:700;font-size:1rem;color:var(–accent);margin-bottom:12px}
+
+/* ── STAT BARS ── */
+.bar-wrap{margin-bottom:10px}
+.bar-label{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:4px}
+.bar-track{height:7px;background:var(–surf);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.22,1,.36,1)}
+
+/* ── SCHEDULE ── */
+.sch-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(–border)}
+.sch-item:last-child{border-bottom:none}
+.sch-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.sch-time{font-family:‘Syne’,sans-serif;font-weight:700;font-size:.82rem;color:var(–accent);min-width:48px;flex-shrink:0}
+.sch-name{font-size:.88rem}
+.sch-meta{font-size:.76rem;color:var(–muted)}
+
+/* ── TRACKER DOTS ── */
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.dot{
+width:34px;height:34px;border-radius:8px;
+background:var(–surf2);border:1px solid var(–border);
+display:flex;align-items:center;justify-content:center;
+font-size:.68rem;font-weight:600;cursor:pointer;
+transition:all .15s;color:var(–muted);user-select:none;
+}
+.dot.ok{background:var(–ok);border-color:var(–ok);color:#000}
+.dot.no{background:var(–danger);border-color:var(–danger);color:#fff}
+
+/* ── BIG NUMBER ── */
+.big{font-family:‘Syne’,sans-serif;font-weight:800;font-size:3rem;color:var(–accent);text-align:center;padding:16px 0;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ── MISC ── */
+.chip{display:inline-block;background:var(–surf2);border:1px solid var(–border);border-radius:6px;padding:2px 9px;font-size:.76rem;margin:2px}
+.between{display:flex;justify-content:space-between;align-items:center}
+.muted{color:var(–muted);font-size:.82rem}
+.mt8{margin-top:8px}
+.mt14{margin-top:14px}
+.err{color:var(–danger);font-size:.82rem;margin-top:8px}
+.spinner{width:28px;height:28px;border:3px solid var(–border);border-top-color:var(–accent);border-radius:50%;animation:spin .7s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.task-title{font-family:‘Syne’,sans-serif;font-weight:700;font-size:.88rem}
+summary{cursor:pointer;font-weight:500;font-size:.85rem;padding:4px 0}
+details p{font-size:.82rem;color:var(–muted);line-height:1.65;margin-top:8px}
+
+/* ── API KEY MODAL ── */
+#apiOverlay{
+position:fixed;inset:0;z-index:1000;
+background:rgba(13,15,20,.97);
+display:flex;align-items:center;justify-content:center;
+padding:24px;
+}
+.api-box{
+background:var(–surf);border:1px solid var(–border);
+border-radius:18px;padding:36px 32px;
+max-width:500px;width:100%;
+box-shadow:0 24px 80px rgba(0,0,0,.7);
+animation:fadeUp .35s ease;
+}
+.api-logo{font-family:‘Syne’,sans-serif;font-weight:800;font-size:1.8rem;color:var(–accent);letter-spacing:-.03em;margin-bottom:4px}
+.api-tagline{color:var(–muted);font-size:.85rem;margin-bottom:28px}
+.api-title{font-family:‘Syne’,sans-serif;font-weight:700;font-size:1rem;margin-bottom:12px;color:var(–text)}
+.api-steps{list-style:none;counter-reset:step;margin:0 0 20px}
+.api-steps li{counter-increment:step;display:flex;gap:10px;align-items:flex-start;font-size:.83rem;color:var(–muted);line-height:1.55;margin-bottom:9px}
+.api-steps li::before{content:counter(step);background:var(–surf2);border:1px solid var(–border);color:var(–accent);font-family:‘Syne’,sans-serif;font-weight:700;font-size:.72rem;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.api-steps a{color:var(–a2);text-decoration:none}
+.api-steps a:hover{text-decoration:underline}
+.api-input-row{display:flex;gap:10px;margin-top:4px}
+.api-input-row input{flex:1}
+.api-note{font-size:.74rem;color:var(–muted);margin-top:10px;line-height:1.5;padding:10px 12px;background:var(–surf2);border-radius:8px;border:1px solid var(–border)}
+.api-err{color:var(–danger);font-size:.8rem;margin-top:8px;min-height:18px}
+</style>
+
+</head>
+<body>
+
+<!-- API KEY MODAL -->
+
+<div id="apiOverlay">
+  <div class="api-box">
+    <div class="api-logo">Daily Helper</div>
+    <div class="api-tagline">Twój codzienny pomocnik</div>
+
+```
+<div class="api-title">🎬 Jeden krok do pełnej wersji</div>
+<p style="font-size:.84rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
+  Moduł „Co obejrzeć" korzysta z bazy TMDB. Potrzebujesz darmowego klucza API — wpisujesz go raz, zapisuje się w Twojej przeglądarce.
+</p>
+
+<ol class="api-steps">
+  <li>Wejdź na <a href="https://www.themoviedb.org/settings/api" target="_blank">themoviedb.org/settings/api</a></li>
+  <li>Kliknij <strong>Create</strong> → <strong>Developer</strong></li>
+  <li>Wypełnij formularz (dowolna nazwa, np. "Daily Helper")</li>
+  <li>Skopiuj <strong>API Key (v3 auth)</strong> i wklej poniżej</li>
+</ol>
+
+<label>Twój klucz API (v3)</label>
+<div class="api-input-row">
+  <input type="password" id="apiKeyInput" placeholder="np. a1b2c3d4e5f6...">
+  <button class="btn primary" onclick="saveApiKey()">Zapisz i wejdź →</button>
+</div>
+<div class="api-err" id="apiErr"></div>
+
+<div class="api-note">
+  🔒 Klucz zapisuje się wyłącznie w Twojej przeglądarce (localStorage). Nikt inny go nie widzi. Możesz go usunąć w każdej chwili klikając ⚙️ w nawigacji.
+</div>
+
+<div style="margin-top:16px;text-align:center">
+  <button class="btn ghost" style="font-size:.78rem;padding:7px 14px" onclick="skipApiKey()">Pomiń — używaj bez modułu Film</button>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- NAV -->
+
+<nav>
+  <div class="logo">Daily Helper</div>
+  <button class="tab on" data-page="plan"><span class="ico">📅</span>Plan dnia</button>
+  <button class="tab" data-page="wydatki"><span class="ico">💳</span>Wydatki</button>
+  <button class="tab" data-page="rachunek"><span class="ico">🍕</span>Rachunek</button>
+  <button class="tab" data-page="gotowanie"><span class="ico">🍳</span>Gotowanie</button>
+  <button class="tab" data-page="film"><span class="ico">🎬</span>Film</button>
+  <button class="tab" data-page="decyzja"><span class="ico">🎲</span>Decyzja</button>
+  <button class="tab" data-page="nawyki"><span class="ico">🌱</span>Nawyki</button>
+  <button class="tab" id="settingsBtn" style="margin-left:auto" onclick="openSettings()"><span class="ico">⚙️</span>Klucz API</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 1: PLAN DNIA
+════════════════════════════════════════════════════════════ -->
+
+<div id="plan" class="page on">
+  <h1>📅 Plan dnia</h1>
+  <p class="sub">Wpisz zadania → wygeneruję harmonogram</p>
+
+  <div class="field">
+    <label>Godzina startu</label>
+    <input type="time" id="startTime" value="08:00" style="max-width:160px">
+  </div>
+
+  <div id="taskList"></div>
+
+  <div class="btn-row">
+    <button class="btn ghost" onclick="addTask()">+ Dodaj zadanie</button>
+    <button class="btn primary" onclick="generatePlan()">✨ Generuj harmonogram</button>
+  </div>
+  <div id="planResult"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 2: WYDATKI
+════════════════════════════════════════════════════════════ -->
+
+<div id="wydatki" class="page">
+  <h1>💳 Kalkulator wydatków</h1>
+  <p class="sub">Sprawdź ile zostaje po wszystkich wydatkach</p>
+
+  <div class="field">
+    <label>Miesięczny dochód (PLN)</label>
+    <input type="number" id="income" placeholder="np. 5000" style="max-width:240px">
+  </div>
+  <div class="div"></div>
+  <p style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:12px">Wydatki</p>
+
+  <div id="expList"></div>
+
+  <div class="btn-row">
+    <button class="btn ghost" onclick="addExp()">+ Dodaj kategorię</button>
+    <button class="btn primary" onclick="calcExp()">📊 Oblicz</button>
+  </div>
+  <div id="expResult"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 3: RACHUNEK
+════════════════════════════════════════════════════════════ -->
+
+<div id="rachunek" class="page">
+  <h1>🍕 Dzielenie rachunku</h1>
+  <p class="sub">Szybko podziel rachunek z napiwkiem</p>
+
+  <div class="card">
+    <div class="row2">
+      <div class="field">
+        <label>Kwota rachunku (PLN)</label>
+        <input type="number" id="billTotal" placeholder="np. 180">
+      </div>
+      <div class="field last">
+        <label>Liczba osób</label>
+        <input type="number" id="billPeople" value="2" min="1" max="50">
+      </div>
+    </div>
+    <div>
+      <label>Napiwek</label>
+      <div class="tags" id="tipTags">
+        <span class="tag on" data-tip="0">0%</span>
+        <span class="tag" data-tip="5">5%</span>
+        <span class="tag" data-tip="10">10%</span>
+        <span class="tag" data-tip="15">15%</span>
+        <span class="tag" data-tip="20">20%</span>
+      </div>
+      <div style="margin-top:10px;max-width:140px">
+        <input type="number" id="customTip" placeholder="Własny %">
+      </div>
+    </div>
+  </div>
+
+<button class="btn primary" onclick="calcBill()">🧮 Oblicz</button>
+
+  <div id="billResult"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 4: GOTOWANIE
+════════════════════════════════════════════════════════════ -->
+
+<div id="gotowanie" class="page">
+  <h1>🍳 Co ugotować?</h1>
+  <p class="sub">Wybierz składniki → znajdę przepis (TheMealDB)</p>
+
+  <div class="field">
+    <label>Popularne składniki</label>
+    <div class="tags" id="ingTags"></div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:4px">
+    <input id="customIng" placeholder="Inny składnik…" onkeydown="if(event.key==='Enter')addCustomIng()">
+    <button class="btn ghost" onclick="addCustomIng()" style="flex-shrink:0">+ Dodaj</button>
+  </div>
+
+  <div id="selectedIngs" class="mt8"></div>
+  <div id="ingErr" class="err"></div>
+
+  <div class="btn-row">
+    <button class="btn primary" onclick="findMeal()">🎲 Losuj przepis</button>
+    <button class="btn ghost" onclick="clearIngs()">Wyczyść</button>
+  </div>
+
+  <div id="mealSpinner" style="display:none"><div class="spinner"></div></div>
+  <div id="mealResult"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 5: FILM
+════════════════════════════════════════════════════════════ -->
+
+<div id="film" class="page">
+  <h1>🎬 Co oglądać dziś?</h1>
+  <p class="sub">Wybierz gatunek, rok i format → dostaniesz propozycję</p>
+
+  <div class="field">
+    <label>Format</label>
+    <div class="tags">
+      <span class="tag on" data-mtype="all" onclick="setType(this)">🎬 Wszystko</span>
+      <span class="tag" data-mtype="film" onclick="setType(this)">🎥 Film</span>
+      <span class="tag" data-mtype="serial" onclick="setType(this)">📺 Serial</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Gatunek <span style="font-weight:300;text-transform:none;letter-spacing:0;color:var(--muted);font-size:.78rem">— możesz wybrać kilka</span></label>
+    <div class="tags" id="moodTags"></div>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button class="btn ghost" style="padding:5px 12px;font-size:.75rem" onclick="selectAllMoods()">Zaznacz wszystkie</button>
+      <button class="btn ghost" style="padding:5px 12px;font-size:.75rem" onclick="clearMoods()">Wyczyść</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Rok produkcji / premiery</label>
+    <div class="tags" id="yearTags"></div>
+  </div>
+
+  <div id="filmErr" class="err"></div>
+  <div class="btn-row">
+    <button class="btn blue" onclick="findFilm()">🎲 Losuj propozycję</button>
+  </div>
+
+  <div id="filmSpinner" style="display:none"><div class="spinner"></div></div>
+  <div id="filmResult"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 6: DECYZJA
+════════════════════════════════════════════════════════════ -->
+
+<div id="decyzja" class="page">
+  <h1>🎲 Losowa decyzja</h1>
+  <p class="sub">Nie możesz się zdecydować? Zdaj się na los!</p>
+
+  <div class="field">
+    <label>Gotowe kategorie</label>
+    <div class="tags" id="catTags"></div>
+  </div>
+
+  <div id="ownOptions">
+    <div class="field">
+      <label>Lub wpisz własne opcje (oddziel przecinkami lub Enterem)</label>
+      <textarea id="optionsText" rows="4" placeholder="np. Restauracja A, Restauracja B, Gotowanie w domu…"></textarea>
+    </div>
+  </div>
+
+  <div id="catPreview" class="mt8" style="display:none"></div>
+
+<button class="btn purple" id="spinBtn" onclick="spinDecision()" style="font-size:.95rem;padding:13px 26px">🎯 Losuj!</button>
+
+  <div id="decisionResult"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 7: NAWYKI
+════════════════════════════════════════════════════════════ -->
+
+<div id="nawyki" class="page">
+  <h1>🌱 Ograniczanie nawyków</h1>
+  <p class="sub">Stopniowy plan + tracker 30 dni + mini-wyzwania</p>
+
+  <div class="field">
+    <label>Wybierz nawyk</label>
+    <div class="tags" id="habitTags"></div>
+  </div>
+
+  <div id="habitContent" style="display:none">
+    <div class="field">
+      <label>Aktualny poziom (ile dziennie)</label>
+      <input type="text" id="habitCurrent" placeholder="np. 20">
+    </div>
+
+```
+<div class="card" id="habitPlanCard"></div>
+
+<div class="card">
+  <div class="between" style="margin-bottom:10px">
+    <span style="font-family:'Syne',sans-serif;font-weight:700">Tracker 30 dni</span>
+    <span class="muted" id="trackerCount">✅ 0 / 0 dni</span>
+  </div>
+  <div class="dots" id="trackerDots"></div>
+  <p class="muted" style="font-size:.74rem;margin-top:6px">Kliknij: raz = ✅ sukces · dwa razy = ✗ porażka · trzy razy = czyste</p>
+</div>
+
+<div class="card last">
+  <p style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:10px">Mini-wyzwanie na dziś</p>
+  <div id="challengeText" class="muted">Kliknij przycisk, by dostać wyzwanie</div>
+  <button class="btn green" style="margin-top:12px" onclick="newChallenge()">✨ Daj mi wyzwanie</button>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+
+<div id="settingsModal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(13,15,20,.92);align-items:center;justify-content:center;padding:24px">
+  <div class="api-box" style="max-width:440px">
+    <div class="api-title" style="margin-top:0">⚙️ Ustawienia klucza TMDB</div>
+    <p style="font-size:.83rem;color:var(--muted);margin-bottom:14px">Zmień lub usuń swój klucz API.</p>
+    <label>Aktualny klucz (v3)</label>
+    <div class="api-input-row">
+      <input type="password" id="settingsKeyInput" placeholder="wklej nowy klucz...">
+      <button class="btn primary" onclick="updateApiKey()">Zapisz</button>
+    </div>
+    <div class="api-err" id="settingsErr"></div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn red" onclick="deleteApiKey()">🗑 Usuń klucz</button>
+      <button class="btn ghost" onclick="closeSettings()">Zamknij</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+
+/* ─── API KEY MANAGEMENT ─────────────────────────────────────────── */
+const LS_KEY='tmdb_api_key';
+
+function getApiKey(){return localStorage.getItem(LS_KEY)||'';}
+
+function saveApiKey(){
+  const val=document.getElementById('apiKeyInput').value.trim();
+  if(!val){document.getElementById('apiErr').textContent='Wklej klucz API';return;}
+  if(val.length<20){document.getElementById('apiErr').textContent='Klucz wygląda za krótko — sprawdź czy skopiowałeś całość';return;}
+  localStorage.setItem(LS_KEY,val);
+  document.getElementById('apiOverlay').style.display='none';
+}
+
+function skipApiKey(){
+  localStorage.setItem(LS_KEY,'__skipped__');
+  document.getElementById('apiOverlay').style.display='none';
+}
+
+function openSettings(){
+  const k=getApiKey();
+  document.getElementById('settingsKeyInput').value=(k&&k!=='__skipped__')?k:'';
+  document.getElementById('settingsErr').textContent='';
+  document.getElementById('settingsModal').style.display='flex';
+}
+
+function closeSettings(){document.getElementById('settingsModal').style.display='none';}
+
+function updateApiKey(){
+  const val=document.getElementById('settingsKeyInput').value.trim();
+  if(!val){document.getElementById('settingsErr').textContent='Wklej klucz API';return;}
+  localStorage.setItem(LS_KEY,val);
+  closeSettings();
+}
+
+function deleteApiKey(){
+  localStorage.removeItem(LS_KEY);
+  closeSettings();
+  document.getElementById('apiOverlay').style.display='flex';
+  document.getElementById('apiKeyInput').value='';
+}
+
+/* Show or hide overlay on load */
+(function(){
+  const k=getApiKey();
+  if(k) document.getElementById('apiOverlay').style.display='none';
+})();
+
+/* ─── NAVIGATION ─────────────────────────────────────────────────── */
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById(btn.dataset.page).classList.add('on');
+  });
+});
+
+/* ─── PAGE 1: PLAN DNIA ──────────────────────────────────────────── */
+let tasks=[];
+const PRIO_COLORS={high:'#f06070',medium:'#f0c060',low:'#60f0a0'};
+const PRIO_LABELS={high:'🔴 Wysoki',medium:'🟡 Średni',low:'🟢 Niski'};
+
+function renderTasks(){
+  const el=document.getElementById('taskList');
+  if(!tasks.length){addTask();return;}
+  el.innerHTML=tasks.map((t,i)=>`
+    <div class="card" style="position:relative">
+      <div class="task-header">
+        <span class="task-title">Zadanie #${i+1}</span>
+        ${tasks.length>1?`<button class="btn red" style="padding:5px 9px;font-size:.72rem" onclick="removeTask(${i})">✕</button>`:''}
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Nazwa</label>
+          <input value="${t.name}" placeholder="np. Projekt X, Siłownia…" oninput="tasks[${i}].name=this.value">
+        </div>
+        <div class="field last">
+          <label>Czas (minuty)</label>
+          <input type="number" value="${t.duration}" min="5" max="480" oninput="tasks[${i}].duration=+this.value">
+        </div>
+      </div>
+      <div>
+        <label>Priorytet</label>
+        <div class="tags">
+          ${['high','medium','low'].map(p=>`
+            <span class="tag${t.priority===p?' on':''}"
+              style="${t.priority===p?`background:${PRIO_COLORS[p]};border-color:${PRIO_COLORS[p]};color:${p==='medium'?'#000':'#fff'}`:''}"
+              onclick="setPrio(${i},'${p}')">${PRIO_LABELS[p]}</span>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addTask(){tasks.push({name:'',duration:30,priority:'medium'});renderTasks()}
+function removeTask(i){tasks.splice(i,1);renderTasks()}
+function setPrio(i,p){tasks[i].priority=p;renderTasks()}
+
+function generatePlan(){
+  const start=document.getElementById('startTime').value||'08:00';
+  const valid=tasks.filter(t=>t.name.trim());
+  if(!valid.length){document.getElementById('planResult').innerHTML='<p class="err">Dodaj co najmniej jedno zadanie.</p>';return;}
+  const order={high:0,medium:1,low:2};
+  const sorted=[...valid].sort((a,b)=>order[a.priority]-order[b.priority]);
+  let cur=toMin(start);
+  const items=sorted.map(t=>{
+    const s=fromMin(cur);cur+=+t.duration;const e=fromMin(cur);cur+=5;
+    return {...t,s,e};
+  });
+  document.getElementById('planResult').innerHTML=`
+    <div class="result">
+      <div class="rtitle">Twój plan dnia</div>
+      ${items.map(t=>`
+        <div class="sch-item">
+          <div class="sch-dot" style="background:${PRIO_COLORS[t.priority]}"></div>
+          <div class="sch-time">${t.s}</div>
+          <div>
+            <div class="sch-name">${esc(t.name)}</div>
+            <div class="sch-meta">do ${t.e} · ${t.duration} min</div>
+          </div>
+        </div>
+      `).join('')}
+      <p class="muted" style="margin-top:10px;font-size:.76rem">☕ 5-minutowe przerwy między zadaniami</p>
+    </div>`;
+}
+
+addTask(); // init
+
+/* ─── PAGE 2: WYDATKI ────────────────────────────────────────────── */
+let exps=[];
+const BAR_COLORS=['#f0c060','#60c0f0','#c060f0','#60f0a0','#f06070','#f0a060','#a0c060'];
+
+function renderExps(){
+  document.getElementById('expList').innerHTML=exps.map((e,i)=>`
+    <div style="display:flex;gap:10px;margin-bottom:10px;align-items:flex-end">
+      <div style="flex:2">
+        <label>Kategoria</label>
+        <input value="${e.name}" placeholder="np. Czynsz, Jedzenie…" oninput="exps[${i}].name=this.value">
+      </div>
+      <div style="flex:1">
+        <label>Kwota (PLN)</label>
+        <input type="number" value="${e.amount}" placeholder="0" oninput="exps[${i}].amount=this.value">
+      </div>
+      ${exps.length>1?`<button class="btn red" style="padding:10px 11px;flex-shrink:0" onclick="removeExp(${i})">✕</button>`:''}
+    </div>
+  `).join('');
+}
+
+function addExp(){exps.push({name:'',amount:''});renderExps()}
+function removeExp(i){exps.splice(i,1);renderExps()}
+
+function calcExp(){
+  const inc=parseFloat(document.getElementById('income').value)||0;
+  const valid=exps.filter(e=>e.name&&parseFloat(e.amount)>0);
+  const total=valid.reduce((s,e)=>s+parseFloat(e.amount),0);
+  const left=inc-total;
+  document.getElementById('expResult').innerHTML=`
+    <div class="result">
+      <div class="rtitle">Podsumowanie</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
+        ${[['Dochód',inc,'var(--ok)'],['Wydatki',total,'var(--danger)'],['Zostaje',left,left>=0?'var(--accent)':'var(--danger)']].map(([l,v,c])=>`
+          <div class="card last" style="text-align:center">
+            <div class="muted" style="font-size:.72rem;margin-bottom:3px">${l}</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:${c}">${v.toFixed(0)} zł</div>
+          </div>
+        `).join('')}
+      </div>
+      ${valid.map((e,i)=>{
+        const pct=inc>0?(parseFloat(e.amount)/inc*100):0;
+        return `<div class="bar-wrap">
+          <div class="bar-label"><span>${esc(e.name)}</span><span>${parseFloat(e.amount).toFixed(0)} zł (${pct.toFixed(1)}%)</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${BAR_COLORS[i%BAR_COLORS.length]}"></div></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+addExp();
+
+/* ─── PAGE 3: RACHUNEK ───────────────────────────────────────────── */
+let selectedTip=0;
+document.querySelectorAll('#tipTags .tag').forEach(tag=>{
+  tag.addEventListener('click',()=>{
+    document.querySelectorAll('#tipTags .tag').forEach(t=>t.classList.remove('on'));
+    tag.classList.add('on');
+    selectedTip=+tag.dataset.tip;
+    document.getElementById('customTip').value='';
+  });
+});
+
+function calcBill(){
+  const total=parseFloat(document.getElementById('billTotal').value)||0;
+  const people=Math.max(1,parseInt(document.getElementById('billPeople').value)||1);
+  const ct=document.getElementById('customTip').value;
+  const tipPct=ct!==''?parseFloat(ct):selectedTip;
+  const tipAmt=total*(tipPct/100);
+  const withTip=total+tipAmt;
+  const per=withTip/people;
+  document.getElementById('billResult').innerHTML=`
+    <div class="result">
+      <div class="rtitle">Każda osoba płaci</div>
+      <div style="text-align:center;padding:8px 0 18px">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:3.2rem;color:var(--accent)">${per.toFixed(2)} zł</div>
+      </div>
+      <div class="div"></div>
+      ${[['Rachunek',total.toFixed(2)+' zł'],['Napiwek ('+tipPct+'%)',tipAmt.toFixed(2)+' zł'],['Razem z napiwkiem',withTip.toFixed(2)+' zł'],['Osób',people]].map(([k,v])=>`
+        <div class="between" style="padding:5px 0;font-size:.87rem">
+          <span class="muted">${k}</span><span style="font-weight:600">${v}</span>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+/* ─── PAGE 4: GOTOWANIE ──────────────────────────────────────────── */
+const ING_LIST=['chicken','pasta','rice','potato','eggs','tomato','onion','garlic','cheese','mushroom','beef','salmon','broccoli','spinach','lemon'];
+let selIngs=[];
+
+function renderIngTags(){
+  document.getElementById('ingTags').innerHTML=ING_LIST.map(ing=>`
+    <span class="tag${selIngs.includes(ing)?' on':''}" onclick="toggleIng('${ing}')">${ing}</span>
+  `).join('');
+  renderSelIngs();
+}
+
+function renderSelIngs(){
+  document.getElementById('selectedIngs').innerHTML=selIngs.length
+    ?'<span class="muted">Wybrane: </span>'+selIngs.map(s=>`<span class="chip">${s} <span style="cursor:pointer;margin-left:3px" onclick="toggleIng('${s}')">✕</span></span>`).join('')
+    :'';
+}
+
+function toggleIng(s){selIngs.includes(s)?selIngs=selIngs.filter(x=>x!==s):selIngs.push(s);renderIngTags()}
+function clearIngs(){selIngs=[];renderIngTags()}
+function addCustomIng(){
+  const v=document.getElementById('customIng').value.trim().toLowerCase();
+  if(v&&!selIngs.includes(v)){selIngs.push(v);renderIngTags();}
+  document.getElementById('customIng').value='';
+}
+
+async function findMeal(){
+  if(!selIngs.length){document.getElementById('ingErr').textContent='Wybierz co najmniej jeden składnik';return;}
+  document.getElementById('ingErr').textContent='';
+  document.getElementById('mealResult').innerHTML='';
+  document.getElementById('mealSpinner').style.display='block';
+  try{
+    const shuffled=[...selIngs].sort(()=>Math.random()-.5);
+    let found=null;
+    for(const ing of shuffled){
+      const r=await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ing}`);
+      const d=await r.json();
+      if(d.meals?.length){
+        const pick=d.meals[Math.floor(Math.random()*Math.min(d.meals.length,10))];
+        const r2=await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${pick.idMeal}`);
+        const d2=await r2.json();
+        found=d2.meals?.[0];
+        if(found)break;
+      }
+    }
+    document.getElementById('mealSpinner').style.display='none';
+    if(found){
+      document.getElementById('mealResult').innerHTML=`
+        <div class="result">
+          <div class="rtitle">${esc(found.strMeal)}</div>
+          <div style="display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap">
+            ${found.strMealThumb?`<img src="${found.strMealThumb}" style="width:110px;height:80px;object-fit:cover;border-radius:8px;flex-shrink:0">`:''}
+            <div>
+              <div class="muted" style="margin-bottom:6px">${found.strCategory||''} · ${found.strArea||''}</div>
+              ${found.strYoutube?`<a href="${found.strYoutube}" target="_blank" style="color:var(--a2);font-size:.83rem">▶ Obejrzyj na YouTube</a>`:''}
+            </div>
+          </div>
+          <details>
+            <summary>📋 Instrukcja przygotowania</summary>
+            <p>${esc((found.strInstructions||'').slice(0,500))}…</p>
+          </details>
+        </div>`;
+    } else {
+      document.getElementById('mealResult').innerHTML='<p class="err">Nie znaleziono przepisów. Spróbuj innych składników.</p>';
+    }
+  } catch(e){
+    document.getElementById('mealSpinner').style.display='none';
+    document.getElementById('mealResult').innerHTML='<p class="err">Błąd połączenia z API.</p>';
+  }
+}
+
+renderIngTags();
+
+/* ─── PAGE 5: FILM ───────────────────────────────────────────────── */
+const MOODS=['😂 Komedia','😱 Horror','💘 Romans','🎬 Dramat','🚀 Sci-Fi','⚔️ Akcja','🕵️ Thriller','🧸 Animacja','📚 Dokumentalny','🧙 Fantasy'];
+
+/* Streaming platform colors & icons */
+const PLATFORM_STYLE={
+  'Netflix':        {bg:'#E50914',icon:'N'},
+  'Disney+':        {bg:'#113CCF',icon:'D+'},
+  'HBO Max':        {bg:'#7B2FBE',icon:'HBO'},
+  'Max':            {bg:'#002BE7',icon:'Max'},
+  'Amazon Prime':   {bg:'#00A8E1',icon:'Prime'},
+  'Apple TV+':      {bg:'#1C1C1E',icon:'🍎'},
+  'Canal+':         {bg:'#000000',icon:'C+'},
+  'Polsat Box Go':  {bg:'#E4002B',icon:'PBG'},
+  'Player.pl':      {bg:'#00ADEF',icon:'▶'},
+  'TVP VOD':        {bg:'#1A3A6B',icon:'TVP'},
+  'Cineman':        {bg:'#F5A623',icon:'Cin'},
+  'SkyShowtime':    {bg:'#0072CE',icon:'Sky'},
+  'Mubi':           {bg:'#000000',icon:'M'},
+  'YouTube':        {bg:'#FF0000',icon:'▶'},
+  'Rakuten TV':     {bg:'#BF0000',icon:'Rak'},
+};
+
+const FILM_DB={
+  '😂 Komedia':[
+    {title:'Superbad',tmdbId:8363,imdb:'tt0829482',year:2007,type:'film',rating:7.6,
+     genres:['😂 Komedia'],
+     overview:'Dwóch niezdarnych przyjaciół próbuje kupić alkohol przed studniówką. Klasyk komedii lat 2000 pełen absurdalnych sytuacji.',
+     streaming:['Netflix','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/superbad'},
+    {title:'Dzień świstaka',tmdbId:137,imdb:'tt0107048',year:1993,type:'film',rating:8.1,
+     genres:['😂 Komedia'],
+     overview:'Reporter utknął w pętli czasowej i każdy dzień przeżywa od nowa. Filozoficzna komedia z Billem Murrayem, która z każdym obejrzeniem daje więcej do myślenia.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/dzien-swistaka'},
+    {title:'Głupi i głupszy',tmdbId:10760,imdb:'tt0109686',year:1994,type:'film',rating:7.3,
+     genres:['😂 Komedia'],
+     overview:'Dwaj kompletnie nierozgarnięci przyjaciele jadą przez całą Amerykę, by oddać walizkę pięknej kobiecie. Absurd doprowadzony do perfekcji.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/glupii-i-glupszy'},
+    {title:'Szkoła rocka',tmdbId:7270,imdb:'tt0332379',year:2003,type:'film',rating:7.1,
+     genres:['😂 Komedia'],
+     overview:'Bezrobotny muzyk podszywa się pod nauczyciela i zakłada szkolny zespół rockowy. Jack Black w życiowej roli — radosny, głośny i zaraźliwy.',
+     streaming:['Netflix','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/szkola-rocka'},
+    {title:'Co robimy w ukryciu',tmdbId:215999,imdb:'tt3416742',year:2014,type:'film',rating:7.9,
+     genres:['😂 Komedia','😱 Horror'],
+     overview:'Mockumentary o wampirach-współlokatorach w Wellington. Genialnie absurdalne i nieoczekiwanie ciepłe.',
+     streaming:['Disney+'],
+     justwatch:'https://www.justwatch.com/pl/film/co-robimy-w-ukryciu'},
+    {title:'Wielka Lebowski',tmdbId:115,imdb:'tt0118715',year:1998,type:'film',rating:8.1,
+     genres:['😂 Komedia','🕵️ Thriller'],
+     overview:'Przypadkowa pomyłka tożsamości wciąga leniwego amanta w absurdalną intrygę kryminalną. Kult w każdym kadrze.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/wielki-lebowski'},
+  ],
+  '😱 Horror':[
+    {title:'Hereditary',tmdbId:493922,imdb:'tt7784604',year:2018,type:'film',rating:7.3,
+     genres:['😱 Horror'],
+     overview:'Po śmierci babci rodzina odkrywa przerażające dziedzictwo. Jeden z najlepszych horrorów dekady — psychologiczny, bezlitosny i głęboko poruszający.',
+     streaming:['HBO Max'],
+     justwatch:'https://www.justwatch.com/pl/film/hereditary'},
+    {title:'Midsommar',tmdbId:530385,imdb:'tt8772262',year:2019,type:'film',rating:7.1,
+     genres:['😱 Horror'],
+     overview:'Wyprawa na szwedzki festiwal letni zamienia się w koszmar. Jasny, słoneczny horror, który przeraża bardziej niż mrok — i mówi wiele o toksycznych związkach.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/midsommar'},
+    {title:'To (2017)',tmdbId:346364,imdb:'tt1396484',year:2017,type:'film',rating:7.3,
+     genres:['😱 Horror'],
+     overview:'Dziecięca banda staje naprzeciw kosmicznemu złu pod postacią klauna Pennywisego. Strach i przyjaźń w równych proporcjach.',
+     streaming:['HBO Max','Max'],
+     justwatch:'https://www.justwatch.com/pl/film/to-2017'},
+    {title:'Uciekaj!',tmdbId:419430,imdb:'tt5052448',year:2017,type:'film',rating:7.7,
+     genres:['😱 Horror','🕵️ Thriller'],
+     overview:'Czarny mężczyzna jedzie poznać rodzinę białej dziewczyny. Napięcie narasta od pierwszej minuty — horror społeczny, który zmusza do refleksji.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/get-out'},
+    {title:'Ciche miejsce',tmdbId:447332,imdb:'tt6644200',year:2018,type:'film',rating:7.5,
+     genres:['😱 Horror'],
+     overview:'Rodzina przeżywa w świecie opanowanym przez stwory reagujące na dźwięk. Cisza jako narzędzie napięcia — działa wyśmienicie.',
+     streaming:['Netflix','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/ciche-miejsce'},
+    {title:'Suspiria (1977)',tmdbId:11175,imdb:'tt0076786',year:1977,type:'film',rating:7.4,
+     genres:['😱 Horror'],
+     overview:'Młoda tancerka przybywa do berlińskiej szkoły baletu kryjącej mroczne sekrety. Wizualny majstersztyk — kolorowy, halucynacyjny, niepokojący.',
+     streaming:['Mubi'],
+     justwatch:'https://www.justwatch.com/pl/film/suspiria'},
+    {title:'Obecność',tmdbId:74907,imdb:'tt1457767',year:2013,type:'film',rating:7.2,
+     genres:['😱 Horror'],
+     overview:'Rodzina wprowadza się do nawiedzonego domu. Klasyczny horror z doskonałą atmosferą i jedną z najlepszych scen finałowych gatunku.',
+     streaming:['HBO Max','Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/the-conjuring'},
+  ],
+  '💘 Romans':[
+    {title:'Zakochany bez pamięci',tmdbId:38,imdb:'tt0338013',year:2004,type:'film',rating:8.1,
+     genres:['💘 Romans'],
+     overview:'Para usuwa wspomnienia o sobie nawzajem, ale uczucia okazują się silniejsze niż technologia. Wzruszający, oryginalny i nie do zapomnienia.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/zakochany-bez-pamieci'},
+    {title:'La La Land',tmdbId:313369,imdb:'tt3783958',year:2016,type:'film',rating:8.0,
+     genres:['💘 Romans','🎬 Dramat'],
+     overview:'Aspirująca aktorka i jazzman zakochują się w Los Angeles. Muzyczny romans o marzeniach, kompromisach i tym, czego nie możemy mieć jednocześnie.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/la-la-land'},
+    {title:'Czas na miłość',tmdbId:155733,imdb:'tt2194499',year:2013,type:'film',rating:7.8,
+     genres:['💘 Romans'],
+     overview:'Mężczyzna odkrywa, że może cofać się w czasie i stara się zbudować idealne życie z ukochaną. Ciepły, mądry i nieoczekiwanie wzruszający.',
+     streaming:['Netflix','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/czas-na-milosc'},
+    {title:'Kiedy Harry poznał Sally',tmdbId:9593,imdb:'tt0098635',year:1989,type:'film',rating:7.6,
+     genres:['💘 Romans','😂 Komedia'],
+     overview:'Czy mężczyzna i kobieta mogą być tylko przyjaciółmi? Jedna z najlepszych komedii romantycznych w historii. Dialogi na najwyższym poziomie.',
+     streaming:['HBO Max'],
+     justwatch:'https://www.justwatch.com/pl/film/kiedy-harry-poznal-sally'},
+    {title:'Notting Hill',tmdbId:1605,imdb:'tt0125439',year:1999,type:'film',rating:7.1,
+     genres:['💘 Romans','😂 Komedia'],
+     overview:'Zwykły właściciel księgarni zakochuje się w największej gwieździe Hollywood. Urokliwy, nieśpieszny i pełen ciepła.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/notting-hill'},
+    {title:'Carol',tmdbId:258230,imdb:'tt2402927',year:2015,type:'film',rating:7.2,
+     genres:['💘 Romans','🎬 Dramat'],
+     overview:'Młoda sprzedawczyni zakochuje się w zamężnej kobiecie w konserwatywnych latach 50. Elegancki, powściągliwy i poruszający.',
+     streaming:['Mubi','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/carol'},
+  ],
+  '🎬 Dramat':[
+    {title:'Parasite',tmdbId:496243,imdb:'tt6751668',year:2019,type:'film',rating:8.5,
+     genres:['🎬 Dramat','🕵️ Thriller'],
+     overview:'Biedna koreańska rodzina stopniowo infiltruje życie bogatych sąsiadów. Oscarowy majstersztyk łączący czarną komedię z thrillerem społecznym.',
+     streaming:['Mubi','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/parasite-2019'},
+    {title:'Skazani na Shawshank',tmdbId:278,imdb:'tt0111161',year:1994,type:'film',rating:9.3,
+     genres:['🎬 Dramat'],
+     overview:'Niewinnie skazany bankier buduje przyjaźń i nadzieję za kratami. Najwyżej oceniany film w historii IMDb — i zasługuje na każdą gwiazdkę.',
+     streaming:['Netflix','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/skazani-na-shawshank'},
+    {title:'Whiplash',tmdbId:244786,imdb:'tt2582802',year:2014,type:'film',rating:8.5,
+     genres:['🎬 Dramat'],
+     overview:'Młody perkusista trafia pod skrzydła bezlitosnego instruktora. Thriller o ambicji, poświęceniu i granicy między inspiracją a torturą.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/whiplash'},
+    {title:'1917',tmdbId:530915,imdb:'tt8579674',year:2019,type:'film',rating:8.3,
+     genres:['🎬 Dramat','⚔️ Akcja'],
+     overview:'Dwaj żołnierze mają 24 godziny, by dostarczyć wiadomość przez linię wroga. Nakręcony jako pozornie jedno ujęcie — immersja totalna.',
+     streaming:['Netflix','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/1917'},
+    {title:'Zielona mila',tmdbId:497,imdb:'tt0120689',year:1999,type:'film',rating:8.6,
+     genres:['🎬 Dramat'],
+     overview:'Strażnik więzienny odkrywa niezwykłą moc skazańca czekającego na krzesło elektryczne. Długi, powolny i absolutnie wciągający.',
+     streaming:['Netflix','HBO Max'],
+     justwatch:'https://www.justwatch.com/pl/film/zielona-mila'},
+    {title:'Spotlight',tmdbId:314365,imdb:'tt1895587',year:2015,type:'film',rating:8.1,
+     genres:['🎬 Dramat','🕵️ Thriller'],
+     overview:'Redakcja Boston Globe ujawnia systemowe tuszowanie nadużyć w Kościele katolickim. Jedno z najlepszych dziennikarskich kino-śledztw.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/spotlight'},
+    {title:'Schindlers Lista',tmdbId:424,imdb:'tt0108052',year:1993,type:'film',rating:8.9,
+     genres:['🎬 Dramat'],
+     overview:'Niemiecki przedsiębiorca ratuje życie ponad tysiąca Żydów podczas Holokaustu. Obowiązkowy i wstrząsający.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/lista-schindlera'},
+  ],
+  '🚀 Sci-Fi':[
+    {title:'Interstellar',tmdbId:157336,imdb:'tt0816692',year:2014,type:'film',rating:8.6,
+     genres:['🚀 Sci-Fi','🎬 Dramat'],
+     overview:'Astronauci przemierzają galaktykę przez czarną dziurę w poszukiwaniu nowego domu dla ludzkości. Spektakularny, wzruszający i naukowo ambitny.',
+     streaming:['Netflix','SkyShowtime'],
+     justwatch:'https://www.justwatch.com/pl/film/interstellar'},
+    {title:'Arrival',tmdbId:329865,imdb:'tt2543164',year:2016,type:'film',rating:7.9,
+     genres:['🚀 Sci-Fi','🎬 Dramat'],
+     overview:'Językoznawczyni musi porozumieć się z kosmitami, zanim rządy świata zdecydują się na wojnę. Sci-fi dla miłośników opowieści — nie laserów.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/arrival'},
+    {title:'Ex Machina',tmdbId:264660,imdb:'tt0470752',year:2014,type:'film',rating:7.7,
+     genres:['🚀 Sci-Fi','🕵️ Thriller'],
+     overview:'Programista testuje sztuczną inteligencję zamkniętą w kobiecym ciele. Mroczny, filozoficzny i trzymający w napięciu do ostatniej sceny.',
+     streaming:['Amazon Prime','Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/ex-machina'},
+    {title:'Matrix',tmdbId:603,imdb:'tt0133093',year:1999,type:'film',rating:8.7,
+     genres:['🚀 Sci-Fi','⚔️ Akcja'],
+     overview:'Haker odkrywa, że rzeczywistość jest symulacją. Kultowa rewolucja kina akcji i sci-fi, która do dziś pozostaje aktualna filozoficznie.',
+     streaming:['HBO Max','Max'],
+     justwatch:'https://www.justwatch.com/pl/film/matrix'},
+    {title:'Marsjanin',tmdbId:286217,imdb:'tt3659388',year:2015,type:'film',rating:8.0,
+     genres:['🚀 Sci-Fi','😂 Komedia'],
+     overview:'Astronauta zostaje sam na Marsie i musi przeżyć do kolejnej misji. Optymistyczny survival z genialnym humorem i Mattem Damonem w szczytowej formie.',
+     streaming:['Disney+','HBO Max'],
+     justwatch:'https://www.justwatch.com/pl/film/marsjanin'},
+    {title:'Blade Runner 2049',tmdbId:335984,imdb:'tt1856101',year:2017,type:'film',rating:8.0,
+     genres:['🚀 Sci-Fi','🕵️ Thriller'],
+     overview:'Łowca androidów odkrywa sekret mogący zmienić przyszłość ludzkości. Wizualnie hipnotyzujący i mądrzejszy niż większość sequeli.',
+     streaming:['Amazon Prime','Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/blade-runner-2049'},
+    {title:'Annihilation',tmdbId:300668,imdb:'tt2798920',year:2018,type:'film',rating:6.9,
+     genres:['🚀 Sci-Fi','😱 Horror'],
+     overview:'Ekspedycja naukowa wkracza do tajemniczej strefy anomalii. Nielinearny, surrealistyczny horror sci-fi — nie dla każdego, ale niezapomniany.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/unicestwienie'},
+  ],
+  '⚔️ Akcja':[
+    {title:'Mad Max: Na drodze gniewu',tmdbId:76341,imdb:'tt1392190',year:2015,type:'film',rating:8.1,
+     genres:['⚔️ Akcja','🚀 Sci-Fi'],
+     overview:'Furiosa ucieka z despotycznym władcą. Dwie godziny szalonego pościgu przez pustynię — choreografia chaosu podniesiona do rangi sztuki.',
+     streaming:['Netflix','HBO Max'],
+     justwatch:'https://www.justwatch.com/pl/film/mad-max-na-drodze-gniewu'},
+    {title:'John Wick',tmdbId:245891,imdb:'tt2911666',year:2014,type:'film',rating:7.4,
+     genres:['⚔️ Akcja','🕵️ Thriller'],
+     overview:'Emerytowany zabójca wraca do gry, gdy gangsterzy zabijają jego psa. Choreografia walki na poziomie baletowym — zdefiniował gatunek.',
+     streaming:['Netflix','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/john-wick'},
+    {title:'Top Gun: Maverick',tmdbId:361743,imdb:'tt1745960',year:2022,type:'film',rating:8.3,
+     genres:['⚔️ Akcja'],
+     overview:'Legendarny pilot wraca, by wytrenować elitarną grupę na niemożliwą misję. Jeden z najlepszych sequeli w historii — emocje i adrenalina gwarantowane.',
+     streaming:['Amazon Prime','SkyShowtime'],
+     justwatch:'https://www.justwatch.com/pl/film/top-gun-maverick'},
+    {title:'Mission: Impossible — Fallout',tmdbId:353081,imdb:'tt4912910',year:2018,type:'film',rating:7.7,
+     genres:['⚔️ Akcja','🕵️ Thriller'],
+     overview:'Ethan Hunt ściga plutonium przez połowę świata. Najlepszy film z serii, kaskadersko niewiarygodny — każda scena to majstersztyk.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/mission-impossible-fallout'},
+    {title:'Gladiator',tmdbId:98,imdb:'tt0172495',year:2000,type:'film',rating:8.5,
+     genres:['⚔️ Akcja','🎬 Dramat'],
+     overview:'Generał-niewolnik walczy o zemstę na cesarzu, który zamordował jego rodzinę. Epickie, emocjonalne i z Russellem Croweiem w roli życia.',
+     streaming:['Netflix','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/gladiator'},
+    {title:'Oppenheimer',tmdbId:872585,imdb:'tt15398776',year:2023,type:'film',rating:8.9,
+     genres:['⚔️ Akcja','🎬 Dramat'],
+     overview:'Twórca bomby atomowej zmaga się z konsekwencjami swojego dzieła. Trzy godziny absolutnego skupienia — kino wielkiego formatu.',
+     streaming:['SkyShowtime','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/oppenheimer'},
+    {title:'Dredd',tmdbId:73590,imdb:'tt1343727',year:2012,type:'film',rating:7.1,
+     genres:['⚔️ Akcja','🚀 Sci-Fi'],
+     overview:'Sędzia Dredd i rekrut uwięzieni w 200-piętrowym bloku rządzonym przez bezlitosną gangsterkę. Niedoceniony klejnot gatunku.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/dredd'},
+  ],
+  '🕵️ Thriller':[
+    {title:'Zodiak',tmdbId:10929,imdb:'tt0443706',year:2007,type:'film',rating:7.7,
+     genres:['🕵️ Thriller','🎬 Dramat'],
+     overview:'Dziennikarz i detektyw przez dwie dekady ścigają seryjnego mordercę wysyłającego zaszyfrowane listy. Fincher w najlepszej formie — powolny jak obsesja.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/zodiac'},
+    {title:'Prestiż',tmdbId:1124,imdb:'tt0482571',year:2006,type:'film',rating:8.5,
+     genres:['🕵️ Thriller','🎬 Dramat'],
+     overview:'Dwóch rywalizujących iluzjonistów posunęłoby się do wszystkiego, by pokonać konkurenta. Jeden z najinteligentniejszych thrillerów Nolana.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/prestiz'},
+    {title:'Siedem',tmdbId:807,imdb:'tt0114369',year:1995,type:'film',rating:8.6,
+     genres:['🕵️ Thriller','😱 Horror'],
+     overview:'Detektywi ścigają seryjnego mordercę inspirowanego siedmioma grzechami głównymi. Mroczny, nieuchronny i z jednym z najlepszych finałów w historii kina.',
+     streaming:['Netflix','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/siedem'},
+    {title:'Dziewczyna z tatuażem',tmdbId:65754,imdb:'tt1568346',year:2011,type:'film',rating:7.8,
+     genres:['🕵️ Thriller'],
+     overview:'Dziennikarz śledczy i hakerka rozwiązują tajemnicę zaginięcia sprzed czterdziestu lat. Fincher i klimat skandynawski — połączenie idealne.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/dziewczyna-z-tatuazem-2011'},
+    {title:'Oldboy',tmdbId:670,imdb:'tt0364569',year:2003,type:'film',rating:8.4,
+     genres:['🕵️ Thriller','😱 Horror'],
+     overview:'Mężczyzna wychodzi z więzienia po piętnastu latach i szuka odpowiedzi. Szokujące koreańskie arcydzieło z kultową sceną walki.',
+     streaming:['Mubi','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/oldboy'},
+    {title:'Knives Out',tmdbId:546554,imdb:'tt8946378',year:2019,type:'film',rating:7.9,
+     genres:['🕵️ Thriller','😂 Komedia'],
+     overview:'Ekscentryczny detektyw rozwiązuje śmierć pisarza kryminałów. Błyskotliwy, współczesny whodunit z gwiazdorską obsadą.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/knives-out'},
+    {title:'Nocne zwierzęta',tmdbId:336004,imdb:'tt4550098',year:2016,type:'film',rating:7.3,
+     genres:['🕵️ Thriller','🎬 Dramat'],
+     overview:'Projektantka mody dostaje rękopis powieści od byłego męża i pogrąża się w mrocznej historii. Dwa równoległe, wzajemnie komentujące się thrillery.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/nocne-zwierzeta'},
+  ],
+  '🧸 Animacja':[
+    {title:'Spider-Man: Poprzez multiwersum',tmdbId:569094,imdb:'tt9362722',year:2023,type:'film',rating:8.6,
+     genres:['🧸 Animacja','⚔️ Akcja'],
+     overview:'Miles Morales trafia do innych wymiarów pełnych Spider-Manów. Przełomowy wizualnie i emocjonalnie kompletny — każda klatka to obraz.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/spider-man-poprzez-multiwersum'},
+    {title:'Spirited Away',tmdbId:129,imdb:'tt0245429',year:2001,type:'film',rating:8.6,
+     genres:['🧸 Animacja','🧙 Fantasy'],
+     overview:'Dziesięciolatka trafia do świata duchów i musi pracować w łaźni, by uwolnić rodziców. Miyazaki w szczytowej formie — oniryczny, mądry i niezapomniany.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/spirited-away'},
+    {title:'The Incredibles',tmdbId:9806,imdb:'tt0317705',year:2004,type:'film',rating:8.0,
+     genres:['🧸 Animacja','⚔️ Akcja'],
+     overview:'Superbohaterowie zmuszeni do życia w ukryciu wracają do gry. Świetny film familijny, ale też błyskotliwa satyra na superbohaterski gatunek.',
+     streaming:['Disney+'],
+     justwatch:'https://www.justwatch.com/pl/film/iniemamocni'},
+    {title:'Klaus',tmdbId:508965,imdb:'tt4729430',year:2019,type:'film',rating:8.2,
+     genres:['🧸 Animacja'],
+     overview:'Cyniczny listonosz trafia na najdalszą północ i przyjaźni się z tajemniczym cieślą. Jeden z najpiękniejszych filmów bożonarodzeniowych.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/klaus'},
+    {title:'Twoje imię',tmdbId:372058,imdb:'tt5311514',year:2016,type:'film',rating:8.4,
+     genres:['🧸 Animacja','💘 Romans'],
+     overview:'Dwoje nastolatków z różnych miast tajemniczo zamienia się ciałami i zaczyna się komunikować. Makoto Shinkai stworzył coś absolutnie wyjątkowego.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/twoje-imie'},
+    {title:'Ratatouille',tmdbId:2062,imdb:'tt0382932',year:2007,type:'film',rating:8.1,
+     genres:['🧸 Animacja','😂 Komedia'],
+     overview:'Szczur marzy o zostaniu kucharzem w najlepszej paryskiej restauracji. Pixar w szczytowej formie — o pasji, odwadze i smaku.',
+     streaming:['Disney+'],
+     justwatch:'https://www.justwatch.com/pl/film/ratatuj'},
+    {title:'Księżniczka Mononoke',tmdbId:128,imdb:'tt0119698',year:1997,type:'film',rating:8.4,
+     genres:['🧸 Animacja','🧙 Fantasy'],
+     overview:'Młody wojownik staje między bogami lasu a industrialną osadą. Miyazaki bez kompromisów — nie ma tu czystego zła ani dobra.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/ksiezniczka-mononoke'},
+  ],
+  '📚 Dokumentalny':[
+    {title:'Free Solo',tmdbId:538228,imdb:'tt7775622',year:2018,type:'film',rating:8.2,
+     genres:['📚 Dokumentalny'],
+     overview:'Alex Honnold wspina się bez liny ubezpieczającej na pionową ścianę El Capitan (900m). Trzyma za gardło przez cały seans — i zmienia perspektywę.',
+     streaming:['Disney+','Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/free-solo'},
+    {title:'Making a Murderer',tmdbId:63351,imdb:'tt5189670',year:2015,type:'serial',rating:8.6,
+     genres:['📚 Dokumentalny','🕵️ Thriller'],
+     overview:'Historia Stevena Averyego skazanego za morderstwo — czy jest niewinny? Wciągający jak najlepszy serial kryminalny.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/serial/making-a-murderer'},
+    {title:'13th',tmdbId:399055,imdb:'tt5895028',year:2016,type:'film',rating:8.2,
+     genres:['📚 Dokumentalny'],
+     overview:'Jak system więziennictwa w USA zastąpił niewolnictwo. Porażający, ważny i poparty twardymi danymi.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/13th'},
+    {title:'The Last Dance',tmdbId:86311,imdb:'tt8420184',year:2020,type:'serial',rating:9.1,
+     genres:['📚 Dokumentalny'],
+     overview:'Dziesięcioodcinkowa historia ostatniego sezonu Michaela Jordana z Chicago Bulls. Nawet jeśli nie interesujesz się koszykówką — wciągnie.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/serial/the-last-dance'},
+    {title:'Icarus',tmdbId:468569,imdb:'tt6333060',year:2017,type:'film',rating:7.9,
+     genres:['📚 Dokumentalny','🕵️ Thriller'],
+     overview:'Amatorski kolarz filmuje własny doping, a sprawa urasta do afery państwowej. Zaczyna się jak eksperyment, kończy jak thriller.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/icarus'},
+    {title:"Won't You Be My Neighbor?",tmdbId:486985,imdb:'tt7681766',year:2018,type:'film',rating:8.4,
+     genres:['📚 Dokumentalny'],
+     overview:'Portret Freda Rogersa — człowieka, który przez dekady uczył dzieci empatii przez telewizję. Wzruszający i potrzebny w każdym czasie.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/wont-you-be-my-neighbor'},
+    {title:'Seaspiracy',tmdbId:742906,imdb:'tt14152756',year:2021,type:'film',rating:7.8,
+     genres:['📚 Dokumentalny'],
+     overview:'Wpływ przemysłu rybnego na oceany i klimat. Kontrowersyjny, miejscami uproszczony, ale zmuszający do myślenia.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/seaspiracy'},
+  ],
+  '🧙 Fantasy':[
+    {title:'Władca Pierścieni: Drużyna Pierścienia',tmdbId:120,imdb:'tt0120737',year:2001,type:'film',rating:8.8,
+     genres:['🧙 Fantasy','⚔️ Akcja'],
+     overview:'Hobbit wyrusza z ośmioma towarzyszami, by zniszczyć Pierścień Władzy. Epika, która zdefiniowała gatunek filmowego fantasy na dekady.',
+     streaming:['HBO Max','Max'],
+     justwatch:'https://www.justwatch.com/pl/film/wladca-pierscieni-druzyna-pierscienia'},
+    {title:'Wiedźmin (sezon 1)',tmdbId:71912,imdb:'tt5180504',year:2019,type:'serial',rating:8.2,
+     genres:['🧙 Fantasy','⚔️ Akcja'],
+     overview:'Geralt z Rivii, mutant-łowca potworów, wędruje przez kontynent pełen politycznych intryg i magii. Doskonała adaptacja dla fanów sagi.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/serial/wiedzmin'},
+    {title:'Labirynt Fauna',tmdbId:1368,imdb:'tt0457430',year:2006,type:'film',rating:8.2,
+     genres:['🧙 Fantasy','😱 Horror'],
+     overview:'Dziewczynka w powojennej Hiszpanii trafia do ciemnego królestwa pełnego mitycznych stworzeń. Del Toro stworzył coś między bajką a horrorem.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/labirynt-fauna'},
+    {title:'Stardust',tmdbId:7353,imdb:'tt0486655',year:2007,type:'film',rating:7.6,
+     genres:['🧙 Fantasy','💘 Romans'],
+     overview:'Młody mężczyzna przekracza mur do magicznego królestwa, by przynieść ukochanej spadającą gwiazdę. Niedoceniana, urocza przygoda fantasy.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/gwiezdny-pyl'},
+    {title:'Księżniczka Mononoke',tmdbId:128,imdb:'tt0119698',year:1997,type:'film',rating:8.4,
+     genres:['🧙 Fantasy','🧸 Animacja'],
+     overview:'Młody wojownik staje między bogami lasu a industrialną osadą wydobywającą żelazo. Miyazaki bez kompromisów — nie ma tu czystego zła ani dobra.',
+     streaming:['Netflix'],
+     justwatch:'https://www.justwatch.com/pl/film/ksiezniczka-mononoke'},
+    {title:'Czarownica',tmdbId:310631,imdb:'tt4263482',year:2015,type:'film',rating:6.9,
+     genres:['🧙 Fantasy','😱 Horror'],
+     overview:'Purytańska rodzina w XVII-wiecznej Nowej Anglii staje naprzeciw mrocznych sił w lesie. Powolny, atmosferyczny horror historyczny.',
+     streaming:['Amazon Prime'],
+     justwatch:'https://www.justwatch.com/pl/film/czarownica'},
+    {title:'Shang-Chi',tmdbId:566525,imdb:'tt9376612',year:2021,type:'film',rating:7.4,
+     genres:['🧙 Fantasy','⚔️ Akcja'],
+     overview:'Syn legendarnego wojownika staje twarzą w twarz z własną przeszłością. Najlepszy film MCU pod kątem choreografii walki i wizualnego rozmachu.',
+     streaming:['Disney+'],
+     justwatch:'https://www.justwatch.com/pl/film/shang-chi-i-legenda-dziesieciu-pierscieni'},
+  ],
+};
+
+/* Deduplicated flat pool */
+const ALL_FILMS=(()=>{
+  const seen=new Set(), out=[];
+  Object.values(FILM_DB).forEach(arr=>arr.forEach(f=>{if(!seen.has(f.imdb)){seen.add(f.imdb);out.push(f);}}));
+  return out;
+})();
+
+const YEAR_RANGES=[
+  {label:'Klasyki (–1989)',min:0,max:1990},
+  {label:'Lata 90.',min:1990,max:2000},
+  {label:'Lata 2000.',min:2000,max:2010},
+  {label:'Lata 2010.',min:2010,max:2020},
+  {label:'Nowe (2020+)',min:2020,max:9999},
+];
+
+let movieType='all';
+let selectedMoods=new Set();
+let selectedYearRange=null;
+let lastShown=new Set();
+
+/* Init tag rows */
+document.getElementById('moodTags').innerHTML=MOODS.map(m=>
+  `<span class="tag" onclick="toggleMood(this,'${m.replace(/'/g,"\\'")}')">${m}</span>`
+).join('');
+document.getElementById('yearTags').innerHTML=
+  `<span class="tag on" data-yr="all" onclick="setYear(this,null)">Dowolny</span>`+
+  YEAR_RANGES.map((r,i)=>`<span class="tag" onclick="setYear(this,${i})">${r.label}</span>`).join('');
+
+function setType(el){
+  document.querySelectorAll('[data-mtype]').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on'); movieType=el.dataset.mtype;
+}
+function setYear(el,idx){
+  document.querySelectorAll('#yearTags .tag').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  selectedYearRange=idx===null?null:YEAR_RANGES[idx];
+}
+function toggleMood(el,m){
+  if(selectedMoods.has(m)){selectedMoods.delete(m);el.classList.remove('on');}
+  else{selectedMoods.add(m);el.classList.add('on');}
+}
+function selectAllMoods(){
+  selectedMoods=new Set(MOODS);
+  document.querySelectorAll('#moodTags .tag').forEach(t=>t.classList.add('on'));
+}
+function clearMoods(){
+  selectedMoods.clear();
+  document.querySelectorAll('#moodTags .tag').forEach(t=>t.classList.remove('on'));
+}
+
+function buildPosterUrl(tmdbId){
+  /* TMDB poster endpoint — works with any valid movie id */
+  return `https://image.tmdb.org/3/movie/${tmdbId}/images`;
+}
+
+function findFilm(){
+  document.getElementById('filmErr').textContent='';
+  document.getElementById('filmResult').innerHTML='';
+  document.getElementById('filmSpinner').style.display='block';
+  /* Filter local DB first */
+  let pool=ALL_FILMS;
+  if(selectedMoods.size>0) pool=pool.filter(f=>f.genres.some(g=>selectedMoods.has(g)));
+  if(movieType!=='all') pool=pool.filter(f=>f.type===movieType);
+  if(selectedYearRange) pool=pool.filter(f=>f.year>=selectedYearRange.min&&f.year<selectedYearRange.max);
+
+  const apiKey=getApiKey();
+  const hasKey=apiKey&&apiKey!=='__skipped__';
+
+  /* If no valid key or no filters set — use local DB */
+  if(!hasKey){
+    useLocalDB(pool);return;
+  }
+
+  /* Try live TMDB */
+  fetchFromTMDB(apiKey,pool);
+}
+
+function useLocalDB(pool){
+  document.getElementById('filmSpinner').style.display='none';
+  if(!pool.length){
+    document.getElementById('filmResult').innerHTML='<p class="err">Brak wyników dla tych filtrów. Spróbuj szerszego wyboru.</p>';
+    return;
+  }
+  const fresh=pool.filter(f=>!lastShown.has(f.imdb));
+  const src=fresh.length?fresh:pool;
+  const pick=src[Math.floor(Math.random()*src.length)];
+  lastShown.add(pick.imdb);
+  if(lastShown.size>8) lastShown=new Set([...lastShown].slice(-4));
+  renderFilmCard(pick,pool.length);
+}
+
+async function fetchFromTMDB(apiKey,localPool){
+  /* Build genre IDs from selected moods */
+  const TMDB_GENRE_MAP={'😂 Komedia':35,'😱 Horror':27,'💘 Romans':10749,'🎬 Dramat':18,'🚀 Sci-Fi':878,'⚔️ Akcja':28,'🕵️ Thriller':53,'🧸 Animacja':16,'📚 Dokumentalny':99,'🧙 Fantasy':14};
+  const genreIds=[...selectedMoods].map(m=>TMDB_GENRE_MAP[m]).filter(Boolean);
+  const genreParam=genreIds.length?`&with_genres=${genreIds.join('|')}`:''/* | = OR */;
+
+  const typeParam=movieType==='serial'?'tv':movieType==='film'?'movie':'movie';
+  const yearParam=selectedYearRange?(typeParam==='movie'?`&primary_release_date.gte=${selectedYearRange.min}-01-01&primary_release_date.lte=${selectedYearRange.max-1}-12-31`:`&first_air_date.gte=${selectedYearRange.min}-01-01&first_air_date.lte=${selectedYearRange.max-1}-12-31`):'';
+  const page=Math.floor(Math.random()*5)+1;
+  const url=`https://api.themoviedb.org/3/discover/${typeParam}?api_key=${apiKey}&language=pl-PL&sort_by=popularity.desc${genreParam}${yearParam}&page=${page}&vote_count.gte=100`;
+
+  try{
+    const r=await fetch(url);
+    if(!r.ok) throw new Error('bad key');
+    const d=await r.json();
+    document.getElementById('filmSpinner').style.display='none';
+    if(!d.results?.length){useLocalDB(localPool);return;}
+
+    /* Also fetch watch providers */
+    const results=d.results;
+    const pick=results[Math.floor(Math.random()*Math.min(results.length,10))];
+
+    /* Fetch providers */
+    let streaming=[];
+    let justwatch='https://www.justwatch.com/pl';
+    try{
+      const pr=await fetch(`https://api.themoviedb.org/3/${typeParam}/${pick.id}/watch/providers?api_key=${apiKey}`);
+      const pd=await pr.json();
+      const plProviders=pd.results?.PL;
+      if(plProviders){
+        justwatch=plProviders.link||justwatch;
+        const flat=[...(plProviders.flatrate||[]),(plProviders.free||[])];
+        streaming=flat.slice(0,5).map(p=>p.provider_name);
+      }
+    }catch(e){}
+
+    const tmdbPick={
+      title:pick.title||pick.name,
+      tmdbId:pick.id,
+      imdb:'',
+      year:parseInt((pick.release_date||pick.first_air_date||'0').slice(0,4)),
+      type:typeParam==='tv'?'serial':'film',
+      rating:pick.vote_average?.toFixed(1)||'?',
+      genres:[...(selectedMoods.size?selectedMoods:[])].slice(0,2),
+      overview:pick.overview||'Brak opisu.',
+      streaming,
+      justwatch,
+      tmdbPoster:pick.poster_path,
+    };
+    renderFilmCard(tmdbPick,d.total_results);
+  }catch(e){
+    document.getElementById('filmSpinner').style.display='none';
+    if(e.message==='bad key'){
+      document.getElementById('filmResult').innerHTML='<p class="err">Nieprawidłowy klucz API. Sprawdź go w ⚙️ ustawieniach.</p>';
+    } else {
+      useLocalDB(localPool);
+    }
+  }
+}
+
+function renderFilmCard(pick,totalCount){
+  const posterSrc=pick.tmdbPoster
+    ?`https://image.tmdb.org/t/p/w300${pick.tmdbPoster}`
+    :`https://www.themoviedb.org/t/p/w300/${pick.tmdbId}.jpg`;
+
+  const streamBadges=(pick.streaming||[]).map(p=>{
+    const s=PLATFORM_STYLE[p]||{bg:'#444',icon:'▶'};
+    return `<span style="display:inline-flex;align-items:center;gap:5px;background:${s.bg};color:#fff;border-radius:6px;padding:5px 10px;font-size:.75rem;font-weight:700">${s.icon} ${p}</span>`;
+  }).join('');
+
+  const genreBadges=(pick.genres||[]).map(g=>`<span class="chip">${esc(g)}</span>`).join('');
+
+  document.getElementById('filmResult').innerHTML=`
+    <div class="result">
+      <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex-shrink:0">
+          <img src="${posterSrc}"
+            onerror="this.onerror=null;this.parentElement.innerHTML='<div style=\'width:90px;height:134px;background:var(--surf2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem\'>🎬</div>'"
+            style="width:90px;height:134px;object-fit:cover;border-radius:8px;display:block"
+            alt="${esc(pick.title)}">
+        </div>
+        <div style="flex:1;min-width:180px">
+          <div class="rtitle" style="margin-bottom:8px">${esc(pick.title)}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+            <span class="chip" style="background:rgba(240,192,96,.15);border-color:rgba(240,192,96,.4);color:var(--accent)">⭐ ${pick.rating}</span>
+            <span class="chip">📅 ${pick.year}</span>
+            <span class="chip">${pick.type==='serial'?'📺 Serial':'🎥 Film'}</span>
+            ${genreBadges}
+          </div>
+          <p style="font-size:.86rem;color:var(--text);line-height:1.75;margin-bottom:4px">${esc(pick.overview)}</p>
+        </div>
+      </div>
+      ${(pick.streaming&&pick.streaming.length)?`
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Gdzie obejrzeć (PL)</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+          ${streamBadges}
+          <a href="${pick.justwatch}" target="_blank" rel="noreferrer"
+             style="color:var(--a2);font-size:.78rem;text-decoration:none;border:1px solid rgba(96,192,240,.3);border-radius:6px;padding:5px 10px">
+            🔍 JustWatch →
+          </a>
+        </div>
+      </div>`:`
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <a href="${pick.justwatch||'https://www.justwatch.com/pl'}" target="_blank" rel="noreferrer"
+           style="color:var(--a2);font-size:.83rem;text-decoration:none">
+          🔍 Sprawdź gdzie obejrzeć na JustWatch →
+        </a>
+      </div>`}
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="btn ghost" onclick="findFilm()">🔄 Inna propozycja</button>
+        ${totalCount>1?`<span class="muted" style="font-size:.76rem">${totalCount>1000?'1000+':totalCount} tytułów pasuje</span>`:''}
+      </div>
+    </div>`;
+}
+
+
+/* ─── PAGE 6: DECYZJA ────────────────────────────────────────────── */
+const CATEGORIES={
+  '🍽️ Co zjeść':['Pizza','Sushi','Makaron','Sałatka','Kebab','Zupa','Kanapki','Ryba','Burger'],
+  '🏃 Aktywność':['Bieganie','Siłownia','Rower','Pływanie','Spacer','Joga','Taniec'],
+  '😴 Wieczór':['Film','Książka','Gra wideo','Serial','Podcast','Spotkanie ze znajomymi'],
+  '🌍 Destination':['Kraków','Gdańsk','Wrocław','Zakopane','Warszawa','Poznań','Szczecin'],
+};
+let selCat=null;
+
+document.getElementById('catTags').innerHTML=Object.keys(CATEGORIES).map(c=>
+  `<span class="tag" onclick="pickCat(this,'${c}')">${c}</span>`
+).join('');
+
+function pickCat(el,cat){
+  if(selCat===cat){
+    selCat=null;el.classList.remove('on');
+    document.getElementById('ownOptions').style.display='block';
+    document.getElementById('catPreview').style.display='none';
+    return;
+  }
+  document.querySelectorAll('#catTags .tag').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');selCat=cat;
+  document.getElementById('ownOptions').style.display='none';
+  const prev=document.getElementById('catPreview');
+  prev.style.display='block';
+  prev.innerHTML='<span class="muted">Opcje: </span>'+CATEGORIES[cat].map(o=>`<span class="chip">${o}</span>`).join('');
+}
+
+function spinDecision(){
+  const pool=selCat?CATEGORIES[selCat]:(document.getElementById('optionsText').value.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean));
+  if(!pool.length)return;
+  const btn=document.getElementById('spinBtn');
+  btn.disabled=true;btn.textContent='🌀 Losuję…';
+  document.getElementById('decisionResult').innerHTML='';
+  setTimeout(()=>{
+    const pick=pool[Math.floor(Math.random()*pool.length)];
+    document.getElementById('decisionResult').innerHTML=`
+      <div class="result" style="text-align:center">
+        <div class="muted" style="margin-bottom:6px">Twój los mówi…</div>
+        <div class="big">${esc(pick)}</div>
+        <button class="btn ghost" style="margin-top:6px" onclick="spinDecision()">🔄 Jeszcze raz</button>
+      </div>`;
+    btn.disabled=false;btn.textContent='🎯 Losuj!';
+  },600);
+}
+
+/* ─── PAGE 7: NAWYKI ─────────────────────────────────────────────── */
+const HABITS={
+  '🚬 Papierosy':{unit:'papierosów/dzień',steps:[20,15,10,7,5,3,1,0]},
+  '📱 Telefon':{unit:'godz. ekranu',steps:[8,6,5,4,3,2.5,2,1.5]},
+  '🍬 Słodycze':{unit:'porcji/dzień',steps:[5,4,3,2.5,2,1.5,1,0]},
+  '☕ Kawa':{unit:'kaw/dzień',steps:[6,5,4,3,2.5,2,1,0.5]},
+  '🍺 Alkohol':{unit:'drinków/tydzień',steps:[14,10,7,5,4,3,2,0]},
+};
+const CHALLENGES=[
+  '💧 Wypisz 3 powody, dla których chcesz to zmienić',
+  '🚶 Gdy masz ochotę — wyjdź na 5-minutowy spacer',
+  '📔 Zapisuj swoje uczucia przez 2 minuty zamiast ulegać',
+  '🧘 Zrób 10 głębokich oddechów zamiast sięgać po nawyk',
+  '📞 Zadzwoń do kogoś bliskiego zamiast ulegać nawykowi',
+  '🎵 Odtwórz ulubioną piosenkę i poczekaj aż się skończy',
+  '🥤 Wypij szklankę wody i oceń, czy nadal masz ochotę',
+  '⏱️ Odczekaj 15 minut — ochota często mija sama',
+];
+
+let selHabit=null, habitWeek=0, tracker=new Array(30).fill(null);
+
+document.getElementById('habitTags').innerHTML=Object.keys(HABITS).map(h=>
+  `<span class="tag" onclick="pickHabit(this,'${h}')">${h}</span>`
+).join('');
+
+function pickHabit(el,h){
+  document.querySelectorAll('#habitTags .tag').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  selHabit=h;habitWeek=0;tracker=new Array(30).fill(null);
+  document.getElementById('habitContent').style.display='block';
+  renderHabit();renderTracker();
+}
+
+function renderHabit(){
+  if(!selHabit)return;
+  const info=HABITS[selHabit];
+  const target=info.steps[Math.min(habitWeek,info.steps.length-1)];
+  const next=info.steps[Math.min(habitWeek+1,info.steps.length-1)];
+  const reductPct=Math.round(((info.steps[0]-target)/info.steps[0])*100);
+  document.getElementById('habitPlanCard').innerHTML=`
+    <div class="between" style="margin-bottom:12px">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700">Tydzień ${habitWeek+1}</div>
+        <div class="muted">Cel: maks. ${target} ${info.unit}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="muted" style="font-size:.74rem">Następny tydzień</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--ok)">${next} ${info.unit}</div>
+      </div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-label"><span>Redukcja</span><span>${reductPct}%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${reductPct}%;background:var(--ok)"></div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" ${habitWeek===0?'disabled':''} onclick="habitWeek--;renderHabit()">← Wstecz</button>
+      <button class="btn ghost" ${habitWeek>=info.steps.length-2?'disabled':''} onclick="habitWeek++;renderHabit()">W przód →</button>
+    </div>`;
+}
+
+function renderTracker(){
+  document.getElementById('trackerDots').innerHTML=tracker.map((s,i)=>
+    `<div class="dot${s==='ok'?' ok':s==='no'?' no':''}" onclick="toggleDot(${i})">${s==='ok'?'✓':s==='no'?'✗':i+1}</div>`
+  ).join('');
+  const done=tracker.filter(x=>x==='ok').length;
+  const used=tracker.filter(x=>x!==null).length;
+  document.getElementById('trackerCount').textContent=`✅ ${done} / ${used} dni`;
+}
+
+function toggleDot(i){
+  tracker[i]=tracker[i]==='ok'?'no':tracker[i]==='no'?null:'ok';
+  renderTracker();
+}
+
+function newChallenge(){
+  document.getElementById('challengeText').textContent=CHALLENGES[Math.floor(Math.random()*CHALLENGES.length)];
+}
+
+/* ─── UTILS ──────────────────────────────────────────────────────── */
+function toMin(s){const[h,m]=s.split(':').map(Number);return h*60+m}
+function fromMin(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+</script>
+
+</body>
+</html>
