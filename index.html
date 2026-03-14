@@ -641,6 +641,9 @@ details p{font-size:.82rem;color:var(--muted);line-height:1.65;margin-top:8px}
 const LS_LANG='dh_lang';
 let currentLang=localStorage.getItem(LS_LANG)||'pl';
 
+/* ─── UTILS (early, needed by render functions) ──────────────────── */
+function escQ(s){return String(s).split("'").join('&#39;');}
+
 /* ─── API KEY MANAGEMENT ─────────────────────────────────────────── */
 const LS_KEY='tmdb_api_key';
 
@@ -984,9 +987,7 @@ async function findMeal(){
       nazwa: found.strMeal,
       opis: `${found.strArea||''} ${found.strCategory||''}`.trim(),
       skladniki: mealIngs,
-      kroki: (found.strInstructions||'').split(/
-?
-/).filter(s=>s.trim().length>10).slice(0,12),
+      kroki: (found.strInstructions||'').split('\n').filter(s=>s.trim().length>10).slice(0,12),
     };
     document.getElementById('mealSpinner').style.display='none';
 
@@ -1130,7 +1131,7 @@ function renderMoodTags(){
   document.getElementById('moodTags').innerHTML=list.map(m=>{
     const tmdbKey=MOODS_TO_TMDB[m]||m;
     const on=selectedMoods.has(tmdbKey);
-    return `<span class="tag${on?' on':''}" onclick="toggleMood(this,'${m.replace(/'/g,"\'")}') ">${m}</span>`;
+    return `<span class="tag${on?' on':''}" onclick="toggleMood(this,'${escQ(m)}')">${m}</span>`;
   }).join('');
 }
 
@@ -1338,7 +1339,8 @@ function renderFilmCard(pick,totalCount){
 }
 
 
-/* ─── PAGE 6: DECYZJA ────────────────────────────────────────────── */
+
+/* ─── MOOD CONTEXT (activity advisor tags) ──────────────────────── */
 const MOOD_CONTEXT={
   pl:['😴 Jestem zmęczony/a','⚡ Mam dużo energii','😰 Jestem zestresowany/a',
       '😊 Jestem w świetnym humorze','🏠 Wolę zostać w domu','🌤️ Chcę wyjść na zewnątrz',
@@ -1358,7 +1360,7 @@ function renderMoodContext(){
   selectedContexts.clear();
   const list=MOOD_CONTEXT[currentLang]||MOOD_CONTEXT.pl;
   document.getElementById('moodContextTags').innerHTML=list.map(m=>
-    `<span class="tag" onclick="toggleContext(this,'${m.replace(/'/g,"\'")}') ">${m}</span>`
+    `<span class="tag" onclick="toggleContext(this,'${escQ(m)}')">${m}</span>`
   ).join('');
 }
 renderMoodContext();
@@ -1367,39 +1369,161 @@ function toggleContext(el,val){
   else{selectedContexts.add(val);el.classList.add('on');}
 }
 
-const ADVICE_LANG={
-  pl:{lang:'polskim',tip_label:'Jak zacząć:',btn_thinking:'✨ Myślę…',btn_reset:'✨ Daj mi radę',heading:'Propozycje dla Ciebie',btn_more:'🔄 Inne propozycje'},
-  en:{lang:'English',tip_label:'How to start:',btn_thinking:'✨ Thinking…',btn_reset:'✨ Give me advice',heading:'Suggestions for you',btn_more:'🔄 More suggestions'},
-  uk:{lang:'українській',tip_label:'Як почати:',btn_thinking:'✨ Думаю…',btn_reset:'✨ Дай мені пораду',heading:'Пропозиції для вас',btn_more:'🔄 Інші пропозиції'},
+/* ─── PAGE 6: ACTIVITY ADVISOR ───────────────────────────────────── */
+const ADVICE_DB={
+  relax:[
+    {pl:{n:'Medytacja lub oddech',w:'Kiedy jesteś zmęczona, kilka minut spokojnego oddechu naprawdę obniża napięcie i daje reset.',h:'Usiądź wygodnie, zamknij oczy i weź 10 głębokich, powolnych oddechów.'},
+     en:{n:'Meditation or breathing',w:'When you are tired, a few minutes of calm breathing genuinely resets your nervous system.',h:'Sit comfortably, close your eyes and take 10 slow deep breaths.'},
+     uk:{n:'Медитація або дихання',w:'Коли ти втомлена, кілька хвилин спокійного дихання справді знижують напругу.',h:'Сядь зручно, заплющ очі і зроби 10 повільних глибоких вдихів.'}},
+    {pl:{n:'Gorąca kąpiel lub prysznic',w:'Ciepło wody rozluźnia mięśnie i sygnalizuje ciału czas odpocząć — działa jak reset dla całego dnia.',h:'Nastaw wodę na ulubioną temperaturę i wyłącz telefon na te 20 minut.'},
+     en:{n:'Hot bath or shower',w:'The warmth relaxes your muscles and signals to your body that it is time to rest.',h:'Set the water to your favourite temperature and switch off your phone for 20 minutes.'},
+     uk:{n:'Гаряча ванна або душ',w:'Тепло розслаблює м\'язи і сигналізує тілу, що час відпочити.',h:'Набери воду потрібної температури і вимкни телефон на 20 хвилин.'}},
+    {pl:{n:'Czytanie książki',w:'Zanurzenie w innym świecie to jeden z najskuteczniejszych sposobów na oderwanie myśli od codziennych spraw.',h:'Weź książkę którą odkładałaś, zaparz herbatę i daj sobie minimum 30 minut.'},
+     en:{n:'Reading a book',w:'Immersing yourself in another world is one of the most effective ways to detach from everyday worries.',h:'Pick up a book you have been putting off, make tea and give yourself at least 30 minutes.'},
+     uk:{n:'Читання книги',w:'Занурення в інший світ — один з найефективніших способів відволіктися від повсякденних турбот.',h:'Візьми книгу, яку відкладала, завари чай і дай собі хоча б 30 хвилин.'}}
+  ],
+  energy:[
+    {pl:{n:'Szybki trening lub taniec',w:'Kiedy energia buzuje, najlepiej ją uwolnić — 20 minut ruchu daje poczucie mocy i satysfakcji.',h:'Włącz ulubioną playlistę i ruszaj się przez 20 minut — forma nie ma znaczenia.'},
+     en:{n:'Quick workout or dance',w:'When energy is buzzing, the best thing is to release it — 20 minutes of movement gives you a sense of power.',h:'Put on your favourite playlist and just move for 20 minutes — no form needed.'},
+     uk:{n:'Швидке тренування або танці',w:'Коли енергія б\'є через край, краще її вивільнити — 20 хвилин руху дають відчуття сили.',h:'Увімкни улюблений плейлист і просто рухайся 20 хвилин.'}},
+    {pl:{n:'Bieganie lub rower',w:'Wysiłek na świeżym powietrzu to podwójna dawka dobrego — endorfiny i dotlenienie utrzymają dobry nastrój przez resztę dnia.',h:'Wyjdź teraz, bez planu — przynajmniej 15 minut w dowolnym tempie.'},
+     en:{n:'Running or cycling',w:'Outdoor exercise is a double dose of good — endorphins plus fresh air that will keep your mood up all day.',h:'Go out now, no plan needed — at least 15 minutes at any pace.'},
+     uk:{n:'Біг або велосипед',w:'Фізичне навантаження на свіжому повітрі — подвійна доза гарного настрою: ендорфіни плюс кисень.',h:'Вийди зараз, без плану — хоча б 15 хвилин у будь-якому темпі.'}}
+  ],
+  stress:[
+    {pl:{n:'Spacer bez telefonu',w:'Oderwanie od ekranu to najprostszy sposób żeby umysł zaczął się uspokajać i zyskał dystans do problemu.',h:'Zostaw telefon w domu i wyjdź na 20-minutowy spacer — obserwuj otoczenie.'},
+     en:{n:'Walk without your phone',w:'Disconnecting from your screen is the simplest way to let your mind calm down and gain perspective.',h:'Leave your phone at home and go for a 20-minute walk — just observe your surroundings.'},
+     uk:{n:'Прогулянка без телефону',w:'Відключитися від екрана — найпростіший спосіб дати розуму заспокоїтися.',h:'Залиш телефон вдома і вийди на 20-хвилинну прогулянку.'}},
+    {pl:{n:'Zapisz co Cię stresuje',w:'Wyrzucenie myśli na papier zmniejsza ich ciężar — problemy wyglądają mniejsze gdy są zapisane niż gdy kręcą się w głowie.',h:'Weź kartkę i przez 10 minut pisz wszystko co Cię niepokoi — bez cenzury.'},
+     en:{n:'Write down what stresses you',w:'Getting thoughts onto paper reduces their weight — problems look smaller when written than when they just spin in your head.',h:'Take a piece of paper and for 10 minutes write everything that worries you, uncensored.'},
+     uk:{n:'Запиши що тебе напружує',w:'Виплеснути думки на папір зменшує їх вагу — проблеми виглядають меншими, коли записані.',h:'Візьми аркуш і 10 хвилин пиши все що тебе турбує, без цензури.'}},
+    {pl:{n:'Joga lub rozciąganie',w:'Stres gromadzi się w ciele — napięte ramiona i plecy. Kilkanaście minut rozciągania uwalnia to napięcie fizycznie.',h:'Znajdź 15-minutowy film z jogą na YouTube i po prostu podążaj za instruktorem.'},
+     en:{n:'Yoga or stretching',w:'Stress accumulates in the body — tense shoulders and back. A few minutes of stretching physically releases that tension.',h:'Find a 15-minute yoga video on YouTube and simply follow along.'},
+     uk:{n:'Йога або розтяжка',w:'Стрес накопичується в тілі. Кілька хвилин розтяжки фізично вивільняє цю напругу.',h:'Знайди 15-хвилинне відео з йогою на YouTube і просто слідуй за інструктором.'}}
+  ],
+  social:[
+    {pl:{n:'Zadzwoń do bliskiej osoby',w:'Kontakt z kimś kogo lubisz szybko zmienia perspektywę i przypomina, że nie jesteś sama ze swoimi myślami.',h:'Napisz teraz do kogoś bliskiego — bez powodu, po prostu: czy możemy pogadać?'},
+     en:{n:'Call someone close',w:'Connecting with someone you like quickly shifts your perspective and reminds you that you are not alone.',h:'Text someone close right now — no big reason, just: can we talk?'},
+     uk:{n:'Подзвони близькій людині',w:'Зв\'язок з кимось близьким швидко змінює перспективу і нагадує, що ти не сама.',h:'Напиши зараз комусь близькому — без приводу, просто: можемо поговорити?'}},
+    {pl:{n:'Wyjście na kawę ze znajomym',w:'Zmiana otoczenia plus rozmowa twarzą w twarz poprawia nastrój lepiej niż cokolwiek innego.',h:'Napisz do jednej osoby z propozycją spotkania — nawet krótkie wyjście liczy się.'},
+     en:{n:'Coffee with a friend',w:'A change of scenery plus face-to-face conversation lifts your mood better than almost anything.',h:'Message one person with a meet-up suggestion — even a short outing counts.'},
+     uk:{n:'Кава з другом',w:'Зміна оточення плюс розмова віч-на-віч піднімає настрій краще за майже все інше.',h:'Напиши одній людині з пропозицією зустрітися — навіть коротка прогулянка рахується.'}}
+  ],
+  home:[
+    {pl:{n:'Film lub serial na wieczór',w:'Czasem najlepsze co możesz zrobić to po prostu pozwolić sobie odpocząć bez wyrzutów sumienia.',h:'Wybierz coś co Cię ciekawi i daj sobie pozwolenie żeby to obejrzeć bez poczucia winy.'},
+     en:{n:'Movie or series evening',w:'Sometimes the best thing you can do is simply allow yourself to rest without guilt.',h:'Pick something that interests you and give yourself full permission to watch it guilt-free.'},
+     uk:{n:'Фільм або серіал на вечір',w:'Іноді найкраще — просто дозволити собі відпочити без докорів сумління.',h:'Обери щось цікаве і дозволь собі подивитися це без відчуття провини.'}},
+    {pl:{n:'Gotowanie czegoś nowego',w:'Skupienie na konkretnym zadaniu kulinarnym działa jak mini-medytacja — angażuje ręce i głowę, a na końcu masz coś smacznego.',h:'Otwórz lodówkę i zrób coś nowego z tego co masz — na wyczucie, bez przepisu.'},
+     en:{n:'Cook something new',w:'Focusing on a cooking task works like a mini-meditation — it engages hands and mind, and you end up with something tasty.',h:'Open the fridge and make something new from what you have — no recipe, by feel.'},
+     uk:{n:'Приготуй щось нове',w:'Зосередженість на кулінарному завданні діє як міні-медитація — задіює руки і голову.',h:'Відкрий холодильник і приготуй щось нове з того що є — без рецепту, на відчутті.'}},
+    {pl:{n:'Porządki z muzyką',w:'Czyste otoczenie naprawdę wpływa na spokój głowy, a robienie czegoś fizycznego przy muzyce działa relaksująco.',h:'Włącz dobrą playlistę i zacznij od jednego miejsca — biurka, szafy lub jednej szuflady.'},
+     en:{n:'Tidying up with music',w:'A clean environment genuinely affects mental calm, and doing something physical with music is surprisingly soothing.',h:'Put on a good playlist and start with just one spot — a desk, wardrobe or one drawer.'},
+     uk:{n:'Прибирання з музикою',w:'Чисте оточення справді впливає на спокій в голові, а фізична діяльність під музику діє розслаблюючи.',h:'Увімкни хороший плейлист і почни з одного місця — столу, шафи або одного ящика.'}}
+  ],
+  outdoor:[
+    {pl:{n:'Spacer w parku lub lesie',w:'Kontakt z naturą obniża kortyzol i poprawia nastrój — nawet 20 minut na świeżym powietrzu robi różnicę.',h:'Wyjdź teraz bez celu, bez telefonu — idź przed siebie przez 20-30 minut.'},
+     en:{n:'Walk in a park or forest',w:'Contact with nature lowers cortisol and improves mood — even 20 minutes of fresh air makes a real difference.',h:'Go out now with no destination, no phone — just walk for 20-30 minutes.'},
+     uk:{n:'Прогулянка в парку або лісі',w:'Контакт з природою знижує кортизол і покращує настрій — навіть 20 хвилин на свіжому повітрі дають різницю.',h:'Вийди зараз без мети, без телефону — просто йди вперед 20-30 хвилин.'}},
+    {pl:{n:'Kawa na mieście',w:'Zmiana otoczenia i małe przyjemności — ulubiony lokal, dobry napój — potrafią wyciągnąć z rutyny i poprawić samopoczucie.',h:'Wybierz miejsce które lubisz lub chciałaś sprawdzić i idź tam teraz.'},
+     en:{n:'Coffee out in the city',w:'A change of scenery and small pleasures — a favourite spot, a good drink — can pull you out of routine.',h:'Choose a place you like or have been wanting to try and go there now.'},
+     uk:{n:'Кава в місті',w:'Зміна оточення і маленькі задоволення можуть витягнути з рутини і покращити самопочуття.',h:'Обери місце, яке любиш або хотіла перевірити, і йди туди зараз.'}}
+  ],
+  creative:[
+    {pl:{n:'Rysowanie lub malowanie',w:'Wyrażenie siebie przez sztukę nie wymaga talentu — to proces który angażuje inaczej niż słowa i pomaga przetworzyć emocje.',h:'Weź kartkę i cokolwiek do pisania — i rysuj przez 20 minut bez oceniania siebie.'},
+     en:{n:'Drawing or painting',w:'Expressing yourself through art requires no talent — the process engages you differently from words and helps process emotions.',h:'Take paper and anything to draw with — and draw for 20 minutes without judging yourself.'},
+     uk:{n:'Малювання',w:'Самовираження через мистецтво не потребує таланту — це процес, який допомагає переробити емоції.',h:'Візьми аркуш і будь-що для малювання — і малюй 20 хвилин не оцінюючи себе.'}},
+    {pl:{n:'Pisanie — dziennik lub historia',w:'Pisanie to jeden z najpotężniejszych sposobów na zrozumienie własnych myśli. Nie musisz tego nikomu pokazywać.',h:'Otwórz notatnik i pisz strumień świadomości przez 10 minut — co czujesz, co myślisz.'},
+     en:{n:'Writing — journal or story',w:'Writing is one of the most powerful ways to understand your own thoughts. You do not have to show it to anyone.',h:'Open a notebook and write a stream of consciousness for 10 minutes — what you feel, what you think.'},
+     uk:{n:'Писання — щоденник або історія',w:'Писання — один з найпотужніших способів зрозуміти власні думки. Нікому не потрібно це показувати.',h:'Відкрий нотатник і пиши потік свідомості 10 хвилин — що відчуваєш, що думаєш.'}}
+  ],
+  learn:[
+    {pl:{n:'Dokument lub wykład na YouTube',w:'Kiedy masz ochotę na stymulację intelektualną, dobry dokument to sposób żeby się czegoś nauczyć i jednocześnie odpocząć.',h:'Wejdź na YouTube i wyszukaj temat który Cię ciekawi — daj sobie godzinę.'},
+     en:{n:'Documentary or YouTube lecture',w:'When you feel like intellectual stimulation, a good documentary lets you learn something while still resting.',h:'Go to YouTube and search for a topic that interests you — give yourself an hour.'},
+     uk:{n:'Документальний фільм або лекція',w:'Коли хочеться інтелектуальної стимуляції, хороший документальний фільм дозволяє навчитися чомусь і водночас відпочити.',h:'Зайди на YouTube і знайди тему, яка тебе цікавить — дай собі годину.'}},
+    {pl:{n:'Podcast lub audiobook',w:'Nauka czegoś nowego przy zwykłych czynnościach — gotowaniu, spacerze — to jeden z najlepszych sposobów na rozwój bez dodatkowego wysiłku.',h:'Wybierz podcast na temat który Cię interesuje i włącz go przy następnej czynności dnia.'},
+     en:{n:'Podcast or audiobook',w:'Learning something new during everyday tasks — cooking, walking — is one of the best ways to grow without extra effort.',h:'Choose a podcast on a topic that interests you and play it during your next activity.'},
+     uk:{n:'Подкаст або аудіокнига',w:'Навчання чомусь новому під час звичайних справ — один з найкращих способів розвиватися без зусиль.',h:'Обери подкаст на тему що тебе цікавить і вмикай його під час наступного заняття.'}}
+  ]
 };
-function getActivityAdvice(){
-  const mood = document.getElementById('moodInput').value.trim().toLowerCase();
-  const contexts = [...selectedContexts];
 
-  if(!mood && !contexts.length){
+const ADVICE_KEYWORDS={
+  relax:   ['zmęczon','tired','втомл','wyczerpan','exhaust','вичерпан','spokój','relaks','relax','rozluz','odpoczy','rest','відпочи','nie mam sil','no energy','немає сил','senny','sleepy','сонн'],
+  energy:  ['energi','energy','енерг','aktywn','active','актив','ruch','move','рух','siłown','gym','спортз','trening','workout','тренув','nakręcon','hyped'],
+  stress:  ['stres','stress','стрес','nerw','nervou','нерв','przytloczon','overwhelm','пригніч','lek','anxiety','тривог','niepok','worry','занепокоєн','zly','angry','злий','wkurz','annoy','niepokoj'],
+  social:  ['sam','alone','самот','teskno','miss','скучаю','towarzystwo','company','товариств','znajom','friend','друз','ludzi','people','людей','spotk','meet','зустріт','nudz'],
+  home:    ['dom','home','вдома','zostat','stay','залишит','kanap','couch','диван','cieplo','warm','тепло','nie wychod','not going out','leniw','lazy','лінив'],
+  outdoor: ['zewn','outside','назовн','swiez','fresh','свіж','park','las','forest','ліс','spacer','walk','прогулян','miasto','city','місто','wyjsc','go out','вийти'],
+  creative:['kreatywn','creative','творч','rysow','draw','малюван','pisan','write','писан','muzyk','music','музик','sztuk','art','мистецтв','tworz','create','творит'],
+  learn:   ['nauczyc','learn','навчит','dokument','documentary','документ','ksiazk','book','книг','podcast','wyklad','lecture','лекц','ciekaw','curious','цікав','rozw']
+};
+
+function computeAdvice(text, contexts, lang){
+  const t = (text + ' ' + contexts.join(' ')).toLowerCase();
+  const scores = {};
+  for(const [cat, words] of Object.entries(ADVICE_KEYWORDS)){
+    scores[cat] = words.reduce((sum, w) => sum + (t.includes(w) ? 1 : 0), 0);
+  }
+  /* boost from context tags */
+  const boostMap = {
+    'zmęczon':'relax','tired':'relax','втомл':'relax','energi':'energy','energy':'energy',
+    'енерг':'energy','stres':'stress','stress':'stress','стрес':'stress',
+    'sam':'social','alone':'social','самот':'social','towarzystw':'social',
+    'dom':'home','home':'home','вдома':'home','zewn':'outdoor','outside':'outdoor',
+    'nazovn':'outdoor','kreatywn':'creative','творч':'creative','nauczyc':'learn','learn':'learn'
+  };
+  for(const ctx of contexts){
+    const c = ctx.toLowerCase();
+    for(const [kw, cat] of Object.entries(boostMap)){
+      if(c.includes(kw)) scores[cat] = (scores[cat]||0) + 2;
+    }
+  }
+  const ranked = Object.keys(scores).sort((a,b) => scores[b]-scores[a]);
+  const top = ranked.filter(c => scores[c] > 0).slice(0, 3);
+  const cats = top.length >= 3 ? top
+    : [...new Set([...top, 'relax', 'outdoor', 'creative'])].slice(0, 3);
+  const l = (lang==='en'||lang==='uk') ? lang : 'pl';
+  return cats.map(cat => {
+    const pool = ADVICE_DB[cat];
+    const item = pool[Math.floor(Math.random() * pool.length)];
+    return {n: item[l].n, w: item[l].w, h: item[l].h};
+  });
+}
+
+const ADVICE_LANG={
+  pl:{tip_label:'Jak zacząć:',btn_thinking:'✨ Myślę…',btn_reset:'✨ Daj mi radę',heading:'Propozycje dla Ciebie',btn_more:'🔄 Inne propozycje'},
+  en:{tip_label:'How to start:',btn_thinking:'✨ Thinking…',btn_reset:'✨ Give me advice',heading:'Suggestions for you',btn_more:'🔄 More suggestions'},
+  uk:{tip_label:'Як почати:',btn_thinking:'✨ Думаю…',btn_reset:'✨ Дай мені пораду',heading:'Пропозиції для вас',btn_more:'🔄 Інші пропозиції'}
+};
+
+function getActivityAdvice(){
+  const moodText = document.getElementById('moodInput').value.trim();
+  const contexts = [...selectedContexts];
+  if(!moodText && !contexts.length){
     document.getElementById('moodInput').focus();
     return;
   }
-
   const al = ADVICE_LANG[currentLang]||ADVICE_LANG.pl;
-  document.getElementById('adviceBtn').disabled = true;
-  document.getElementById('adviceBtn').textContent = al.btn_thinking;
+  const btn = document.getElementById('adviceBtn');
+  btn.disabled = true;
+  btn.textContent = al.btn_thinking;
   document.getElementById('adviceResult').innerHTML = '';
+  document.getElementById('adviceSpinner').style.display = 'block';
 
   setTimeout(()=>{
-    const suggestions = computeActivities(mood, contexts, currentLang);
-    document.getElementById('adviceBtn').disabled = false;
-    document.getElementById('adviceBtn').textContent = al.btn_reset;
+    const suggestions = computeAdvice(moodText, contexts, currentLang);
+    document.getElementById('adviceSpinner').style.display = 'none';
+    btn.disabled = false;
+    btn.textContent = al.btn_reset;
 
     const cards = suggestions.map((a,i)=>`
       <div class="card" style="border-left:3px solid var(--accent);margin-bottom:12px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-          <span style="background:var(--accent);color:#fff;font-family:'Playfair Display',serif;font-weight:700;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">${i+1}</span>
-          <div class="task-title" style="font-size:.95rem">${esc(a.name)}</div>
+          <span style="background:var(--accent);color:#fff;font-weight:700;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">${i+1}</span>
+          <div class="task-title" style="font-size:.95rem">${esc(a.n)}</div>
         </div>
-        <p style="font-size:.84rem;color:var(--text);line-height:1.7;margin-bottom:8px">${esc(a.why)}</p>
+        <p style="font-size:.84rem;color:var(--text);line-height:1.7;margin-bottom:8px">${esc(a.w)}</p>
         <div style="background:var(--surf2);border-radius:6px;padding:8px 12px;font-size:.8rem;color:var(--muted)">
-          💡 <strong>${al.tip_label}</strong> ${esc(a.how)}
+          💡 <strong>${al.tip_label}</strong> ${esc(a.h)}
         </div>
       </div>`).join('');
 
@@ -1409,216 +1533,7 @@ function getActivityAdvice(){
         ${cards}
         <button class="btn ghost" style="margin-top:4px;font-size:.78rem" onclick="getActivityAdvice()">${al.btn_more}</button>
       </div>`;
-  }, 400);
-}
-
-function computeActivities(moodText, contexts, lang){
-  /* ── keyword scoring ── */
-  const txt = (moodText + ' ' + contexts.join(' ')).toLowerCase();
-
-  const SIGNALS = {
-    tired:    /zmęcz|bez si|nie mam energii|padam|wyczerpan|tired|exhaust|втомл|без сил/,
-    stressed: /stres|niepok|nerwow|przytłocz|overwhelm|anxious|тривог|стрес|нервов/,
-    bored:    /nudz|nie wiem co|boring|znudz|нудно|не знаю що/,
-    sad:      /smut|przygnębion|doła|płacz|depresj|sad|down|сумно|пригнічен/,
-    happy:    /świet|super|radoś|energi|szczęśliw|happy|great|excited|чудово|радіст/,
-    angry:    /wkurw|zły|złość|irytacj|frustrated|angry|злий|дратуєт/,
-    lonely:   /sam|samotno|tęskn|brakuje|lonely|miss|самотньо/,
-    creative: /kreatyw|twórcz|pomysł|creative|artyst|творч|ідея/,
-    active:   /aktywn|sport|ruch|siłow|biegać|active|energy|енергій|активн/,
-    calm:     /spokój|relaks|wycisz|odpocz|relax|calm|спокій|відпочин/,
-    outdoor:  /świeże|na zewn|przyroda|outside|outdoor|свіже повітря|надвор/,
-    indoor:   /w domu|zostać|home|inside|вдома|залишит/,
-    social:   /z kimś|towarzystw|znajom|people|social|з людьми|компанія/,
-    solo:     /sam|alone|spokojn|solo|наодинці|тихо/,
-  };
-
-  const scores = {};
-  for(const [key, rx] of Object.entries(SIGNALS)){
-    scores[key] = rx.test(txt) ? 1 : 0;
-  }
-  // context tags boost
-  if(contexts.some(c=>/zmęczon|tired|втомл/.test(c))) scores.tired += 2;
-  if(contexts.some(c=>/stres|stress|стрес/.test(c))) scores.stressed += 2;
-  if(contexts.some(c=>/energi|energy|енерг/.test(c))) scores.active += 2;
-  if(contexts.some(c=>/zewnątrz|outside|надвор/.test(c))) scores.outdoor += 2;
-  if(contexts.some(c=>/domu|home|вдома/.test(c))) scores.indoor += 2;
-  if(contexts.some(c=>/towarzystw|company|компанія/.test(c))) scores.social += 2;
-  if(contexts.some(c=>/spokój|quiet|спокою/.test(c))) scores.calm += 2;
-  if(contexts.some(c=>/aktywn|active|активн/.test(c))) scores.active += 2;
-  if(contexts.some(c=>/kreatyw|creative|творч/.test(c))) scores.creative += 2;
-
-  /* ── activity database ── */
-  const ACTIVITIES = {
-    pl:[
-      {name:'🚶 Spacer na świeżym powietrzu', tags:['tired','sad','stressed','outdoor','calm'],
-       why:'Nawet 20 minut chodzenia obniża poziom kortyzolu i poprawia nastrój bez wysiłku.',
-       how:'Wyjdź teraz — bez celu, bez telefonu, tylko para kroków za drzwiami.'},
-      {name:'🧘 Krótka medytacja (5–10 min)', tags:['stressed','tired','calm','indoor','solo'],
-       why:'Skupienie na oddechu wycisza układ nerwowy i przerywa pętlę negatywnych myśli.',
-       how:'Wejdź na YouTube i wpisz "5 min medytacja" — zacznij natychmiast.'},
-      {name:'🎵 Muzyka i taniec w domu', tags:['sad','bored','lonely','indoor','happy'],
-       why:'Rytm i ruch uwalniają endorfiny — nawet kilka minut poprawia stan emocjonalny.',
-       how:'Włącz ulubioną playlistę i pozwól się ponieść — nikt nie patrzy.'},
-      {name:'🏃 Intensywny trening / bieganie', tags:['angry','stressed','active','outdoor'],
-       why:'Fizyczne wyładowanie napięcia to najskuteczniejszy sposób na złość i stres.',
-       how:'Wyjdź i biegnij do wyczerpania — zacznij od 10 minut, nie musisz dalej.'},
-      {name:'📖 Czytanie książki', tags:['tired','calm','indoor','solo','bored'],
-       why:'Czytanie spowalnia rytm serca i przenosi umysł w inne miejsca.',
-       how:'Otwórz książkę na losowej stronie i daj sobie 15 minut — bez presji.'},
-      {name:'🍳 Gotowanie czegoś nowego', tags:['bored','creative','indoor','solo'],
-       why:'Skupienie na prostym zadaniu kulinarnym angażuje ręce i umysł jednocześnie.',
-       how:'Znajdź jeden przepis z tego co masz w lodówce i zacznij go robić.'},
-      {name:'📞 Zadzwoń do kogoś bliskiego', tags:['lonely','sad','social'],
-       why:'Prawdziwa rozmowa (nie wiadomości!) zmniejsza poczucie izolacji.',
-       how:'Wybierz jedną osobę i zadzwoń — nie pisz, zadzwoń.'},
-      {name:'🎨 Rysowanie / szkicowanie', tags:['creative','calm','indoor','solo'],
-       why:'Tworzenie czegoś ręcznie wycisza i daje poczucie sprawczości.',
-       how:'Weź kartkę i długopis — rysuj co widzisz wokół siebie przez 10 minut.'},
-      {name:'🌿 Porządki lub dekorowanie', tags:['bored','active','indoor'],
-       why:'Zmiana otoczenia fizycznie wpływa na nastrój — czysty pokój = czystszy umysł.',
-       how:'Ustaw timer na 15 minut i posprzątaj jedno konkretne miejsce.'},
-      {name:'🚴 Jazda na rowerze', tags:['active','outdoor','happy','bored'],
-       why:'Ruch na świeżym powietrzu łączy korzyści ćwiczeń i kontaktu z naturą.',
-       how:'Wsiądź na rower bez planu trasy — jedź tam gdzie cię niesie.'},
-      {name:'☕ Slow coffee / herbata bez ekranu', tags:['tired','stressed','calm','solo'],
-       why:'Rytuał parzenia i picia bez telefonu to mini reset dla przeciążonego mózgu.',
-       how:'Zaparzone, usiądź przy oknie, nie dotykaj telefonu przez 10 minut.'},
-      {name:'🎮 Gra wideo lub planszowa', tags:['bored','social','indoor','happy'],
-       why:'Gry angażują umysł, dają poczucie progresu i mogą połączyć z innymi.',
-       how:'Wybierz grę którą lubisz — zaproś kogoś lub zagraj sam.'},
-      {name:'🌍 Zaplanuj małą podróż lub wycieczkę', tags:['bored','creative','happy'],
-       why:'Sama wizualizacja i planowanie przygody poprawia nastrój i daje cel.',
-       how:'Otwórz mapę i znajdź miejsce do którego możesz dotrzeć w weekend.'},
-      {name:'💪 Krótki trening w domu (20 min)', tags:['active','indoor','tired','stressed'],
-       why:'Nawet krótka sesja ćwiczeń zmienia biochemię ciała na korzyść.',
-       how:'Zrób 3 serie: 10 pompek, 10 przysiadów, 10 brzuszków — zacznij teraz.'},
-      {name:'📝 Napisz co czujesz (journaling)', tags:['sad','stressed','lonely','solo'],
-       why:'Wyrzucenie myśli na papier zmniejsza ich siłę i pomaga zobaczyć perspektywę.',
-       how:'Ustaw timer na 10 minut i pisz bez zatrzymywania — cokolwiek przychodzi.'},
-      {name:'🌄 Wyjdź na zachód słońca', tags:['sad','tired','outdoor','solo','calm'],
-       why:'Obserwacja nieba i naturalnego światła resetuje rytm dobowy i uspokaja.',
-       how:'Sprawdź godzinę zachodu i wyjdź 15 minut wcześniej w otwarte miejsce.'},
-    ],
-    en:[
-      {name:'🚶 Walk outside', tags:['tired','sad','stressed','outdoor','calm'],
-       why:'Even 20 minutes of walking lowers cortisol and lifts your mood with zero effort.',
-       how:'Step out now — no destination, no phone, just a few steps out the door.'},
-      {name:'🧘 Short meditation (5–10 min)', tags:['stressed','tired','calm','indoor','solo'],
-       why:'Focusing on your breath calms your nervous system and breaks the cycle of negative thoughts.',
-       how:'Go to YouTube, search "5 min meditation" — start right now.'},
-      {name:'🎵 Music and dancing at home', tags:['sad','bored','lonely','indoor','happy'],
-       why:'Rhythm and movement release endorphins — even a few minutes shifts your emotional state.',
-       how:'Turn on your favorite playlist and let yourself go — no one is watching.'},
-      {name:'🏃 Intense workout / run', tags:['angry','stressed','active','outdoor'],
-       why:'Physical release of tension is the most effective way to deal with anger and stress.',
-       how:'Go outside and run until tired — even 10 minutes is enough to start.'},
-      {name:'📖 Read a book', tags:['tired','calm','indoor','solo','bored'],
-       why:'Reading slows your heart rate and transports your mind elsewhere.',
-       how:'Open a book to a random page and give yourself 15 minutes — no pressure.'},
-      {name:'🍳 Cook something new', tags:['bored','creative','indoor','solo'],
-       why:'Focusing on a simple cooking task engages both hands and mind at the same time.',
-       how:'Find one recipe using what you have and start making it.'},
-      {name:'📞 Call someone you care about', tags:['lonely','sad','social'],
-       why:'A real conversation (not messages!) reduces feelings of isolation.',
-       how:'Pick one person and call them — not text, call.'},
-      {name:'🎨 Drawing / sketching', tags:['creative','calm','indoor','solo'],
-       why:'Creating something by hand calms you and gives a sense of agency.',
-       how:'Grab paper and a pen — draw what you see around you for 10 minutes.'},
-      {name:'🌿 Tidy up or redecorate', tags:['bored','active','indoor'],
-       why:'Changing your physical environment affects your mood — clean space, clearer mind.',
-       how:'Set a 15-minute timer and tidy up one specific spot.'},
-      {name:'🚴 Go for a bike ride', tags:['active','outdoor','happy','bored'],
-       why:'Movement outside combines the benefits of exercise and contact with nature.',
-       how:'Hop on your bike with no planned route — just ride where you feel like.'},
-      {name:'☕ Slow coffee / tea without screens', tags:['tired','stressed','calm','solo'],
-       why:'The ritual of brewing and drinking without your phone is a mini-reset for an overloaded mind.',
-       how:'Brew it, sit by the window, and do not touch your phone for 10 minutes.'},
-      {name:'🎮 Video game or board game', tags:['bored','social','indoor','happy'],
-       why:'Games engage the mind, give a sense of progress and can connect you with others.',
-       how:'Pick a game you enjoy — invite someone or play solo.'},
-      {name:'🌍 Plan a small trip or outing', tags:['bored','creative','happy'],
-       why:'Just visualizing and planning an adventure improves mood and gives you something to look forward to.',
-       how:'Open a map and find a place you could reach this weekend.'},
-      {name:'💪 Short home workout (20 min)', tags:['active','indoor','tired','stressed'],
-       why:'Even a short exercise session changes your body chemistry for the better.',
-       how:'Do 3 sets: 10 push-ups, 10 squats, 10 sit-ups — start right now.'},
-      {name:'📝 Write what you feel (journaling)', tags:['sad','stressed','lonely','solo'],
-       why:'Putting thoughts on paper reduces their power and helps you see perspective.',
-       how:'Set a 10-minute timer and write without stopping — whatever comes.'},
-      {name:'🌄 Go watch the sunset', tags:['sad','tired','outdoor','solo','calm'],
-       why:'Watching the sky and natural light resets your circadian rhythm and calms you.',
-       how:'Check the sunset time and head out 15 minutes early to an open spot.'},
-    ],
-    uk:[
-      {name:'🚶 Прогулянка на свіжому повітрі', tags:['tired','sad','stressed','outdoor','calm'],
-       why:'Навіть 20 хвилин ходьби знижують рівень кортизолу і покращують настрій.',
-       how:'Вийди зараз — без мети, без телефону, просто кілька кроків за двері.'},
-      {name:'🧘 Коротка медитація (5–10 хв)', tags:['stressed','tired','calm','indoor','solo'],
-       why:'Зосередження на диханні заспокоює нервову систему і розриває коло негативних думок.',
-       how:'Відкрий YouTube, введи "5 хв медитація" — почни прямо зараз.'},
-      {name:'🎵 Музика і танці вдома', tags:['sad','bored','lonely','indoor','happy'],
-       why:'Ритм і рух вивільняють ендорфіни — навіть кілька хвилин покращують стан.',
-       how:'Увімкни улюблений плейлист і дай собі волю — ніхто не дивиться.'},
-      {name:'🏃 Інтенсивне тренування / біг', tags:['angry','stressed','active','outdoor'],
-       why:'Фізичне виплескування напруги — найефективніший спосіб впоратися зі злістю.',
-       how:'Вийди і біжи до втоми — навіть 10 хвилин достатньо для початку.'},
-      {name:'📖 Читання книги', tags:['tired','calm','indoor','solo','bored'],
-       why:'Читання сповільнює ритм серця і переносить розум в інше місце.',
-       how:'Відкрий книгу на випадковій сторінці і дай собі 15 хвилин — без тиску.'},
-      {name:'🍳 Приготуй щось нове', tags:['bored','creative','indoor','solo'],
-       why:'Зосередження на простому кулінарному завданні задіює руки і розум одночасно.',
-       how:'Знайди один рецепт з того що є вдома і почни готувати.'},
-      {name:'📞 Зателефонуй близькій людині', tags:['lonely','sad','social'],
-       why:'Справжня розмова (не повідомлення!) зменшує відчуття ізоляції.',
-       how:'Вибери одну людину і зателефонуй — не пиши, а телефонуй.'},
-      {name:'🎨 Малювання / скетчинг', tags:['creative','calm','indoor','solo'],
-       why:'Створення чогось руками заспокоює і дає відчуття дієвості.',
-       how:'Візьми аркуш і ручку — малюй що бачиш навколо 10 хвилин.'},
-      {name:'🌿 Прибирання або перестановка', tags:['bored','active','indoor'],
-       why:'Зміна фізичного оточення впливає на настрій — чистий простір = чіткіший розум.',
-       how:'Постав таймер на 15 хвилин і прибери одне конкретне місце.'},
-      {name:'🚴 Поїздка на велосипеді', tags:['active','outdoor','happy','bored'],
-       why:'Рух на свіжому повітрі поєднує переваги фізичних вправ і контакту з природою.',
-       how:'Сідай на велосипед без плану маршруту — їдь куди несе.'},
-      {name:'☕ Повільна кава / чай без екранів', tags:['tired','stressed','calm','solo'],
-       why:'Ритуал приготування і пиття без телефону — міні-перезавантаження для мозку.',
-       how:'Завари, сядь біля вікна, не торкайся телефону 10 хвилин.'},
-      {name:'🎮 Відеогра або настільна гра', tags:['bored','social','indoor','happy'],
-       why:'Ігри залучають розум, дають відчуття прогресу і можуть поєднати з іншими.',
-       how:'Вибери гру яка тобі подобається — запроси когось або грай сам.'},
-      {name:'🌍 Сплануй маленьку подорож', tags:['bored','creative','happy'],
-       why:'Сама візуалізація і планування пригоди покращує настрій і дає мету.',
-       how:'Відкрий карту і знайди місце куди можна дістатися цього вікенду.'},
-      {name:'💪 Коротке тренування вдома (20 хв)', tags:['active','indoor','tired','stressed'],
-       why:'Навіть коротка сесія вправ змінює біохімію тіла на краще.',
-       how:'Зроби 3 підходи: 10 віджимань, 10 присідань, 10 скручувань — почни зараз.'},
-      {name:'📝 Запиши що відчуваєш (щоденник)', tags:['sad','stressed','lonely','solo'],
-       why:'Виплескування думок на папір зменшує їх силу і допомагає побачити перспективу.',
-       how:'Постав таймер на 10 хвилин і пиши без зупинки — все що приходить.'},
-      {name:'🌄 Вийди подивитися на захід сонця', tags:['sad','tired','outdoor','solo','calm'],
-       why:'Споглядання неба і природного світла скидає добовий ритм і заспокоює.',
-       how:'Дізнайся час заходу і вийди на 15 хвилин раніше на відкрите місце.'},
-    ],
-  };
-
-  const pool = ACTIVITIES[lang] || ACTIVITIES.pl;
-
-  /* Score each activity based on detected signals */
-  const scored = pool.map(act => {
-    let score = 0;
-    for(const tag of act.tags){
-      score += (scores[tag]||0);
-    }
-    // small random jitter so same mood doesn't always give identical order
-    score += Math.random() * 0.4;
-    return {...act, score};
-  });
-
-  scored.sort((a,b) => b.score - a.score);
-
-  /* Return top 3 unique activities */
-  return scored.slice(0, 3);
+  }, 500);
 }
 
 /* ─── PAGE 7: NAWYKI ─────────────────────────────────────────────── */
